@@ -116,13 +116,13 @@ const Index = () => {
       
       {/* Dynamic Hero Section with Carousel */}
       <section className="relative h-screen overflow-hidden">
-        <Carousel className="w-full h-full" opts={{
+        <Carousel opts={{
         align: "start",
         loop: true
       }} plugins={[Autoplay({
         delay: 6000,
         stopOnInteraction: false
-      })]}>
+      })]} className="w-full h-full mx-0 py-[57px]">
           <CarouselContent className="h-full">
             {activeHeroSlides.map((slide, index) => <CarouselItem key={slide.id} className="h-full">
                 <div className="relative h-full w-full">
@@ -166,11 +166,15 @@ const Index = () => {
                         
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-                          <Button variant="gaming" size="xl" onClick={() => handleSlideNavigation(slide.button_url)} className="glow-hover py-0 my-0 mx-0 px-[33px] text-slate-950 text-2xl rounded-full text-center font-semibold">
+                          <Button variant="gaming" size="xl" className="text-lg px-8 py-4 glow-hover" onClick={() => handleSlideNavigation(slide.button_url)}>
                             <Play className="mr-2 h-6 w-6" />
                             {slide.button_text}
                             <ChevronRight className="ml-2 h-6 w-6" />
                           </Button>
+                          {user && <Button variant="gaming-secondary" size="xl" className="text-lg px-8 py-4" onClick={() => navigate('/dashboard')}>
+                              <Star className="mr-2 h-6 w-6" />
+                              Dashboard
+                            </Button>}
                         </div>
                         
                         {/* Progress Indicators */}
