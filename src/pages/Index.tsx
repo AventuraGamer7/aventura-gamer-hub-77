@@ -199,16 +199,11 @@ const Index = () => {
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
-            <Badge variant="secondary" className="bg-secondary/20 text-secondary border-secondary/30 mb-6 px-6 py-2">
-              <Wrench className="mr-2 h-4 w-4" />
-              Servicios Gaming Pro
-            </Badge>
+            
             <h2 className="text-4xl md:text-6xl font-bold mb-6 text-glow">
               Experiencia Técnica de Elite
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Servicios profesionales con tecnología avanzada y garantía completa para maximizar tu experiencia gaming
-            </p>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">Servicios profesionales y garantía completa para maximizar tu experiencia gaming</p>
           </div>
       
           {loading ? <div className="flex justify-center items-center h-64">
