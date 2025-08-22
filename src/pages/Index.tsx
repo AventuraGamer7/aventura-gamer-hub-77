@@ -418,10 +418,7 @@ const Index = () => {
             
             {/* Section Header */}
             <div className="text-center mb-16 animate-fade-in">
-              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 mb-6 px-6 py-3 text-base">
-                <MapPin className="mr-2 h-5 w-5" />
-                Centro de Comando
-              </Badge>
+              
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-glow">
                 Tu Base de Operaciones Gaming
               </h2>
