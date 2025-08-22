@@ -393,34 +393,40 @@ const Dashboard = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
-        {/* Sidebar */}
-        <Sidebar variant="inset" className="border-r border-border/50">
-          <SidebarHeader className="border-b border-border/50 p-4">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-gradient-to-r from-primary to-secondary">
-                <Gamepad2 className="h-5 w-5 text-white" />
+        {/* Gaming Sidebar */}
+        <Sidebar variant="inset" className="card-gaming border-primary/20 border-r-2">
+          <SidebarHeader className="border-b border-primary/30 p-6 bg-gradient-to-r from-primary/10 to-secondary/10">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-gradient-to-r from-primary to-secondary animate-glow">
+                <Gamepad2 className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-neon text-sm">Aventura Gamer</span>
-                <span className="text-xs text-muted-foreground">Panel Admin</span>
+                <span className="font-bold text-neon text-lg">Aventura Gamer</span>
+                <span className="text-sm text-secondary font-medium">Panel de Control</span>
               </div>
             </div>
           </SidebarHeader>
 
-          <SidebarContent>
+          <SidebarContent className="bg-gradient-card p-2">
             <SidebarGroup>
-              <SidebarGroupLabel>Principal</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-primary font-semibold text-sm uppercase tracking-wider mb-3 px-3">
+                Principal
+              </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="space-y-1">
                   {sidebarItems.filter(item => item.section === 'Principal').map((item) => (
                     <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton
                         onClick={() => setActiveSection(item.id)}
                         isActive={activeSection === item.id}
-                        className="w-full"
+                        className={`w-full rounded-lg transition-all duration-300 ${
+                          activeSection === item.id 
+                            ? 'bg-gradient-to-r from-primary/20 to-secondary/20 text-primary border border-primary/30 shadow-neon' 
+                            : 'hover:bg-primary/10 hover:text-primary glow-hover border border-transparent'
+                        }`}
                       >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
+                        <item.icon className={`h-5 w-5 ${activeSection === item.id ? 'text-primary' : ''}`} />
+                        <span className="font-medium">{item.title}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -428,19 +434,25 @@ const Dashboard = () => {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            <SidebarGroup>
-              <SidebarGroupLabel>Gestión</SidebarGroupLabel>
+            <SidebarGroup className="mt-6">
+              <SidebarGroupLabel className="text-secondary font-semibold text-sm uppercase tracking-wider mb-3 px-3">
+                Gestión Avanzada
+              </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="space-y-1">
                   {sidebarItems.filter(item => item.section === 'Gestión').map((item) => (
                     <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton
                         onClick={() => setActiveSection(item.id)}
                         isActive={activeSection === item.id}
-                        className="w-full"
+                        className={`w-full rounded-lg transition-all duration-300 ${
+                          activeSection === item.id 
+                            ? 'bg-gradient-to-r from-secondary/20 to-primary/20 text-secondary border border-secondary/30 shadow-secondary' 
+                            : 'hover:bg-secondary/10 hover:text-secondary glow-hover border border-transparent'
+                        }`}
                       >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
+                        <item.icon className={`h-5 w-5 ${activeSection === item.id ? 'text-secondary' : ''}`} />
+                        <span className="font-medium">{item.title}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -449,21 +461,24 @@ const Dashboard = () => {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-border/50 p-4">
-            <SidebarMenu>
+          <SidebarFooter className="border-t border-primary/30 p-4 bg-gradient-to-r from-primary/5 to-secondary/5">
+            <SidebarMenu className="space-y-2">
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => navigate('/')} className="w-full">
-                  <Home className="h-4 w-4" />
-                  <span>Volver al Sitio</span>
+                <SidebarMenuButton 
+                  onClick={() => navigate('/')} 
+                  className="w-full rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-300 border border-transparent hover:border-primary/30"
+                >
+                  <Home className="h-5 w-5" />
+                  <span className="font-medium">Volver al Sitio</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   onClick={handleLogout} 
-                  className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                  className="w-full rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-300 border border-transparent hover:border-destructive/30"
                 >
-                  <LogOut className="h-4 w-4" />
-                  <span>Cerrar Sesión</span>
+                  <LogOut className="h-5 w-5" />
+                  <span className="font-medium">Cerrar Sesión</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -473,53 +488,94 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <SidebarInset className="flex-1">
-          {/* Header */}
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border/50 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+          {/* Gaming Header */}
+          <header className="flex h-20 shrink-0 items-center gap-4 border-b-2 border-primary/30 px-6 bg-gradient-to-r from-card to-background">
+            <SidebarTrigger className="-ml-1 p-2 rounded-lg hover:bg-primary/10 transition-colors" />
+            <Separator orientation="vertical" className="mr-2 h-6 bg-primary/30" />
             <div className="flex items-center justify-between w-full">
-              <div>
-                <h1 className="text-lg font-semibold text-glow">Panel de Control</h1>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/20">
+                  <BarChart3 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-glow">Panel de Control</h1>
+                  <p className="text-sm text-muted-foreground">Gestiona tu aventura gaming</p>
+                </div>
               </div>
               <div className="flex items-center gap-4">
-                <Badge variant="secondary" className="bg-secondary/20 text-secondary">
-                  <Clock className="mr-1 h-3 w-3" />
-                  {new Date().toLocaleDateString()}
+                <Badge variant="secondary" className="bg-gradient-to-r from-secondary/20 to-primary/20 text-secondary border border-secondary/30 px-3 py-1">
+                  <Clock className="mr-2 h-4 w-4" />
+                  {new Date().toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
                 </Badge>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/20">
+                  <User className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    {profile?.role === 'superadmin' ? 'Superadmin' :
+                     profile?.role === 'admin' ? 'Admin' :
+                     profile?.role === 'manager' || profile?.role === 'employee' ? 'Manager' : 
+                     'Usuario'}
+                  </span>
+                </div>
               </div>
             </div>
           </header>
 
-          {/* Content Area */}
-          <main className="flex-1 p-6 overflow-auto">
+          {/* Gaming Content Area */}
+          <main className="flex-1 p-8 overflow-auto bg-gradient-to-br from-background via-card/30 to-background">
             <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
                 {/* Main Content */}
-                <div className="xl:col-span-3">
+                <div className="xl:col-span-3 space-y-6">
                   {renderMainContent()}
                 </div>
 
-                {/* Sidebar Content */}
+                {/* Gaming Sidebar Content */}
                 <div className="space-y-6">
                   <GamificationPanel />
                   
-                  {/* Quick Stats */}
-                  <Card className="card-gaming border-secondary/20">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Resumen</CardTitle>
+                  {/* Enhanced Quick Stats */}
+                  <Card className="card-gaming border-primary/20 overflow-hidden">
+                    <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-primary/20">
+                      <CardTitle className="text-lg font-bold text-glow flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-primary" />
+                        Resumen Gaming
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Productos activos</span>
-                        <span className="font-bold">{products.length}</span>
+                    <CardContent className="p-6 space-y-4">
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-primary/5 border border-primary/20">
+                        <div className="flex items-center gap-2">
+                          <Package className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">Productos activos</span>
+                        </div>
+                        <span className="font-bold text-lg text-primary">{products.length}</span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Cursos disponibles</span>
-                        <span className="font-bold">{courses.length}</span>
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-secondary/5 border border-secondary/20">
+                        <div className="flex items-center gap-2">
+                          <GraduationCap className="h-4 w-4 text-secondary" />
+                          <span className="text-sm font-medium">Cursos disponibles</span>
+                        </div>
+                        <span className="font-bold text-lg text-secondary">{courses.length}</span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
-                        <span className="font-bold">{services.length}</span>
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-gaming-blue/20 border border-gaming-blue/30">
+                        <div className="flex items-center gap-2">
+                          <Wrench className="h-4 w-4 text-gaming-blue" />
+                          <span className="text-sm font-medium">Servicios ofrecidos</span>
+                        </div>
+                        <span className="font-bold text-lg" style={{ color: 'hsl(var(--gaming-blue))' }}>{services.length}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-gaming-orange/20 border border-gaming-orange/30">
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4 text-gaming-orange" />
+                          <span className="text-sm font-medium">Total elementos</span>
+                        </div>
+                        <span className="font-bold text-lg" style={{ color: 'hsl(var(--gaming-orange))' }}>
+                          {products.length + courses.length + services.length}
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
