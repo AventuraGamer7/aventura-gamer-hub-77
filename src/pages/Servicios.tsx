@@ -12,7 +12,11 @@ import { Wrench, Home, Cpu, Shield, Clock, CheckCircle, Star, Target, Gamepad2, 
 const Servicios = () => {
   const navigate = useNavigate();
   const [isLoggedIn] = useState(false); // Mock authentication state
-  const { services, loading, error } = useServices();
+  const {
+    services,
+    loading,
+    error
+  } = useServices();
   const handleAcceptMission = (serviceTitle: string) => {
     navigate('/cursos', {
       state: {
@@ -25,16 +29,12 @@ const Servicios = () => {
       <WhatsAppFloat />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16">
+      <section className="pt-24 pb-16 px-0 mx-[63px] my-0 py-[43px]">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-              🔧 Servicios Técnicos
-            </Badge>
+          <div className="max-w-4xl mx-auto text-center space-y-6 py-0">
             
-            <h1 className="text-4xl md:text-6xl font-bold text-glow">
-              Servicios Técnicos Gaming
-            </h1>
+            
+            <h1 className="text-4xl md:text-6xl font-bold text-glow">Servicio Técnico</h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Reparaciones profesionales con garantía, diagnóstico gratuito y servicio a domicilio en Envigado y área metropolitana.
@@ -92,28 +92,21 @@ const Servicios = () => {
         </section>}
 
       {/* Services Categories */}
-      <section className="py-16">
+      <section className="py-[8px]">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-glow">Servicios Técnicos</h2>
             
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
+            
+            {loading ? <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            ) : error ? (
-              <div className="text-center py-12">
+              </div> : error ? <div className="text-center py-12">
                 <p className="text-red-500">Error al cargar los servicios: {error}</p>
                 <Button variant="gaming" onClick={() => window.location.reload()}>
                   Reintentar
                 </Button>
-              </div>
-            ) : services.length === 0 ? (
-              <div className="text-center py-12">
+              </div> : services.length === 0 ? <div className="text-center py-12">
                 <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
-              </div>
-            ) : (
-              <Tabs defaultValue="todos" className="w-full">
+              </div> : <Tabs defaultValue="todos" className="w-full py-[8px] px-0 my-px">
                 <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="todos">Todos</TabsTrigger>
                   <TabsTrigger value="controles">Controles</TabsTrigger>
@@ -123,22 +116,13 @@ const Servicios = () => {
                 
                 <TabsContent value="todos" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.map((service) => (
-                      <Card key={service.id} className="card-gaming border-primary/20 glow-hover">
-                        {service.image ? (
-                          <div className="relative h-48 overflow-hidden">
-                            <img
-                              src={service.image}
-                              alt={service.name}
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                            />
+                    {services.map(service => <Card key={service.id} className="card-gaming border-primary/20 glow-hover">
+                        {service.image ? <div className="relative h-48 overflow-hidden">
+                            <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                             <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                          </div>
-                        ) : (
-                          <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                          </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
                             <Wrench className="h-12 w-12 text-primary/30" />
-                          </div>
-                        )}
+                          </div>}
                         
                         <CardHeader>
                           <CardTitle className="text-lg">{service.name}</CardTitle>
@@ -164,37 +148,19 @@ const Servicios = () => {
                             </Button>
                           </div>
                         </CardContent>
-                      </Card>
-                    ))}
+                      </Card>)}
                   </div>
                 </TabsContent>
                 
                 <TabsContent value="controles" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services
-                      .filter(service =>
-                        service.name.toLowerCase().includes('control') ||
-                        service.name.toLowerCase().includes('joy') ||
-                        service.name.toLowerCase().includes('boton') ||
-                        service.name.toLowerCase().includes('analog') ||
-                        service.name.toLowerCase().includes('carga')
-                      )
-                      .map((service) => (
-                        <Card key={service.id} className="card-gaming border-primary/20 glow-hover">
-                          {service.image ? (
-                            <div className="relative h-48 overflow-hidden">
-                              <img
-                                src={service.image}
-                                alt={service.name}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                              />
+                    {services.filter(service => service.name.toLowerCase().includes('control') || service.name.toLowerCase().includes('joy') || service.name.toLowerCase().includes('boton') || service.name.toLowerCase().includes('analog') || service.name.toLowerCase().includes('carga')).map(service => <Card key={service.id} className="card-gaming border-primary/20 glow-hover">
+                          {service.image ? <div className="relative h-48 overflow-hidden">
+                              <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                               <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                            </div>
-                          ) : (
-                            <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                            </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
                               <Gamepad2 className="h-12 w-12 text-primary/30" />
-                            </div>
-                          )}
+                            </div>}
                           
                           <CardHeader>
                             <CardTitle className="text-lg">{service.name}</CardTitle>
@@ -220,43 +186,19 @@ const Servicios = () => {
                               </Button>
                             </div>
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                   </div>
                 </TabsContent>
                 
                 <TabsContent value="consolas" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services
-                      .filter(service =>
-                        service.name.toLowerCase().includes('consola') ||
-                        service.name.toLowerCase().includes('switch') ||
-                        service.name.toLowerCase().includes('play') ||
-                        service.name.toLowerCase().includes('xbox') ||
-                        service.name.toLowerCase().includes('mantenimiento') ||
-                        service.name.toLowerCase().includes('pasta') ||
-                        service.name.toLowerCase().includes('fuente') ||
-                        service.name.toLowerCase().includes('lectura') ||
-                        service.name.toLowerCase().includes('sobrecalentamiento') ||
-                        service.name.toLowerCase().includes('pantalla') ||
-                        service.name.toLowerCase().includes('disco')
-                      )
-                      .map((service) => (
-                        <Card key={service.id} className="card-gaming border-primary/20 glow-hover">
-                          {service.image ? (
-                            <div className="relative h-48 overflow-hidden">
-                              <img
-                                src={service.image}
-                                alt={service.name}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                              />
+                    {services.filter(service => service.name.toLowerCase().includes('consola') || service.name.toLowerCase().includes('switch') || service.name.toLowerCase().includes('play') || service.name.toLowerCase().includes('xbox') || service.name.toLowerCase().includes('mantenimiento') || service.name.toLowerCase().includes('pasta') || service.name.toLowerCase().includes('fuente') || service.name.toLowerCase().includes('lectura') || service.name.toLowerCase().includes('sobrecalentamiento') || service.name.toLowerCase().includes('pantalla') || service.name.toLowerCase().includes('disco')).map(service => <Card key={service.id} className="card-gaming border-primary/20 glow-hover">
+                          {service.image ? <div className="relative h-48 overflow-hidden">
+                              <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                               <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                            </div>
-                          ) : (
-                            <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                            </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
                               <Cpu className="h-12 w-12 text-primary/30" />
-                            </div>
-                          )}
+                            </div>}
                           
                           <CardHeader>
                             <CardTitle className="text-lg">{service.name}</CardTitle>
@@ -282,36 +224,19 @@ const Servicios = () => {
                               </Button>
                             </div>
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                   </div>
                 </TabsContent>
                 
                 <TabsContent value="extras" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services
-                      .filter(service =>
-                        service.name.toLowerCase().includes('domicilio') ||
-                        service.name.toLowerCase().includes('express') ||
-                        service.name.toLowerCase().includes('urgente') ||
-                        service.name.toLowerCase().includes('prioridad')
-                      )
-                      .map((service) => (
-                        <Card key={service.id} className="card-gaming border-secondary/20 glow-hover">
-                          {service.image ? (
-                            <div className="relative h-48 overflow-hidden">
-                              <img
-                                src={service.image}
-                                alt={service.name}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                              />
+                    {services.filter(service => service.name.toLowerCase().includes('domicilio') || service.name.toLowerCase().includes('express') || service.name.toLowerCase().includes('urgente') || service.name.toLowerCase().includes('prioridad')).map(service => <Card key={service.id} className="card-gaming border-secondary/20 glow-hover">
+                          {service.image ? <div className="relative h-48 overflow-hidden">
+                              <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                               <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                            </div>
-                          ) : (
-                            <div className="relative h-48 bg-secondary/10 flex items-center justify-center">
+                            </div> : <div className="relative h-48 bg-secondary/10 flex items-center justify-center">
                               <Home className="h-12 w-12 text-secondary/30" />
-                            </div>
-                          )}
+                            </div>}
                           
                           <CardHeader>
                             <CardTitle className="text-lg">{service.name}</CardTitle>
@@ -332,12 +257,10 @@ const Servicios = () => {
                               Solicitar Información
                             </Button>
                           </CardContent>
-                        </Card>
-                      ))}
+                        </Card>)}
                   </div>
                 </TabsContent>
-              </Tabs>
-            )}
+              </Tabs>}
           </div>
         </div>
       </section>
