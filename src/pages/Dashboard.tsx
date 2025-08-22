@@ -403,7 +403,12 @@ const Dashboard = () => {
             <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
               🎮
             </Badge>
-            <span className="font-bold text-neon">Aventura Gamer</span>
+            <button 
+              onClick={() => navigate('/')} 
+              className="font-bold text-neon hover:text-primary transition-colors"
+            >
+              Aventura Gamer
+            </button>
           </div>
           <p className="text-xs text-muted-foreground mt-1">Panel de Administración</p>
         </div>
