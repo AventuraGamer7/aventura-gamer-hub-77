@@ -21,7 +21,11 @@ const Index = () => {
     user
   } = useAuth();
   const navigate = useNavigate();
-  const { services, loading, error } = useServices();
+  const {
+    services,
+    loading,
+    error
+  } = useServices();
   const stats = [{
     label: 'Aventureros Activos',
     value: '2,500+',
@@ -70,9 +74,7 @@ const Index = () => {
         
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-              🎮 Bienvenido Aventurero
-            </Badge>
+            
             
             <h1 className="text-4xl lg:text-7xl text-glow text-center md:text-6xl font-bold">
               Aventura Gamer
@@ -118,39 +120,23 @@ const Index = () => {
                   </p>
                 </div>
       
-                {loading ? (
-                  <div className="flex justify-center items-center h-64">
+                {loading ? <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                  </div>
-                ) : error ? (
-                  <div className="text-center py-12">
+                  </div> : error ? <div className="text-center py-12">
                     <p className="text-red-500">Error al cargar los servicios: {error}</p>
                     <Button variant="gaming" onClick={() => window.location.reload()}>
                       Reintentar
                     </Button>
-                  </div>
-                ) : services.length === 0 ? (
-                  <div className="text-center py-12">
+                  </div> : services.length === 0 ? <div className="text-center py-12">
                     <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                    {services.map((service) => (
-                      <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden glow-hover group">
-                        {service.image ? (
-                          <div className="relative h-48 overflow-hidden">
-                            <img
-                              src={service.image}
-                              alt={service.name}
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                            />
+                  </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                    {services.map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden glow-hover group">
+                        {service.image ? <div className="relative h-48 overflow-hidden">
+                            <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                             <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                          </div>
-                        ) : (
-                          <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                          </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
                             <Wrench className="h-12 w-12 text-primary/30" />
-                          </div>
-                        )}
+                          </div>}
                         
                         <CardHeader>
                           <CardTitle className="text-xl text-neon">{service.name}</CardTitle>
@@ -169,10 +155,8 @@ const Index = () => {
                             </Button>
                           </div>
                         </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
+                      </Card>)}
+                  </div>}
               </div>
             </section>
       {/* Gamification Section */}
