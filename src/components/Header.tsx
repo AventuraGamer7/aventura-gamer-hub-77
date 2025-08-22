@@ -1,32 +1,19 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Phone, MapPin, Gamepad2, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, MapPin, Gamepad2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
     { name: 'Inicio', path: '/' },
+    { name: 'panel de control', path: '/dashboard' },
     { name: 'Servicios Técnicos', path: '/servicios' },
     { name: 'Cursos', path: '/cursos' },
     { name: 'Tienda', path: '/tienda' },
     { name: 'Blog', path: '/blog' },
     { name: 'Contacto', path: '/contacto' },
-  ];
-
-  const dashboardItems = [
-    { name: 'Panel Principal', path: '/dashboard' },
-    { name: 'Gestión de Productos', path: '/dashboard/productos' },
-    { name: 'Gestión de Cursos', path: '/dashboard/cursos' },
-    { name: 'Gestión de Servicios', path: '/dashboard/servicios' },
-    { name: 'Configuración', path: '/dashboard/configuracion' },
   ];
 
   return (
@@ -52,28 +39,6 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            
-            {/* Dashboard Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Panel de Control
-                  <ChevronDown className="h-3 w-3" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {dashboardItems.map((item) => (
-                  <DropdownMenuItem key={item.name} asChild>
-                    <Link
-                      to={item.path}
-                      className="w-full cursor-pointer"
-                    >
-                      {item.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
           </nav>
 
           {/* Contact Info & CTA */}
@@ -120,23 +85,6 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              
-              {/* Mobile Dashboard Dropdown */}
-              <div className="border-t border-border pt-4">
-                <div className="text-sm font-medium text-muted-foreground mb-2">Panel de Control</div>
-                <div className="pl-4 space-y-2">
-                  {dashboardItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.path}
-                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
               <div className="pt-4 border-t border-border">
                 <div className="flex flex-col gap-2 text-xs text-muted-foreground mb-4">
                   <div className="flex items-center gap-2">
