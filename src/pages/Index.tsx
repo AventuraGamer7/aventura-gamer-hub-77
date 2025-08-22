@@ -171,7 +171,6 @@ const Index = () => {
                             {slide.button_text}
                             <ChevronRight className="ml-2 h-6 w-6" />
                           </Button>
-                          {user}
                         </div>
                         
                         {/* Progress Indicators */}
