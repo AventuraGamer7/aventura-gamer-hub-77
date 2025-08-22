@@ -143,10 +143,7 @@ const Index = () => {
                         
                         {/* Gaming Badge */}
                         <div className="flex justify-center">
-                          <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 px-6 py-2 text-sm font-medium">
-                            <GamepadIcon className="mr-2 h-4 w-4" />
-                            Gaming Pro Experience
-                          </Badge>
+                          
                         </div>
                         
                         {/* Main Title */}
