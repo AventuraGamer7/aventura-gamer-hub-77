@@ -2,19 +2,40 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Phone, MapPin, Gamepad2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const { profile } = useProfile();
 
-  const navItems = [
-    { name: 'Inicio', path: '/' },
-    { name: 'Iniciar Sesión', path: '/dashboard' },
-    { name: 'Servicios Técnicos', path: '/servicios' },
-    { name: 'Cursos', path: '/cursos' },
-    { name: 'Tienda', path: '/tienda' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'Contacto', path: '/contacto' },
-  ];
+  const getNavItems = () => {
+    const baseItems = [
+      { name: 'Inicio', path: '/' },
+    ];
+    
+    if (user) {
+      baseItems.push({ 
+        name: profile?.username || user.email?.split('@')[0] || 'Usuario', 
+        path: '/dashboard' 
+      });
+    } else {
+      baseItems.push({ name: 'Iniciar Sesión', path: '/dashboard' });
+    }
+    
+    baseItems.push(
+      { name: 'Servicios Técnicos', path: '/servicios' },
+      { name: 'Cursos', path: '/cursos' },
+      { name: 'Tienda', path: '/tienda' },
+      { name: 'Blog', path: '/blog' },
+      { name: 'Contacto', path: '/contacto' },
+    );
+    
+    return baseItems;
+  };
+
+  const navItems = getNavItems();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-border">
