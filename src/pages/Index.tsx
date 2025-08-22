@@ -10,6 +10,7 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import GamificationPanel from '@/components/GamificationPanel';
 import { useAuth } from '@/hooks/useAuth';
 import { useServices } from '@/hooks/useServices';
+import { useHeroSlides } from '@/hooks/useHeroSlides';
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 
@@ -22,43 +23,59 @@ const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { services, loading, error } = useServices();
+  const { slides: heroSlides, loading: heroLoading } = useHeroSlides();
 
-  // Hero carousel slides
-  const heroSlides = [
+  // Fallback hero slides if no slides from database
+  const fallbackHeroSlides = [
     {
-      id: 1,
+      id: '1',
       title: "Aventura Gamer",
       subtitle: "Farmeando experiencia para tu mejor versión",
       description: "Tu centro de confianza para reparaciones gaming, cursos especializados y repuestos originales",
-      image: heroImage,
-      cta: "Ver Servicios",
-      ctaAction: () => navigate('/servicios'),
-      secondaryCta: "Dashboard",
-      secondaryAction: () => navigate('/dashboard')
+      image_url: heroImage,
+      button_text: "Ver Servicios",
+      button_url: "/servicios",
+      is_active: true,
+      display_order: 1
     },
     {
-      id: 2,
+      id: '2',
       title: "Reparaciones Profesionales",
       subtitle: "Expertos en consolas y periféricos",
       description: "Técnicos certificados con garantía completa en todas las reparaciones",
-      image: repairImage,
-      cta: "Solicitar Reparación",
-      ctaAction: () => navigate('/servicios'),
-      secondaryCta: "Ver Garantías",
-      secondaryAction: () => navigate('/servicios')
+      image_url: repairImage,
+      button_text: "Solicitar Reparación",
+      button_url: "/servicios",
+      is_active: true,
+      display_order: 2
     },
     {
-      id: 3,
+      id: '3',
       title: "Cursos Especializados",
       subtitle: "Aprende de los mejores",
       description: "Conviértete en un maestro de la reparación con nuestros cursos hands-on",
-      image: coursesImage,
-      cta: "Ver Cursos",
-      ctaAction: () => navigate('/cursos'),
-      secondaryCta: "Misiones Disponibles",
-      secondaryAction: () => navigate('/cursos')
+      image_url: coursesImage,
+      button_text: "Ver Cursos",
+      button_url: "/cursos",
+      is_active: true,
+      display_order: 3
     }
   ];
+
+  // Use database slides if available, otherwise use fallback
+  const activeHeroSlides = heroLoading 
+    ? fallbackHeroSlides 
+    : heroSlides.filter(slide => slide.is_active).length > 0 
+      ? heroSlides.filter(slide => slide.is_active)
+      : fallbackHeroSlides;
+
+  const handleSlideNavigation = (url: string) => {
+    if (url.startsWith('/')) {
+      navigate(url);
+    } else {
+      window.open(url, '_blank');
+    }
+  };
   const stats = [{
     label: 'Aventureros Activos',
     value: '2,500+',
@@ -113,14 +130,14 @@ const Index = () => {
           ]}
         >
           <CarouselContent className="h-full">
-            {heroSlides.map((slide) => (
+            {activeHeroSlides.map((slide, index) => (
               <CarouselItem key={slide.id} className="h-full">
                 <div className="relative h-full w-full">
                   {/* Background Image */}
                   <div 
                     className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
                     style={{
-                      backgroundImage: `url(${slide.image})`,
+                      backgroundImage: `url(${slide.image_url})`,
                       filter: 'brightness(0.3)'
                     }}
                   />
@@ -163,30 +180,32 @@ const Index = () => {
                             variant="gaming" 
                             size="xl" 
                             className="text-lg px-8 py-4 glow-hover"
-                            onClick={slide.ctaAction}
+                            onClick={() => handleSlideNavigation(slide.button_url)}
                           >
                             <Play className="mr-2 h-6 w-6" />
-                            {slide.cta}
+                            {slide.button_text}
                             <ChevronRight className="ml-2 h-6 w-6" />
                           </Button>
-                          <Button 
-                            variant="gaming-secondary" 
-                            size="xl" 
-                            className="text-lg px-8 py-4"
-                            onClick={slide.secondaryAction}
-                          >
-                            <Star className="mr-2 h-6 w-6" />
-                            {slide.secondaryCta}
-                          </Button>
+                          {user && (
+                            <Button 
+                              variant="gaming-secondary" 
+                              size="xl" 
+                              className="text-lg px-8 py-4"
+                              onClick={() => navigate('/dashboard')}
+                            >
+                              <Star className="mr-2 h-6 w-6" />
+                              Dashboard
+                            </Button>
+                          )}
                         </div>
                         
                         {/* Progress Indicators */}
                         <div className="flex justify-center gap-3 pt-8">
-                          {heroSlides.map((_, index) => (
+                          {activeHeroSlides.map((_, indicatorIndex) => (
                             <div
-                              key={index}
+                              key={indicatorIndex}
                               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                index === slide.id - 1 
+                                indicatorIndex === index 
                                   ? 'bg-primary shadow-glow' 
                                   : 'bg-muted-foreground/30'
                               }`}

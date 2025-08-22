@@ -15,6 +15,7 @@ import AddProductForm from '@/components/AddProductForm';
 import AddCourseForm from '@/components/AddCourseForm';
 import AddServiceForm from '@/components/AddServiceForm';
 import ManagementPanel from '@/components/ManagementPanel';
+import HeroManagementPanel from '@/components/HeroManagementPanel';
 import { 
   LogOut, 
   User, 
@@ -36,7 +37,8 @@ import {
   Trash2,
   TrendingUp,
   Calendar,
-  Clock
+  Clock,
+  Monitor
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -71,6 +73,12 @@ const Dashboard = () => {
       id: 'dashboard',
       title: 'Dashboard',
       icon: <BarChart3 className="h-5 w-5" />,
+      section: 'Gestión Principal'
+    },
+    {
+      id: 'hero',
+      title: 'Gestión del Hero',
+      icon: <Monitor className="h-5 w-5" />,
       section: 'Gestión Principal'
     },
     {
@@ -187,6 +195,18 @@ const Dashboard = () => {
 
   const renderMainContent = () => {
     switch (activeSection) {
+      case 'hero':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-glow">Gestión del Hero</h2>
+                <p className="text-muted-foreground">Administra los slides del carrusel principal</p>
+              </div>
+            </div>
+            <HeroManagementPanel />
+          </div>
+        );
       case 'courses':
         return (
           <div className="space-y-6">
