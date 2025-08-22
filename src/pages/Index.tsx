@@ -20,55 +20,55 @@ import repairImage from '@/assets/repair-services.jpg';
 import coursesImage from '@/assets/gaming-courses.jpg';
 import storeImage from '@/assets/gaming-store.jpg';
 const Index = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
-  const { services, loading, error } = useServices();
-  const { slides: heroSlides, loading: heroLoading } = useHeroSlides();
+  const {
+    services,
+    loading,
+    error
+  } = useServices();
+  const {
+    slides: heroSlides,
+    loading: heroLoading
+  } = useHeroSlides();
 
   // Fallback hero slides if no slides from database
-  const fallbackHeroSlides = [
-    {
-      id: '1',
-      title: "Aventura Gamer",
-      subtitle: "Farmeando experiencia para tu mejor versión",
-      description: "Tu centro de confianza para reparaciones gaming, cursos especializados y repuestos originales",
-      image_url: heroImage,
-      button_text: "Ver Servicios",
-      button_url: "/servicios",
-      is_active: true,
-      display_order: 1
-    },
-    {
-      id: '2',
-      title: "Reparaciones Profesionales",
-      subtitle: "Expertos en consolas y periféricos",
-      description: "Técnicos certificados con garantía completa en todas las reparaciones",
-      image_url: repairImage,
-      button_text: "Solicitar Reparación",
-      button_url: "/servicios",
-      is_active: true,
-      display_order: 2
-    },
-    {
-      id: '3',
-      title: "Cursos Especializados",
-      subtitle: "Aprende de los mejores",
-      description: "Conviértete en un maestro de la reparación con nuestros cursos hands-on",
-      image_url: coursesImage,
-      button_text: "Ver Cursos",
-      button_url: "/cursos",
-      is_active: true,
-      display_order: 3
-    }
-  ];
+  const fallbackHeroSlides = [{
+    id: '1',
+    title: "Aventura Gamer",
+    subtitle: "Farmeando experiencia para tu mejor versión",
+    description: "Tu centro de confianza para reparaciones gaming, cursos especializados y repuestos originales",
+    image_url: heroImage,
+    button_text: "Ver Servicios",
+    button_url: "/servicios",
+    is_active: true,
+    display_order: 1
+  }, {
+    id: '2',
+    title: "Reparaciones Profesionales",
+    subtitle: "Expertos en consolas y periféricos",
+    description: "Técnicos certificados con garantía completa en todas las reparaciones",
+    image_url: repairImage,
+    button_text: "Solicitar Reparación",
+    button_url: "/servicios",
+    is_active: true,
+    display_order: 2
+  }, {
+    id: '3',
+    title: "Cursos Especializados",
+    subtitle: "Aprende de los mejores",
+    description: "Conviértete en un maestro de la reparación con nuestros cursos hands-on",
+    image_url: coursesImage,
+    button_text: "Ver Cursos",
+    button_url: "/cursos",
+    is_active: true,
+    display_order: 3
+  }];
 
   // Use database slides if available, otherwise use fallback
-  const activeHeroSlides = heroLoading 
-    ? fallbackHeroSlides 
-    : heroSlides.filter(slide => slide.is_active).length > 0 
-      ? heroSlides.filter(slide => slide.is_active)
-      : fallbackHeroSlides;
-
+  const activeHeroSlides = heroLoading ? fallbackHeroSlides : heroSlides.filter(slide => slide.is_active).length > 0 ? heroSlides.filter(slide => slide.is_active) : fallbackHeroSlides;
   const handleSlideNavigation = (url: string) => {
     if (url.startsWith('/')) {
       navigate(url);
@@ -116,31 +116,21 @@ const Index = () => {
       
       {/* Dynamic Hero Section with Carousel */}
       <section className="relative h-screen overflow-hidden">
-        <Carousel 
-          className="w-full h-full"
-          opts={{ 
-            align: "start",
-            loop: true,
-          }}
-          plugins={[
-            Autoplay({
-              delay: 6000,
-              stopOnInteraction: false,
-            }),
-          ]}
-        >
+        <Carousel className="w-full h-full" opts={{
+        align: "start",
+        loop: true
+      }} plugins={[Autoplay({
+        delay: 6000,
+        stopOnInteraction: false
+      })]}>
           <CarouselContent className="h-full">
-            {activeHeroSlides.map((slide, index) => (
-              <CarouselItem key={slide.id} className="h-full">
+            {activeHeroSlides.map((slide, index) => <CarouselItem key={slide.id} className="h-full">
                 <div className="relative h-full w-full">
                   {/* Background Image */}
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
-                    style={{
-                      backgroundImage: `url(${slide.image_url})`,
-                      filter: 'brightness(0.3)'
-                    }}
-                  />
+                  <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000" style={{
+                backgroundImage: `url(${slide.image_url})`,
+                filter: 'brightness(0.3)'
+              }} />
                   
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-secondary/30" />
@@ -176,48 +166,23 @@ const Index = () => {
                         
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-                          <Button 
-                            variant="gaming" 
-                            size="xl" 
-                            className="text-lg px-8 py-4 glow-hover"
-                            onClick={() => handleSlideNavigation(slide.button_url)}
-                          >
+                          <Button variant="gaming" size="xl" onClick={() => handleSlideNavigation(slide.button_url)} className="glow-hover py-0 my-0 mx-0 px-[33px] text-slate-950 text-2xl rounded-full text-center font-semibold">
                             <Play className="mr-2 h-6 w-6" />
                             {slide.button_text}
                             <ChevronRight className="ml-2 h-6 w-6" />
                           </Button>
-                          {user && (
-                            <Button 
-                              variant="gaming-secondary" 
-                              size="xl" 
-                              className="text-lg px-8 py-4"
-                              onClick={() => navigate('/dashboard')}
-                            >
-                              <Star className="mr-2 h-6 w-6" />
-                              Dashboard
-                            </Button>
-                          )}
+                          {user}
                         </div>
                         
                         {/* Progress Indicators */}
                         <div className="flex justify-center gap-3 pt-8">
-                          {activeHeroSlides.map((_, indicatorIndex) => (
-                            <div
-                              key={indicatorIndex}
-                              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                indicatorIndex === index 
-                                  ? 'bg-primary shadow-glow' 
-                                  : 'bg-muted-foreground/30'
-                              }`}
-                            />
-                          ))}
+                          {activeHeroSlides.map((_, indicatorIndex) => <div key={indicatorIndex} className={`w-3 h-3 rounded-full transition-all duration-300 ${indicatorIndex === index ? 'bg-primary shadow-glow' : 'bg-muted-foreground/30'}`} />)}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </CarouselItem>
-            ))}
+              </CarouselItem>)}
           </CarouselContent>
           
           {/* Navigation */}
@@ -243,12 +208,9 @@ const Index = () => {
             </p>
           </div>
       
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
+          {loading ? <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow"></div>
-            </div>
-          ) : error ? (
-            <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
+            </div> : error ? <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
                   <Wrench className="h-8 w-8 text-destructive" />
@@ -258,39 +220,26 @@ const Index = () => {
                   Reintentar Carga
                 </Button>
               </CardContent>
-            </Card>
-          ) : services.length === 0 ? (
-            <Card className="card-gaming max-w-md mx-auto">
+            </Card> : services.length === 0 ? <Card className="card-gaming max-w-md mx-auto">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
                   <Wrench className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
               </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.slice(0, 6).map((service) => (
-                <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden glow-hover group bg-gradient-to-br from-card to-card/80">
-                  {service.image ? (
-                    <div className="relative h-56 overflow-hidden">
-                      <img 
-                        src={service.image} 
-                        alt={service.name} 
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
+            </Card> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.slice(0, 6).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden glow-hover group bg-gradient-to-br from-card to-card/80">
+                  {service.image ? <div className="relative h-56 overflow-hidden">
+                      <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
                       <div className="absolute top-4 right-4">
                         <Badge variant="secondary" className="bg-primary/90 text-primary-foreground border-none">
                           Pro Service
                         </Badge>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="relative h-56 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                    </div> : <div className="relative h-56 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
                       <Wrench className="h-16 w-16 text-primary/40" />
-                    </div>
-                  )}
+                    </div>}
                   
                   <CardHeader className="pb-3">
                     <CardTitle className="text-xl text-neon group-hover:text-primary transition-colors">
@@ -317,19 +266,12 @@ const Index = () => {
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+                </Card>)}
+            </div>}
           
           {/* View All Services CTA */}
           <div className="text-center mt-16">
-            <Button 
-              variant="gaming-secondary" 
-              size="lg" 
-              className="px-8 py-4 text-lg"
-              onClick={() => navigate('/servicios')}
-            >
+            <Button variant="gaming-secondary" size="lg" className="px-8 py-4 text-lg" onClick={() => navigate('/servicios')}>
               Ver Todos los Servicios
               <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
@@ -360,8 +302,7 @@ const Index = () => {
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {achievements.map((achievement, index) => (
-                  <Card key={index} className="card-gaming border-primary/20 p-6 glow-hover group">
+                {achievements.map((achievement, index) => <Card key={index} className="card-gaming border-primary/20 p-6 glow-hover group">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
                         {achievement.icon}
@@ -371,8 +312,7 @@ const Index = () => {
                         <p className="text-sm text-muted-foreground leading-relaxed">{achievement.description}</p>
                       </div>
                     </div>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
               
               <div className="flex gap-4">
@@ -435,10 +375,9 @@ const Index = () => {
             {/* Latest Courses Module */}
             <Card className="card-gaming border-primary/30 overflow-hidden group glow-hover">
               <div className="relative h-64 bg-gradient-to-br from-primary/20 to-gaming-blue/20 flex items-center justify-center">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-30"
-                  style={{ backgroundImage: `url(${coursesImage})` }}
-                />
+                <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{
+                backgroundImage: `url(${coursesImage})`
+              }} />
                 <div className="relative z-10 text-center space-y-4 p-8">
                   <Badge variant="secondary" className="bg-primary/30 text-primary border-primary/50 px-6 py-2">
                     <GraduationCap className="mr-2 h-4 w-4" />
