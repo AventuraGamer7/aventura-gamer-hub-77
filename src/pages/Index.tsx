@@ -133,7 +133,7 @@ const Index = () => {
               }} />
                   
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-secondary/30" />
+                  
                   <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
                   
                   {/* Content */}
