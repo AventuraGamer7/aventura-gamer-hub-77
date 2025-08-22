@@ -25,9 +25,6 @@ export const useHeroSlides = () => {
       setLoading(true);
       setError(null);
 
-      // Since hero_slides table doesn't exist yet, return empty array
-      // TODO: Enable this once hero_slides table is created in Supabase
-      /*
       const { data, error } = await supabase
         .from('hero_slides')
         .select('*')
@@ -38,13 +35,10 @@ export const useHeroSlides = () => {
       }
 
       setSlides(data || []);
-      */
-      
-      setSlides([]);
     } catch (err: any) {
-      console.warn('Hero slides table not available yet:', err);
+      console.error('Error fetching hero slides:', err);
+      setError(err.message);
       setSlides([]);
-      setError(null);
     } finally {
       setLoading(false);
     }
@@ -55,10 +49,6 @@ export const useHeroSlides = () => {
   };
 
   const addSlide = async (slideData: Omit<HeroSlide, 'id' | 'created_at' | 'updated_at'>) => {
-    // TODO: Enable this once hero_slides table is created in Supabase
-    throw new Error('La tabla hero_slides no existe aún. Conecta tu proyecto a Supabase primero.');
-    
-    /*
     try {
       const { data, error } = await supabase
         .from('hero_slides')
@@ -74,14 +64,9 @@ export const useHeroSlides = () => {
       console.error('Error adding hero slide:', err);
       throw err;
     }
-    */
   };
 
   const updateSlide = async (id: string, slideData: Partial<HeroSlide>) => {
-    // TODO: Enable this once hero_slides table is created in Supabase
-    throw new Error('La tabla hero_slides no existe aún. Conecta tu proyecto a Supabase primero.');
-    
-    /*
     try {
       const { error } = await supabase
         .from('hero_slides')
@@ -95,14 +80,9 @@ export const useHeroSlides = () => {
       console.error('Error updating hero slide:', err);
       throw err;
     }
-    */
   };
 
   const deleteSlide = async (id: string) => {
-    // TODO: Enable this once hero_slides table is created in Supabase
-    throw new Error('La tabla hero_slides no existe aún. Conecta tu proyecto a Supabase primero.');
-    
-    /*
     try {
       const { error } = await supabase
         .from('hero_slides')
@@ -116,14 +96,9 @@ export const useHeroSlides = () => {
       console.error('Error deleting hero slide:', err);
       throw err;
     }
-    */
   };
 
   const toggleSlideActive = async (id: string, isActive: boolean) => {
-    // TODO: Enable this once hero_slides table is created in Supabase
-    throw new Error('La tabla hero_slides no existe aún. Conecta tu proyecto a Supabase primero.');
-    
-    /*
     try {
       const { error } = await supabase
         .from('hero_slides')
@@ -137,14 +112,9 @@ export const useHeroSlides = () => {
       console.error('Error toggling slide active:', err);
       throw err;
     }
-    */
   };
 
   const reorderSlides = async (slideId: string, newOrder: number) => {
-    // TODO: Enable this once hero_slides table is created in Supabase
-    throw new Error('La tabla hero_slides no existe aún. Conecta tu proyecto a Supabase primero.');
-    
-    /*
     try {
       const { error } = await supabase
         .from('hero_slides')
@@ -158,7 +128,6 @@ export const useHeroSlides = () => {
       console.error('Error reordering slide:', err);
       throw err;
     }
-    */
   };
 
   useEffect(() => {
