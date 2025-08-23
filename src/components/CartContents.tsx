@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 
 // Mercado Pago Public Key
-const MP_PUBLIC_KEY = 'TEST-2a0ee3bf-e3c6-4b44-befc-af32c718216d';
+const MP_PUBLIC_KEY = 'APP_USR-6a5148ca-9696-4958-8ec6-69681b0b4e91';
 
 export const CartContents = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
