@@ -6,6 +6,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 
+// Mercado Pago Public Key
+const MP_PUBLIC_KEY = 'TEST-2a0ee3bf-e3c6-4b44-befc-af32c718216d';
+
 export const CartContents = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
   const { toast } = useToast();
