@@ -147,7 +147,11 @@ const ManagementPanel = ({ type }: ManagementPanelProps) => {
                   <div className="flex-1">
                     <h4 className="font-medium">{item.name || item.title}</h4>
                     <p className="text-sm text-muted-foreground">
-                      ${new Intl.NumberFormat().format(item.price)}
+                      {new Intl.NumberFormat('es-CO', {
+                        style: 'currency',
+                        currency: 'COP',
+                        minimumFractionDigits: 0
+                      }).format(item.price)}
                     </p>
                   </div>
                   
