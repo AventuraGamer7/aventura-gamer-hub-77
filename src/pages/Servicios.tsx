@@ -8,10 +8,14 @@ import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useNavigate } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
-import { Wrench, Home, Cpu, Shield, Clock, CheckCircle, Star, Target, Gamepad2, Zap, Lock, Settings, Flame, Monitor, HardDrive, Battery } from 'lucide-react';
+import { useCart } from '@/hooks/useCart';
+import { useToast } from '@/hooks/use-toast';
+import { Wrench, Home, Cpu, Shield, Clock, CheckCircle, Star, Target, Gamepad2, Zap, Lock, Settings, Flame, Monitor, HardDrive, Battery, ShoppingCart } from 'lucide-react';
 const Servicios = () => {
   const navigate = useNavigate();
   const [isLoggedIn] = useState(false); // Mock authentication state
+  const { addItem } = useCart();
+  const { toast } = useToast();
   const {
     services,
     loading,
@@ -216,7 +220,25 @@ const Servicios = () => {
                             </div>
                             
                             <div className="flex gap-2">
-                              <Button variant="gaming" size="sm" className="flex-1">
+                              <Button 
+                                variant="gaming" 
+                                size="sm" 
+                                className="flex-1"
+                                onClick={() => {
+                                  addItem({
+                                    id: service.id,
+                                    name: service.name,
+                                    price: service.price,
+                                    image: service.image || undefined,
+                                    type: 'service'
+                                  });
+                                  toast({
+                                    title: 'Servicio agregado',
+                                    description: `${service.name} se agregó al carrito`,
+                                  });
+                                }}
+                              >
+                                <ShoppingCart className="mr-1 h-3 w-3" />
                                 Solicitar
                               </Button>
                               <Button variant="gaming-secondary" size="sm" onClick={() => handleAcceptMission(service.name)}>

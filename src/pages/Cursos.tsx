@@ -6,6 +6,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useCourses } from '@/hooks/useCourses';
+import { useCart } from '@/hooks/useCart';
+import { useToast } from '@/hooks/use-toast';
 import {
   GraduationCap,
   Star,
@@ -14,11 +16,14 @@ import {
   Award,
   PlayCircle,
   CheckCircle,
-  Target
+  Target,
+  ShoppingCart
 } from 'lucide-react';
 
 const Cursos = () => {
   const { courses, loading, error } = useCourses();
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   const benefits = [
     {
@@ -161,8 +166,24 @@ const Cursos = () => {
                           </div>
                           
                           <div className="flex gap-3">
-                            <Button variant="gaming" className="flex-1">
-                              <PlayCircle className="mr-2 h-4 w-4" />
+                            <Button 
+                              variant="gaming" 
+                              className="flex-1"
+                              onClick={() => {
+                                addItem({
+                                  id: course.id,
+                                  name: course.title,
+                                  price: course.price,
+                                  image: course.cover || undefined,
+                                  type: 'course'
+                                });
+                                toast({
+                                  title: 'Curso agregado',
+                                  description: `${course.title} se agregó al carrito`,
+                                });
+                              }}
+                            >
+                              <ShoppingCart className="mr-2 h-4 w-4" />
                               Inscribirse
                             </Button>
                             <Button variant="outline" size="sm">

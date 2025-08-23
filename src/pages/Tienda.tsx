@@ -8,6 +8,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useProducts } from '@/hooks/useProducts';
+import { useCart } from '@/hooks/useCart';
+import { useToast } from '@/hooks/use-toast';
 import { 
   ShoppingCart, 
   Star, 
@@ -25,6 +27,8 @@ const Tienda = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const { products, loading, error } = useProducts();
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
@@ -101,9 +105,22 @@ const Tienda = () => {
             variant="gaming" 
             className="flex-1" 
             disabled={product.stock === 0}
+            onClick={() => {
+              addItem({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image || undefined,
+                type: 'product'
+              });
+              toast({
+                title: 'Producto agregado',
+                description: `${product.name} se agregó al carrito`,
+              });
+            }}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
-            {product.stock > 0 ? 'Agregar' : 'Agotado'}
+            {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
           </Button>
         </div>
       </CardContent>
