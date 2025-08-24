@@ -48,13 +48,13 @@ serve(async (req) => {
       if (payment.status === 'approved') {
         const userId = payment.external_reference
 
-        // Crear registro de orden
+        // Crear registro de orden - usando crypto.randomUUID() para generar UUID válido
         const { error: orderError } = await supabaseClient
           .from('orders')
           .insert({
             user_id: userId,
-            item_id: paymentId, // Usamos el payment ID como referencia
-            item_type: 'mixed_cart', // Indicamos que es un carrito mixto
+            item_id: crypto.randomUUID(), // Generamos un UUID válido
+            item_type: 'payment', // Indicamos que es un pago de Mercado Pago
             quantity: 1,
             total_price: payment.transaction_amount
           })
