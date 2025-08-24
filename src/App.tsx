@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Servicios from "./pages/Servicios";
 import Cursos from "./pages/Cursos";
 import Tienda from "./pages/Tienda";
+import Carrito from "./pages/Carrito";
 import Blog from "./pages/Blog";
 import Contacto from "./pages/Contacto";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/servicios" element={<Servicios />} />
               <Route path="/cursos" element={<Cursos />} />
               <Route path="/tienda" element={<Tienda />} />
+              <Route path="/carrito" element={<Carrito />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/contacto" element={<Contacto />} />
               <Route path="/payment/success" element={<PaymentSuccess />} />

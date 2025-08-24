@@ -2,18 +2,10 @@ import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect } from 'react';
-
-// Mercado Pago Public Key
-const MP_PUBLIC_KEY = 'APP_USR-6a5148ca-9696-4958-8ec6-69681b0b4e91';
+import { Link } from 'react-router-dom';
 
 export const CartContents = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [paymentFormInitialized, setPaymentFormInitialized] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -23,156 +15,6 @@ export const CartContents = () => {
     }).format(price);
   };
 
-  // useEffect para inicializar el Payment Brick cuando el componente esté montado
-  useEffect(() => {
-    if (paymentFormInitialized && state.items.length > 0) {
-      const initializeBrick = async () => {
-        try {
-          // Verificar que el SDK esté cargado
-          if (!(window as any).MercadoPago) {
-            throw new Error('Mercado Pago SDK no está cargado');
-          }
-
-          console.log('Iniciando llamada a create-payment con items:', state.items);
-
-          // Obtener datos de pago del backend
-          const { data, error } = await supabase.functions.invoke('create-payment', {
-            body: { items: state.items }
-          });
-
-          console.log('Respuesta de create-payment:', { data, error });
-
-          if (error) {
-            console.error('Error en create-payment:', error);
-            throw error;
-          }
-
-          if (!data) {
-            throw new Error('No se recibieron datos del servidor');
-          }
-
-          // Inicializar Mercado Pago
-          const mp = new (window as any).MercadoPago(MP_PUBLIC_KEY, {
-            locale: 'es-CO'
-          });
-
-          console.log('MercadoPago inicializado con public key:', MP_PUBLIC_KEY);
-
-          // Verificar que el contenedor existe
-          const container = document.getElementById('mercadopago-checkout');
-          if (!container) {
-            throw new Error('Contenedor mercadopago-checkout no encontrado');
-          }
-
-          // Limpiar container anterior
-          container.innerHTML = '';
-
-          // Crear Card Payment Brick
-          const bricks = mp.bricks();
-          console.log('Creando cardPayment Brick con amount:', data.amount);
-          
-          await bricks.create('cardPayment', 'mercadopago-checkout', {
-            initialization: {
-              amount: data.amount,
-              payer: {
-                email: data.payer_email
-              }
-            },
-            customization: {
-              paymentMethods: {
-                creditCard: 'all',
-                debitCard: 'all'
-              }
-            },
-            callbacks: {
-              onReady: () => {
-                console.log('Card Payment Brick está listo');
-              },
-              onSubmit: async (cardFormData: any) => {
-                console.log('Enviando pago con cardFormData:', cardFormData);
-                return await processPayment(cardFormData, data);
-              },
-              onError: (error: any) => {
-                console.error('Error en Card Payment Brick:', error);
-                toast({
-                  title: 'Error',
-                  description: 'Error en el formulario de pago',
-                  variant: 'destructive'
-                });
-              }
-            }
-          });
-
-          console.log('Card Payment Brick inicializado correctamente');
-        } catch (error: any) {
-          console.error('Error inicializando formulario de pago:', error);
-          toast({
-            title: 'Error',
-            description: error.message || 'No se pudo cargar el formulario de pago',
-            variant: 'destructive'
-          });
-          // Reset para permitir reintentar
-          setPaymentFormInitialized(false);
-        }
-      };
-
-      // Pequeño delay para asegurar que el DOM esté completamente renderizado
-      setTimeout(initializeBrick, 100);
-    }
-  }, [paymentFormInitialized, state.items]);
-
-  const processPayment = async (cardFormData: any, paymentData: any) => {
-    setLoading(true);
-    try {
-      console.log('Procesando pago con:', { cardFormData, paymentData });
-
-      const { data, error } = await supabase.functions.invoke('process-payment', {
-        body: {
-          ...cardFormData,
-          transaction_amount: paymentData.amount,
-          description: paymentData.description,
-          external_reference: paymentData.external_reference,
-          items: state.items
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.status === 'approved') {
-        clearCart();
-        toast({
-          title: 'Pago exitoso',
-          description: 'Tu pago ha sido procesado correctamente.'
-        });
-        // Redirigir a página de éxito
-        window.location.href = `/payment/success?payment_id=${data.id}&status=${data.status}`;
-      } else if (data.status === 'pending') {
-        toast({
-          title: 'Pago pendiente',
-          description: 'Tu pago está siendo procesado. Te notificaremos cuando esté listo.'
-        });
-      } else {
-        throw new Error(data.status_detail || 'Pago rechazado');
-      }
-
-      return { status: 'success' };
-    } catch (error: any) {
-      console.error('Error procesando pago:', error);
-      toast({
-        title: 'Error en el pago',
-        description: error.message || 'No se pudo procesar el pago',
-        variant: 'destructive'
-      });
-      return { status: 'error', message: error.message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCheckout = () => {
-    if (state.items.length === 0) return;
-    setPaymentFormInitialized(true);
-  };
 
   if (state.items.length === 0) {
     return (
@@ -245,25 +87,14 @@ export const CartContents = () => {
         </div>
         
         <div className="space-y-2">
-          {!paymentFormInitialized ? (
+          <Link to="/carrito">
             <Button 
-              onClick={handleCheckout} 
-              disabled={loading || state.items.length === 0}
+              disabled={state.items.length === 0}
               className="w-full"
             >
-              {loading ? 'Cargando...' : 'Proceder al Pago'}
+              Ver Carrito Completo
             </Button>
-          ) : (
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground text-center">
-                Completa los datos de tu tarjeta para finalizar la compra
-              </p>
-              <div 
-                id="mercadopago-checkout" 
-                className="min-h-[300px] p-4 border rounded-lg"
-              />
-            </div>
-          )}
+          </Link>
           <Button 
             onClick={clearCart} 
             variant="outline" 
