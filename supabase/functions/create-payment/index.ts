@@ -59,28 +59,16 @@ serve(async (req) => {
       currency_id: 'ARS'
     }))
 
-    // Crear payment con Checkout API
-    const payment = {
-      transaction_amount: items.reduce((total, item) => total + (item.price * item.quantity), 0),
-      description: `Compra de ${items.length} producto(s)`,
-      payment_method_id: 'visa', // Se actualizará desde el frontend
-      payer: {
-        email: user.email
-      },
-      external_reference: user.id,
-      notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/payment-webhook`,
-      metadata: {
-        items: JSON.stringify(items)
-      }
-    }
+    // Preparar datos para Checkout API (Payment Brick)
+    const totalAmount = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    
+    console.log('Preparing payment data for amount:', totalAmount)
 
-    console.log('Creating payment with amount:', payment.transaction_amount)
-
-    // Para Checkout API, retornamos la información necesaria para el frontend
+    // Retornar información necesaria para inicializar Payment Brick
     return new Response(
       JSON.stringify({ 
-        amount: payment.transaction_amount,
-        description: payment.description,
+        amount: totalAmount,
+        description: `Compra de ${items.length} producto(s) - Aventura Gamer`,
         payer_email: user.email,
         external_reference: user.id,
         items: items

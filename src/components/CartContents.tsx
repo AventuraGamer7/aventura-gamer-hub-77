@@ -13,6 +13,7 @@ export const CartContents = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [paymentFormInitialized, setPaymentFormInitialized] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -22,56 +23,127 @@ export const CartContents = () => {
     }).format(price);
   };
 
-  const handleCheckout = async () => {
-    if (state.items.length === 0) return;
-    
-    setLoading(true);
+  const initializePaymentForm = async () => {
+    if (paymentFormInitialized || state.items.length === 0) return;
+
     try {
+      // Verificar que el SDK esté cargado
+      if (!(window as any).MercadoPago) {
+        throw new Error('Mercado Pago SDK no está cargado');
+      }
+
+      // Obtener datos de pago del backend
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: { items: state.items }
       });
 
       if (error) throw error;
 
-      // Inicializar Mercado Pago con Checkout API
+      // Inicializar Mercado Pago
       const mp = new (window as any).MercadoPago(MP_PUBLIC_KEY, {
         locale: 'es-CO'
       });
 
-      // Crear el payment con los datos retornados
-      const payment = await mp.checkout({
-        preference: {
-          items: data.items.map((item: any) => ({
-            title: item.name,
-            quantity: item.quantity,
-            unit_price: item.price,
-            currency_id: 'COP'
-          })),
+      // Limpiar container anterior
+      const container = document.getElementById('mercadopago-checkout');
+      if (container) {
+        container.innerHTML = '';
+      }
+
+      // Crear Payment Brick
+      const bricks = mp.bricks();
+      await bricks.create('payment', 'mercadopago-checkout', {
+        initialization: {
+          amount: data.amount,
           payer: {
             email: data.payer_email
+          }
+        },
+        customization: {
+          paymentMethods: {
+            creditCard: 'all',
+            debitCard: 'all'
+          }
+        },
+        callbacks: {
+          onReady: () => {
+            console.log('Payment Brick está listo');
           },
-          external_reference: data.external_reference
+          onSubmit: async ({ selectedPaymentMethod, formData }: any) => {
+            return await processPayment(formData, selectedPaymentMethod, data);
+          },
+          onError: (error: any) => {
+            console.error('Error en Payment Brick:', error);
+            toast({
+              title: 'Error',
+              description: 'Error en el formulario de pago',
+              variant: 'destructive'
+            });
+          }
         }
       });
 
-      // Procesar el pago
-      if (payment.status === 'approved') {
+      setPaymentFormInitialized(true);
+    } catch (error: any) {
+      console.error('Error inicializando formulario de pago:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudo cargar el formulario de pago',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const processPayment = async (formData: any, selectedPaymentMethod: any, paymentData: any) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('process-payment', {
+        body: {
+          ...formData,
+          payment_method_id: selectedPaymentMethod,
+          transaction_amount: paymentData.amount,
+          description: paymentData.description,
+          external_reference: paymentData.external_reference,
+          items: state.items
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.status === 'approved') {
         clearCart();
         toast({
           title: 'Pago exitoso',
           description: 'Tu pago ha sido procesado correctamente.'
         });
+        // Redirigir a página de éxito
+        window.location.href = `/payment/success?payment_id=${data.id}&status=${data.status}`;
+      } else if (data.status === 'pending') {
+        toast({
+          title: 'Pago pendiente',
+          description: 'Tu pago está siendo procesado. Te notificaremos cuando esté listo.'
+        });
+      } else {
+        throw new Error(data.status_detail || 'Pago rechazado');
       }
+
+      return { status: 'success' };
     } catch (error: any) {
-      console.error('Error creating payment:', error);
+      console.error('Error procesando pago:', error);
       toast({
-        title: 'Error',
-        description: 'No se pudo procesar el pago. Inténtalo de nuevo.',
+        title: 'Error en el pago',
+        description: error.message || 'No se pudo procesar el pago',
         variant: 'destructive'
       });
+      return { status: 'error', message: error.message };
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCheckout = async () => {
+    if (state.items.length === 0) return;
+    await initializePaymentForm();
   };
 
   if (state.items.length === 0) {
@@ -145,21 +217,32 @@ export const CartContents = () => {
         </div>
         
         <div className="space-y-2">
+          {!paymentFormInitialized ? (
+            <Button 
+              onClick={handleCheckout} 
+              disabled={loading || state.items.length === 0}
+              className="w-full"
+            >
+              {loading ? 'Cargando...' : 'Proceder al Pago'}
+            </Button>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground text-center">
+                Completa los datos de tu tarjeta para finalizar la compra
+              </p>
+              <div 
+                id="mercadopago-checkout" 
+                className="min-h-[300px] p-4 border rounded-lg"
+              />
+            </div>
+          )}
           <Button 
-            onClick={handleCheckout}
-            disabled={loading || state.items.length === 0}
-            className="w-full"
-          >
-            {loading ? 'Procesando...' : 'Pagar con Mercado Pago'}
-          </Button>
-          <Button 
+            onClick={clearCart} 
             variant="outline" 
-            onClick={clearCart}
             className="w-full"
           >
             Vaciar Carrito
           </Button>
-          <div id="mercadopago-checkout"></div>
         </div>
       </div>
     </div>
