@@ -59,46 +59,31 @@ serve(async (req) => {
       currency_id: 'ARS'
     }))
 
-    // Crear preferencia en Mercado Pago
-    const preference = {
-      items: mpItems,
+    // Crear payment con Checkout API
+    const payment = {
+      transaction_amount: items.reduce((total, item) => total + (item.price * item.quantity), 0),
+      description: `Compra de ${items.length} producto(s)`,
+      payment_method_id: 'visa', // Se actualizará desde el frontend
       payer: {
         email: user.email
       },
-      back_urls: {
-        success: `${req.headers.get('origin')}/payment/success`,
-        failure: `${req.headers.get('origin')}/payment/failure`,
-        pending: `${req.headers.get('origin')}/payment/pending`
-      },
-      auto_return: 'approved',
-      external_reference: user.id, // Para identificar al usuario
-      notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/payment-webhook`
+      external_reference: user.id,
+      notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/payment-webhook`,
+      metadata: {
+        items: JSON.stringify(items)
+      }
     }
 
-    console.log('Creating preference with items:', mpItems)
+    console.log('Creating payment with amount:', payment.transaction_amount)
 
-    const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(preference)
-    })
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('MercadoPago API error:', errorText)
-      throw new Error(`Error de Mercado Pago: ${response.status}`)
-    }
-
-    const data = await response.json()
-    console.log('MercadoPago preference created:', data.id)
-
+    // Para Checkout API, retornamos la información necesaria para el frontend
     return new Response(
       JSON.stringify({ 
-        preference_id: data.id,
-        init_point: data.init_point 
+        amount: payment.transaction_amount,
+        description: payment.description,
+        payer_email: user.email,
+        external_reference: user.id,
+        items: items
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -33,8 +33,35 @@ export const CartContents = () => {
 
       if (error) throw error;
 
-      // Redirigir a Mercado Pago
-      window.location.href = data.init_point;
+      // Inicializar Mercado Pago con Checkout API
+      const mp = new (window as any).MercadoPago(MP_PUBLIC_KEY, {
+        locale: 'es-CO'
+      });
+
+      // Crear el payment con los datos retornados
+      const payment = await mp.checkout({
+        preference: {
+          items: data.items.map((item: any) => ({
+            title: item.name,
+            quantity: item.quantity,
+            unit_price: item.price,
+            currency_id: 'COP'
+          })),
+          payer: {
+            email: data.payer_email
+          },
+          external_reference: data.external_reference
+        }
+      });
+
+      // Procesar el pago
+      if (payment.status === 'approved') {
+        clearCart();
+        toast({
+          title: 'Pago exitoso',
+          description: 'Tu pago ha sido procesado correctamente.'
+        });
+      }
     } catch (error: any) {
       console.error('Error creating payment:', error);
       toast({
@@ -132,6 +159,7 @@ export const CartContents = () => {
           >
             Vaciar Carrito
           </Button>
+          <div id="mercadopago-checkout"></div>
         </div>
       </div>
     </div>
