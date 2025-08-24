@@ -56,7 +56,7 @@ serve(async (req) => {
       title: item.name,
       quantity: item.quantity,
       unit_price: item.price,
-      currency_id: 'ARS'
+      currency_id: 'COP'
     }))
 
     // Preparar datos para Checkout API (Payment Brick)
