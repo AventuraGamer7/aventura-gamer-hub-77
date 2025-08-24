@@ -32,17 +32,30 @@ export const CartContents = () => {
         throw new Error('Mercado Pago SDK no está cargado');
       }
 
+      console.log('Iniciando llamada a create-payment con items:', state.items);
+
       // Obtener datos de pago del backend
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: { items: state.items }
       });
 
-      if (error) throw error;
+      console.log('Respuesta de create-payment:', { data, error });
+
+      if (error) {
+        console.error('Error en create-payment:', error);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('No se recibieron datos del servidor');
+      }
 
       // Inicializar Mercado Pago
       const mp = new (window as any).MercadoPago(MP_PUBLIC_KEY, {
         locale: 'es-CO'
       });
+
+      console.log('MercadoPago inicializado con public key:', MP_PUBLIC_KEY);
 
       // Limpiar container anterior
       const container = document.getElementById('mercadopago-checkout');
@@ -52,6 +65,8 @@ export const CartContents = () => {
 
       // Crear Payment Brick
       const bricks = mp.bricks();
+      console.log('Creando Payment Brick con amount:', data.amount);
+      
       await bricks.create('payment', 'mercadopago-checkout', {
         initialization: {
           amount: data.amount,
@@ -70,6 +85,7 @@ export const CartContents = () => {
             console.log('Payment Brick está listo');
           },
           onSubmit: async ({ selectedPaymentMethod, formData }: any) => {
+            console.log('Enviando pago:', { selectedPaymentMethod, formData });
             return await processPayment(formData, selectedPaymentMethod, data);
           },
           onError: (error: any) => {
@@ -84,11 +100,12 @@ export const CartContents = () => {
       });
 
       setPaymentFormInitialized(true);
+      console.log('Payment Brick inicializado correctamente');
     } catch (error: any) {
       console.error('Error inicializando formulario de pago:', error);
       toast({
         title: 'Error',
-        description: 'No se pudo cargar el formulario de pago',
+        description: error.message || 'No se pudo cargar el formulario de pago',
         variant: 'destructive'
       });
     }
