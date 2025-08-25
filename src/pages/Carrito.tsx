@@ -1,7 +1,9 @@
 import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, MessageCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
@@ -18,6 +20,11 @@ export default function Carrito() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [paymentFormInitialized, setPaymentFormInitialized] = useState(false);
+  const [shippingData, setShippingData] = useState({
+    name: '',
+    address: '',
+    phone: ''
+  });
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -178,6 +185,32 @@ export default function Carrito() {
     setPaymentFormInitialized(true);
   };
 
+  const handleWhatsAppContact = () => {
+    const itemsList = state.items.map(item => 
+      `• ${item.name} (${item.quantity}x) - ${formatPrice(item.price)}`
+    ).join('\n');
+    
+    const shippingInfo = `
+📍 Datos de envío:
+• Nombre: ${shippingData.name || 'No especificado'}
+• Dirección: ${shippingData.address || 'No especificada'}
+• Teléfono: ${shippingData.phone || 'No especificado'}`;
+
+    const message = `¡Hola! 👋 Me interesa realizar esta compra:
+
+🛍️ Productos:
+${itemsList}
+
+💰 Total: ${formatPrice(state.total)}
+${shippingInfo}
+
+¿Pueden ayudarme con el proceso de compra?`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/573505138557?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -261,8 +294,65 @@ export default function Carrito() {
                 ))}
               </div>
 
-              {/* Resumen y pago */}
+              {/* Datos de envío */}
               <div className="space-y-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-semibold mb-4">Datos de envío</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="name">Nombre completo</Label>
+                        <Input
+                          id="name"
+                          type="text"
+                          placeholder="Tu nombre completo"
+                          value={shippingData.name}
+                          onChange={(e) => setShippingData({...shippingData, name: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="address">Dirección de envío</Label>
+                        <Input
+                          id="address"
+                          type="text"
+                          placeholder="Dirección completa con barrio y ciudad"
+                          value={shippingData.address}
+                          onChange={(e) => setShippingData({...shippingData, address: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Número de celular</Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          placeholder="Tu número de celular"
+                          value={shippingData.phone}
+                          onChange={(e) => setShippingData({...shippingData, phone: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Métodos de pago */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-semibold mb-4">Método de pago</h3>
+                    <p className="text-muted-foreground mb-4">
+                      ¿Deseas pagar en efectivo bancolombia o contra entrega?
+                    </p>
+                    <Button 
+                      onClick={handleWhatsAppContact}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white mb-4"
+                      size="lg"
+                    >
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      ¡Contáctanos directamente! 📱
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Resumen del pedido */}
                 <Card>
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold mb-4">Resumen del pedido</h3>
