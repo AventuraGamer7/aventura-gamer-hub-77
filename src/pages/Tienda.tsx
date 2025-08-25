@@ -49,11 +49,6 @@ const Tienda = () => {
         {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <Badge variant="destructive">Agotado</Badge>
           </div>}
-              {product.badge_text && (
-                <Badge variant={product.badge_color as any} className="absolute -top-1 -left-1 text-sm px-3 py-1 animate-[pulse_1.5s_ease-in-out_infinite] transform -rotate-12 origin-top-left shadow-lg scale-110 hover:scale-125 transition-transform duration-300 z-50">
-                  {product.badge_text}
-                </Badge>
-              )}
       </div>
       
       <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
@@ -109,6 +104,15 @@ const Tienda = () => {
             {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
           </Button>
         </div>
+        
+        {/* Badge en la parte inferior para mejor visibilidad */}
+        {product.badge_text && (
+          <div className="flex justify-center mt-3">
+            <Badge variant={product.badge_color as any} className="text-sm px-4 py-2 animate-[pulse_1.5s_ease-in-out_infinite] shadow-lg hover:scale-105 transition-transform duration-300">
+              {product.badge_text}
+            </Badge>
+          </div>
+        )}
       </CardContent>
     </Card>;
   return <div className="min-h-screen bg-background">
