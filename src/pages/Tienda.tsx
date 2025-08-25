@@ -10,43 +10,28 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  ShoppingCart, 
-  Star, 
-  Package,
-  Truck,
-  CreditCard,
-  Crown,
-  Filter,
-  Search,
-  Grid,
-  List
-} from 'lucide-react';
-
+import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List } from 'lucide-react';
 const Tienda = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
-  const { products, loading, error } = useProducts();
-  const { addItem } = useCart();
-  const { toast } = useToast();
+  const {
+    products,
+    loading,
+    error
+  } = useProducts();
+  const {
+    addItem
+  } = useCart();
+  const {
+    toast
+  } = useToast();
 
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
 
   // Filter products by category
-  const filteredProducts = selectedCategory === 'Todos' 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
-
-  const wholesaleFeatures = [
-    'Precios especiales mayoristas',
-    'Envíos gratuitos en pedidos >$200.000',
-    'Acceso prioritario a nuevos productos',
-    'Soporte técnico especializado',
-    'Descuentos progresivos por volumen',
-    'Facturación empresarial'
-  ];
-
+  const filteredProducts = selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory);
+  const wholesaleFeatures = ['Precios especiales mayoristas', 'Envíos gratuitos en pedidos >$200.000', 'Acceso prioritario a nuevos productos', 'Soporte técnico especializado', 'Descuentos progresivos por volumen', 'Facturación empresarial'];
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -54,20 +39,16 @@ const Tienda = () => {
       minimumFractionDigits: 0
     }).format(price);
   };
-
-  const ProductCard = ({ product }: { product: typeof products[0] }) => (
-    <Card className="card-gaming border-primary/20 overflow-hidden group">
+  const ProductCard = ({
+    product
+  }: {
+    product: typeof products[0];
+  }) => <Card className="card-gaming border-primary/20 overflow-hidden group">
       <div className="relative">
-        <img 
-          src={product.image || '/api/placeholder/300/300'} 
-          alt={product.name}
-          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-        {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+        <img src={product.image || '/api/placeholder/300/300'} alt={product.name} className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
+        {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <Badge variant="destructive">Agotado</Badge>
-          </div>
-        )}
+          </div>}
         <Badge className="absolute top-2 left-2 bg-primary/90">Original</Badge>
       </div>
       
@@ -93,42 +74,32 @@ const Tienda = () => {
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-primary">{formatPrice(product.price)}</span>
           </div>
-          {product.stock > 0 && (
-            <p className="text-xs text-muted-foreground">
+          {product.stock > 0 && <p className="text-xs text-muted-foreground">
               {product.stock} unidades disponibles
-            </p>
-          )}
+            </p>}
         </div>
         
         <div className="flex gap-2">
-          <Button 
-            variant="gaming" 
-            className="flex-1" 
-            disabled={product.stock === 0}
-            onClick={() => {
-              addItem({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.image || undefined,
-                type: 'product'
-              });
-              toast({
-                title: 'Producto agregado',
-                description: `${product.name} se agregó al carrito`,
-              });
-            }}
-          >
+          <Button variant="gaming" className="flex-1" disabled={product.stock === 0} onClick={() => {
+          addItem({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image || undefined,
+            type: 'product'
+          });
+          toast({
+            title: 'Producto agregado',
+            description: `${product.name} se agregó al carrito`
+          });
+        }}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
           </Button>
         </div>
       </CardContent>
-    </Card>
-  );
-
-  return (
-    <div className="min-h-screen bg-background">
+    </Card>;
+  return <div className="min-h-screen bg-background">
       <Header />
       <WhatsAppFloat />
       
@@ -138,9 +109,7 @@ const Tienda = () => {
         
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge variant="secondary">
-              🛒 Tienda Gamer
-            </Badge>
+            
             
             <h1 className="text-4xl md:text-6xl font-bold text-glow">
               Repuestos & Consolas
@@ -159,42 +128,30 @@ const Tienda = () => {
           {/* Filters and Controls */}
           <div className="flex flex-col lg:flex-row gap-4 mb-8 items-center justify-between">
             <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full lg:w-auto">
-              <TabsList className="grid w-full lg:w-auto" style={{ gridTemplateColumns: `repeat(${Math.min(categories.length, 5)}, 1fr)` }}>
-                {categories.slice(0, 5).map((category) => (
-                  <TabsTrigger key={category} value={category} className="text-xs">
+              <TabsList className="grid w-full lg:w-auto" style={{
+              gridTemplateColumns: `repeat(${Math.min(categories.length, 5)}, 1fr)`
+            }}>
+                {categories.slice(0, 5).map(category => <TabsTrigger key={category} value={category} className="text-xs">
                     {category}
-                  </TabsTrigger>
-                ))}
+                  </TabsTrigger>)}
               </TabsList>
             </Tabs>
             
             <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-              >
+              <Button variant={viewMode === 'grid' ? 'default' : 'outline'} size="sm" onClick={() => setViewMode('grid')}>
                 <Grid className="h-4 w-4" />
               </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-              >
+              <Button variant={viewMode === 'list' ? 'default' : 'outline'} size="sm" onClick={() => setViewMode('list')}>
                 <List className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
           {/* Products Grid */}
-          {loading ? (
-            <div className={`grid gap-6 ${
-              viewMode === 'grid' 
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-1'
-            }`}>
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i} className="overflow-hidden">
+          {loading ? <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              {Array.from({
+            length: 6
+          }).map((_, i) => <Card key={i} className="overflow-hidden">
                   <Skeleton className="w-full h-48" />
                   <CardHeader>
                     <Skeleton className="h-4 w-3/4" />
@@ -204,33 +161,16 @@ const Tienda = () => {
                     <Skeleton className="h-6 w-1/3 mb-2" />
                     <Skeleton className="h-8 w-full" />
                   </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : error ? (
-            <div className="text-center py-12">
+                </Card>)}
+            </div> : error ? <div className="text-center py-12">
               <p className="text-muted-foreground">Error al cargar productos: {error}</p>
-            </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
+            </div> : filteredProducts.length === 0 ? <div className="text-center py-12">
               <p className="text-muted-foreground">
-                {products.length === 0 
-                  ? 'No hay productos disponibles en este momento.' 
-                  : `No se encontraron productos en la categoría "${selectedCategory}".`
-                }
+                {products.length === 0 ? 'No hay productos disponibles en este momento.' : `No se encontraron productos en la categoría "${selectedCategory}".`}
               </p>
-            </div>
-          ) : (
-            <div className={`grid gap-6 ${
-              viewMode === 'grid' 
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-1'
-            }`}>
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
+            </div> : <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+              {filteredProducts.map(product => <ProductCard key={product.id} product={product} />)}
+            </div>}
         </div>
       </section>
 
@@ -269,12 +209,10 @@ const Tienda = () => {
                 <div className="space-y-4">
                   <h3 className="text-xl font-semibold mb-4">Beneficios Incluidos:</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {wholesaleFeatures.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
+                    {wholesaleFeatures.map((feature, index) => <div key={index} className="flex items-center gap-2 text-sm">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                         {feature}
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
               </div>
@@ -333,8 +271,6 @@ const Tienda = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Tienda;
