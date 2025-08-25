@@ -334,6 +334,16 @@ ${shippingInfo}
                             className="mt-2 h-12"
                           />
                         </div>
+                        <div className="md:col-span-2 mt-4">
+                          <Button 
+                            onClick={handleWhatsAppContact}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white h-12 text-lg"
+                            size="lg"
+                          >
+                            <MessageCircle className="h-5 w-5 mr-2" />
+                            Solicitar mi pedido contraentrega 📦
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
