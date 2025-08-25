@@ -241,98 +241,107 @@ ${shippingInfo}
           ) : (
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Items del carrito */}
-              <div className="lg:col-span-2 space-y-4">
+              <div className="lg:col-span-2 space-y-6">
                 <h2 className="text-xl font-semibold mb-4">Productos en tu carrito</h2>
-                {state.items.map((item) => (
-                  <Card key={item.id}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        {item.image && (
-                          <img 
-                            src={item.image} 
-                            alt={item.name}
-                            className="w-20 h-20 object-cover rounded-md"
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-lg mb-1">{item.name}</h3>
-                          <p className="text-sm text-muted-foreground capitalize mb-2">{item.type}</p>
-                          <p className="font-bold text-xl text-primary">{formatPrice(item.price)}</p>
-                        </div>
-                        <div className="flex flex-col items-end gap-4">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeItem(item.id)}
-                            className="h-8 w-8 text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                          <div className="flex items-center gap-3">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              className="h-9 w-9"
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="w-12 text-center font-medium">{item.quantity}</span>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="h-9 w-9"
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
+                <div className="space-y-4">
+                  {state.items.map((item) => (
+                    <Card key={item.id}>
+                      <CardContent className="p-6">
+                        <div className="flex items-start gap-4">
+                          {item.image && (
+                            <img 
+                              src={item.image} 
+                              alt={item.name}
+                              className="w-20 h-20 object-cover rounded-md"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-lg mb-1">{item.name}</h3>
+                            <p className="text-sm text-muted-foreground capitalize mb-2">{item.type}</p>
+                            <p className="font-bold text-xl text-primary">{formatPrice(item.price)}</p>
                           </div>
+                          <div className="flex flex-col items-end gap-4">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeItem(item.id)}
+                              className="h-8 w-8 text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                            <div className="flex items-center gap-3">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="h-9 w-9"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <span className="w-12 text-center font-medium">{item.quantity}</span>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="h-9 w-9"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Datos de envío - Movido aquí */}
+                <div className="max-w-2xl">
+                  <Card>
+                    <CardContent className="p-8">
+                      <h3 className="text-2xl font-semibold mb-6">Datos de envío</h3>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                          <Label htmlFor="name" className="text-base">Nombre completo</Label>
+                          <Input
+                            id="name"
+                            type="text"
+                            placeholder="Tu nombre completo"
+                            value={shippingData.name}
+                            onChange={(e) => setShippingData({...shippingData, name: e.target.value})}
+                            className="mt-2 h-12"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <Label htmlFor="address" className="text-base">Dirección de envío</Label>
+                          <Input
+                            id="address"
+                            type="text"
+                            placeholder="Dirección completa con barrio y ciudad"
+                            value={shippingData.address}
+                            onChange={(e) => setShippingData({...shippingData, address: e.target.value})}
+                            className="mt-2 h-12"
+                          />
+                        </div>
+                        <div className="md:col-span-1">
+                          <Label htmlFor="phone" className="text-base">Número de celular</Label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="Tu número de celular"
+                            value={shippingData.phone}
+                            onChange={(e) => setShippingData({...shippingData, phone: e.target.value})}
+                            className="mt-2 h-12"
+                          />
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                </div>
               </div>
 
-              {/* Datos de envío */}
+              {/* Sidebar derecho */}
               <div className="space-y-6">
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold mb-4">Datos de envío</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="name">Nombre completo</Label>
-                        <Input
-                          id="name"
-                          type="text"
-                          placeholder="Tu nombre completo"
-                          value={shippingData.name}
-                          onChange={(e) => setShippingData({...shippingData, name: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="address">Dirección de envío</Label>
-                        <Input
-                          id="address"
-                          type="text"
-                          placeholder="Dirección completa con barrio y ciudad"
-                          value={shippingData.address}
-                          onChange={(e) => setShippingData({...shippingData, address: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="phone">Número de celular</Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="Tu número de celular"
-                          value={shippingData.phone}
-                          onChange={(e) => setShippingData({...shippingData, phone: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
 
                 {/* Métodos de pago */}
                 <Card>
