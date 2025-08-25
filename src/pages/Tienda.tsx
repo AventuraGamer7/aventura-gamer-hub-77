@@ -43,8 +43,8 @@ const Tienda = () => {
     product
   }: {
     product: typeof products[0];
-  }) => <Card className="card-gaming border-primary/20 group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40 relative">
-      <div className="relative overflow-hidden rounded-t-lg">
+  }) => <Card className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
+      <div className="relative">
         <img src={product.image || '/api/placeholder/300/300'} alt={product.name} className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110" />
         {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <Badge variant="destructive">Agotado</Badge>
