@@ -20,7 +20,9 @@ const AddProductForm = () => {
     price: '',
     stock: '',
     category: '',
-    image: ''
+    image: '',
+    badge_text: '',
+    badge_color: 'primary'
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -48,11 +50,13 @@ const AddProductForm = () => {
         .insert([
           {
             name: formData.name,
-            description: formData.description,
+            description: formData.description || null,
             price: parseFloat(formData.price),
             stock: parseInt(formData.stock) || 0,
-            category: formData.category,
-            image: formData.image
+            category: formData.category || null,
+            image: formData.image || null,
+            badge_text: formData.badge_text || null,
+            badge_color: formData.badge_color || 'primary'
           }
         ]);
 
@@ -70,7 +74,9 @@ const AddProductForm = () => {
         price: '',
         stock: '',
         category: '',
-        image: ''
+        image: '',
+        badge_text: '',
+        badge_color: 'primary'
       });
       
       setIsOpen(false);
@@ -179,6 +185,35 @@ const AddProductForm = () => {
               onChange={handleInputChange}
               placeholder="https://ejemplo.com/imagen.jpg"
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="badge_text">Texto del Badge (opcional)</Label>
+              <Input
+                id="badge_text"
+                name="badge_text"
+                value={formData.badge_text}
+                onChange={handleInputChange}
+                placeholder="Nuevo, Oferta, Premium..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="badge_color">Color del Badge</Label>
+              <select
+                id="badge_color"
+                name="badge_color"
+                value={formData.badge_color}
+                onChange={(e) => setFormData(prev => ({ ...prev, badge_color: e.target.value }))}
+                className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="primary">Primario (Azul)</option>
+                <option value="secondary">Secundario</option>
+                <option value="destructive">Rojo</option>
+                <option value="outline">Borde</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

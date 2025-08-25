@@ -49,7 +49,11 @@ const Tienda = () => {
         {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <Badge variant="destructive">Agotado</Badge>
           </div>}
-        <Badge className="absolute top-2 left-2 bg-primary/90">Original</Badge>
+              {product.badge_text && (
+                <Badge variant={product.badge_color as any} className="absolute top-2 left-2">
+                  {product.badge_text}
+                </Badge>
+              )}
       </div>
       
       <CardHeader className="space-y-2">
