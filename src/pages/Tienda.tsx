@@ -50,7 +50,7 @@ const Tienda = () => {
             <Badge variant="destructive">Agotado</Badge>
           </div>}
               {product.badge_text && (
-                <Badge variant={product.badge_color as any} className="absolute -top-1 -left-1 text-sm px-3 py-1 animate-[pulse_1.5s_ease-in-out_infinite] transform -rotate-12 origin-top-left shadow-lg scale-110 hover:scale-125 transition-transform duration-300">
+                <Badge variant={product.badge_color as any} className="absolute -top-1 -left-1 text-sm px-3 py-1 animate-[pulse_1.5s_ease-in-out_infinite] transform -rotate-12 origin-top-left shadow-lg scale-110 hover:scale-125 transition-transform duration-300 z-50">
                   {product.badge_text}
                 </Badge>
               )}
@@ -76,8 +76,7 @@ const Tienda = () => {
         <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
           <div className="space-y-2 pt-2 border-t border-muted/20">
             <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
-            <p className="text-xs text-muted-foreground">✓ Envío gratis en pedidos +$50,000</p>
-            <p className="text-xs text-muted-foreground">✓ Soporte técnico especializado</p>
+            <p className="text-xs text-muted-foreground">✓ Envíos a nivel nacional</p>
           </div>
         </div>
       </CardHeader>
