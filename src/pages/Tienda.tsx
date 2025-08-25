@@ -153,55 +153,6 @@ const Tienda = () => {
         </div>
       </section>
 
-      {/* Wholesale Banner */}
-      <section className="py-16 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4">
-          <Card className="card-gaming border-primary/30 overflow-hidden">
-            <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div className="space-y-6">
-                  <Badge className="bg-primary/30 text-primary border-primary/50">
-                    <Crown className="mr-2 h-4 w-4" />
-                    Suscripción Mayorista
-                  </Badge>
-                  
-                  <h2 className="text-3xl md:text-4xl font-bold text-glow">
-                    Acceso VIP a Precios Mayoristas
-                  </h2>
-                  
-                  <p className="text-lg text-muted-foreground">
-                    Únete a nuestro programa mayorista y obtén acceso exclusivo a precios especiales, 
-                    envíos gratuitos y soporte prioritario.
-                  </p>
-                  
-                  <div className="flex gap-4">
-                    <Button variant="hero" size="lg">
-                      <Crown className="mr-2 h-5 w-5" />
-                      Suscribirse Ahora
-                    </Button>
-                    <Button variant="gaming-secondary" size="lg">
-                      Más Información
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold mb-4">Beneficios Incluidos:</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {wholesaleFeatures.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
-
       {/* Products Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -280,6 +231,55 @@ const Tienda = () => {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Wholesale Banner */}
+      <section className="py-16 bg-gradient-to-r from-primary/10 to-secondary/10">
+        <div className="container mx-auto px-4">
+          <Card className="card-gaming border-primary/30 overflow-hidden">
+            <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-6">
+                  <Badge className="bg-primary/30 text-primary border-primary/50">
+                    <Crown className="mr-2 h-4 w-4" />
+                    Suscripción Mayorista
+                  </Badge>
+                  
+                  <h2 className="text-3xl md:text-4xl font-bold text-glow">
+                    Acceso VIP a Precios Mayoristas
+                  </h2>
+                  
+                  <p className="text-lg text-muted-foreground">
+                    Únete a nuestro programa mayorista y obtén acceso exclusivo a precios especiales, 
+                    envíos gratuitos y soporte prioritario.
+                  </p>
+                  
+                  <div className="flex gap-4">
+                    <Button variant="hero" size="lg">
+                      <Crown className="mr-2 h-5 w-5" />
+                      Suscribirse Ahora
+                    </Button>
+                    <Button variant="gaming-secondary" size="lg">
+                      Más Información
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold mb-4">Beneficios Incluidos:</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {wholesaleFeatures.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 text-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
       </section>
 
