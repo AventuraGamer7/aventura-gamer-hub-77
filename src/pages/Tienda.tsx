@@ -43,20 +43,20 @@ const Tienda = () => {
     product
   }: {
     product: typeof products[0];
-  }) => <Card className="card-gaming border-primary/20 overflow-hidden group">
+  }) => <Card className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
       <div className="relative">
-        <img src={product.image || '/api/placeholder/300/300'} alt={product.name} className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
+        <img src={product.image || '/api/placeholder/300/300'} alt={product.name} className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110" />
         {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <Badge variant="destructive">Agotado</Badge>
           </div>}
               {product.badge_text && (
-                <Badge variant={product.badge_color as any} className="absolute -top-1 -left-1 animate-pulse transform -rotate-12 origin-top-left shadow-lg">
+                <Badge variant={product.badge_color as any} className="absolute -top-1 -left-1 text-sm px-3 py-1 animate-[pulse_1.5s_ease-in-out_infinite] transform -rotate-12 origin-top-left shadow-lg scale-110 hover:scale-125 transition-transform duration-300">
                   {product.badge_text}
                 </Badge>
               )}
       </div>
       
-      <CardHeader className="space-y-2">
+      <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
         <div className="flex items-start justify-between">
           <Badge variant="secondary" className="text-xs">
             {product.category || 'General'}
@@ -67,10 +67,19 @@ const Tienda = () => {
             <span className="text-muted-foreground">(156)</span>
           </div>
         </div>
-        <CardTitle className="text-lg text-neon">{product.name}</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">
+        <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{product.name}</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
           {product.description || 'Sin descripción disponible'}
         </CardDescription>
+        
+        {/* Expanded content on hover */}
+        <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+          <div className="space-y-2 pt-2 border-t border-muted/20">
+            <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
+            <p className="text-xs text-muted-foreground">✓ Envío gratis en pedidos +$50,000</p>
+            <p className="text-xs text-muted-foreground">✓ Soporte técnico especializado</p>
+          </div>
+        </div>
       </CardHeader>
       
       <CardContent className="space-y-4">
