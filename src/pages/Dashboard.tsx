@@ -465,14 +465,6 @@ const Dashboard = () => {
         {/* Bottom Actions */}
         <div className="p-4 border-t border-border/50 space-y-2">
           <Button
-            variant="outline"
-            onClick={() => navigate('/')}
-            className="w-full justify-start border-border/50"
-          >
-            <Home className="mr-2 h-4 w-4" />
-            Volver al Sitio
-          </Button>
-          <Button
             variant="destructive"
             onClick={handleLogout}
             className="w-full justify-start bg-destructive/20 border-destructive/30 text-destructive hover:bg-destructive/30"
@@ -493,6 +485,14 @@ const Dashboard = () => {
               <p className="text-muted-foreground">Gestiona todos los aspectos de Aventura Gamer desde aquí</p>
             </div>
             <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="border-border/50"
+              >
+                <Home className="mr-2 h-4 w-4" />
+                Volver al Sitio
+              </Button>
               <Badge variant="secondary" className="bg-secondary/20 text-secondary">
                 <Clock className="mr-1 h-3 w-3" />
                 {new Date().toLocaleDateString()}
