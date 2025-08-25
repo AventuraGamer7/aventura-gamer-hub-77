@@ -119,7 +119,7 @@ const Contacto = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {contactMethods.map((method, index) => (
-              <Card key={index} className="card-gaming border-primary/20 text-center glow-hover group">
+              <Card key={index} className="card-gaming border-primary/20 text-center group">
                 <CardContent className="p-8 space-y-6">
                   <div className={`w-16 h-16 mx-auto rounded-full bg-${method.color}/20 flex items-center justify-center text-${method.color}`}>
                     {method.icon}

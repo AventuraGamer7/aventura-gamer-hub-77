@@ -132,7 +132,7 @@ const Cursos = () => {
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {courses.map((course) => (
-                      <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden glow-hover group">
+                      <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
                         {course.cover ? (
                           <div className="relative h-48 overflow-hidden">
                             <img

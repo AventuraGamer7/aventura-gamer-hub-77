@@ -56,7 +56,7 @@ const Tienda = () => {
   };
 
   const ProductCard = ({ product }: { product: typeof products[0] }) => (
-    <Card className="card-gaming border-primary/20 overflow-hidden glow-hover group">
+    <Card className="card-gaming border-primary/20 overflow-hidden group">
       <div className="relative">
         <img 
           src={product.image || '/api/placeholder/300/300'} 
@@ -138,9 +138,8 @@ const Tienda = () => {
         
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <Badge className="bg-gradient-to-r from-primary/20 to-secondary/20 text-primary border border-primary/30 backdrop-blur-sm px-4 py-2 text-sm font-medium glow-hover animate-float">
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Tienda Gamer
+            <Badge variant="secondary">
+              🛒 Tienda Gamer
             </Badge>
             
             <h1 className="text-4xl md:text-6xl font-bold text-glow">

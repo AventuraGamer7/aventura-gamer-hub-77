@@ -341,7 +341,7 @@ const Dashboard = () => {
                 <h3 className="text-lg font-semibold mb-4 text-secondary">Acciones Rápidas</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {quickActions.map((action, index) => (
-                    <Card key={index} className="card-gaming border-primary/20 glow-hover cursor-pointer" onClick={action.action}>
+                    <Card key={index} className="card-gaming border-primary/20 cursor-pointer" onClick={action.action}>
                       <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                           <div className={`p-3 rounded-full ${action.bgColor}`}>

@@ -108,7 +108,7 @@ const Blog = () => {
   ];
 
   const PostCard = ({ post }: { post: typeof posts[0] }) => (
-    <Card className="card-gaming border-primary/20 overflow-hidden glow-hover group">
+    <Card className="card-gaming border-primary/20 overflow-hidden group">
       <div className="relative overflow-hidden">
         <img 
           src={post.image} 
@@ -189,7 +189,7 @@ const Blog = () => {
         <div className="container mx-auto px-4">
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-8 text-center">Artículo Destacado</h2>
-            <Card className="card-gaming border-primary/20 overflow-hidden glow-hover group">
+            <Card className="card-gaming border-primary/20 overflow-hidden group">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative overflow-hidden">
                   <img 

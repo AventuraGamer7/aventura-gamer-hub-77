@@ -163,7 +163,7 @@ const Index = () => {
                         
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-                          <Button variant="gaming" size="xl" className="text-lg px-8 py-4 glow-hover" onClick={() => handleSlideNavigation(slide.button_url)}>
+                          <Button variant="gaming" size="xl" className="text-lg px-8 py-4" onClick={() => handleSlideNavigation(slide.button_url)}>
                             <Play className="mr-2 h-6 w-6" />
                             {slide.button_text}
                             <ChevronRight className="ml-2 h-6 w-6" />
@@ -223,7 +223,7 @@ const Index = () => {
                 <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
               </CardContent>
             </Card> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.slice(0, 6).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden glow-hover group bg-gradient-to-br from-card to-card/80">
+              {services.slice(0, 6).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
                   {service.image ? <div className="relative h-56 overflow-hidden">
                       <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
@@ -297,7 +297,7 @@ const Index = () => {
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {achievements.map((achievement, index) => <Card key={index} className="card-gaming border-primary/20 p-6 glow-hover group">
+                {achievements.map((achievement, index) => <Card key={index} className="card-gaming border-primary/20 p-6 group">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
                         {achievement.icon}
@@ -324,7 +324,7 @@ const Index = () => {
             <div className="lg:pl-8 animate-fade-in">
               <div className="relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-xl" />
-                <div className="relative bg-card/80 backdrop-blur-sm rounded-2xl border border-border/50 p-8">
+                <div className="relative bg-card/80 rounded-2xl border border-border/50 p-8">
                   <GamificationPanel />
                 </div>
               </div>
@@ -339,7 +339,7 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* DIY Challenge Module */}
-            <Card className="card-gaming border-secondary/30 overflow-hidden group glow-hover">
+            <Card className="card-gaming border-secondary/30 overflow-hidden group">
               <div className="relative h-64 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
                 <div className="absolute inset-0 bg-[url('/api/placeholder/600/300')] bg-cover bg-center opacity-20" />
                 <div className="relative z-10 text-center space-y-4 p-8">
@@ -368,7 +368,7 @@ const Index = () => {
             </Card>
 
             {/* Latest Courses Module */}
-            <Card className="card-gaming border-primary/30 overflow-hidden group glow-hover">
+            <Card className="card-gaming border-primary/30 overflow-hidden group">
               <div className="relative h-64 bg-gradient-to-br from-primary/20 to-gaming-blue/20 flex items-center justify-center">
                 <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{
                 backgroundImage: `url(${coursesImage})`
@@ -426,7 +426,7 @@ const Index = () => {
 
             {/* Contact Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              <Card className="card-gaming border-primary/30 text-center glow-hover group">
+              <Card className="card-gaming border-primary/30 text-center group">
                 <CardContent className="p-8">
                   <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:from-primary/30 group-hover:to-primary/20 transition-all">
                     <MapPin className="h-8 w-8 text-primary" />
@@ -443,7 +443,7 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="card-gaming border-secondary/30 text-center glow-hover group">
+              <Card className="card-gaming border-secondary/30 text-center group">
                 <CardContent className="p-8">
                   <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center group-hover:from-secondary/30 group-hover:to-secondary/20 transition-all">
                     <Phone className="h-8 w-8 text-secondary" />
@@ -460,7 +460,7 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="card-gaming border-gaming-orange/30 text-center glow-hover group">
+              <Card className="card-gaming border-gaming-orange/30 text-center group">
                 <CardContent className="p-8">
                   <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-gaming-orange/20 to-gaming-orange/10 flex items-center justify-center group-hover:from-gaming-orange/30 group-hover:to-gaming-orange/20 transition-all">
                     <Clock className="h-8 w-8 text-gaming-orange" />
