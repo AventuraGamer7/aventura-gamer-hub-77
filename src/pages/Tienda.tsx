@@ -50,7 +50,7 @@ const Tienda = () => {
             <Badge variant="destructive">Agotado</Badge>
           </div>}
               {product.badge_text && (
-                <Badge variant={product.badge_color as any} className="absolute top-2 left-2 animate-pulse">
+                <Badge variant={product.badge_color as any} className="absolute -top-1 -left-1 animate-pulse transform -rotate-12 origin-top-left shadow-lg">
                   {product.badge_text}
                 </Badge>
               )}
