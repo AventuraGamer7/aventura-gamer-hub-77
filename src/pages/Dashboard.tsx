@@ -4,6 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { 
+  Sidebar, 
+  SidebarProvider, 
+  SidebarContent, 
+  SidebarTrigger, 
+  SidebarInset, 
+  SidebarMenu, 
+  SidebarMenuItem, 
+  SidebarMenuButton, 
+  SidebarGroup, 
+  SidebarGroupContent, 
+  SidebarGroupLabel, 
+  useSidebar 
+} from '@/components/ui/sidebar';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/useProfile';
@@ -16,6 +30,7 @@ import AddCourseForm from '@/components/AddCourseForm';
 import AddServiceForm from '@/components/AddServiceForm';
 import ManagementPanel from '@/components/ManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
+import { AppSidebar } from '@/components/AppSidebar';
 import { 
   LogOut, 
   User, 
@@ -394,152 +409,82 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-card border-r border-border/50 flex flex-col">
-        {/* Logo */}
-        <div className="p-6 border-b border-border/50">
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-              🎮
-            </Badge>
-            <button 
-              onClick={() => navigate('/')} 
-              className="font-bold text-neon hover:text-primary transition-colors"
-            >
-              Aventura Gamer
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">Panel de Administración</p>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex-1 p-4">
-          <div className="space-y-6">
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Gestión Principal
-              </p>
-              <div className="space-y-1">
-                {sidebarItems.filter(item => item.section === 'Gestión Principal').map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-primary/20 text-primary border border-primary/30'
-                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                    }`}
-                  >
-                    {item.icon}
-                    {item.title}
-                  </button>
-                ))}
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen bg-background flex w-full">
+        <AppSidebar 
+          sidebarItems={sidebarItems}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          handleLogout={handleLogout}
+          navigate={navigate}
+        />
+        
+        <SidebarInset className="flex-1">
+          {/* Header */}
+          <header className="bg-card/30 border-b border-border/50 p-6 flex items-center gap-4">
+            <SidebarTrigger className="h-8 w-8" />
+            <div className="flex items-center justify-between w-full">
+              <div>
+                <h1 className="text-2xl font-bold text-glow">Panel de Control</h1>
+                <p className="text-muted-foreground">Gestiona todos los aspectos de Aventura Gamer desde aquí</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/')}
+                  className="border-border/50"
+                >
+                  <Home className="mr-2 h-4 w-4" />
+                  Volver al Sitio
+                </Button>
+                <Badge variant="secondary" className="bg-secondary/20 text-secondary">
+                  <Clock className="mr-1 h-3 w-3" />
+                  {new Date().toLocaleDateString()}
+                </Badge>
               </div>
             </div>
+          </header>
 
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Otros
-              </p>
-              <div className="space-y-1">
-                {sidebarItems.filter(item => item.section === 'Otros').map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-primary/20 text-primary border border-primary/30'
-                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                    }`}
-                  >
-                    {item.icon}
-                    {item.title}
-                  </button>
-                ))}
+          {/* Content Area */}
+          <main className="flex-1 p-6 overflow-auto">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+                {/* Main Content */}
+                <div className="xl:col-span-3">
+                  {renderMainContent()}
+                </div>
+
+                {/* Sidebar Content */}
+                <div className="space-y-6">
+                  <GamificationPanel />
+                  
+                  {/* Quick Stats */}
+                  <Card className="card-gaming border-secondary/20">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Resumen</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Productos activos</span>
+                        <span className="font-bold">{products.length}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Cursos disponibles</span>
+                        <span className="font-bold">{courses.length}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
+                        <span className="font-bold">{services.length}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Bottom Actions */}
-        <div className="p-4 border-t border-border/50 space-y-2">
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            className="w-full justify-start bg-destructive/20 border-destructive/30 text-destructive hover:bg-destructive/30"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Cerrar Sesión
-          </Button>
-        </div>
+          </main>
+        </SidebarInset>
       </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-card/30 border-b border-border/50 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-glow">Panel de Control</h1>
-              <p className="text-muted-foreground">Gestiona todos los aspectos de Aventura Gamer desde aquí</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate('/')}
-                className="border-border/50"
-              >
-                <Home className="mr-2 h-4 w-4" />
-                Volver al Sitio
-              </Button>
-              <Badge variant="secondary" className="bg-secondary/20 text-secondary">
-                <Clock className="mr-1 h-3 w-3" />
-                {new Date().toLocaleDateString()}
-              </Badge>
-            </div>
-          </div>
-        </header>
-
-        {/* Content Area */}
-        <main className="flex-1 p-6 overflow-auto">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-              {/* Main Content */}
-              <div className="xl:col-span-3">
-                {renderMainContent()}
-              </div>
-
-              {/* Sidebar Content */}
-              <div className="space-y-6">
-                <GamificationPanel />
-                
-                {/* Quick Stats */}
-                <Card className="card-gaming border-secondary/20">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Resumen</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Productos activos</span>
-                      <span className="font-bold">{products.length}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Cursos disponibles</span>
-                      <span className="font-bold">{courses.length}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
-                      <span className="font-bold">{services.length}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
