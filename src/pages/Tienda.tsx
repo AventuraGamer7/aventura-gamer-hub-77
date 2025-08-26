@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,9 @@ import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List } from 'lucide-react';
 const Tienda = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
   const {
     products,
     loading,
@@ -28,6 +31,25 @@ const Tienda = () => {
 
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  
+  // Get selected category from URL or default to 'Todos'
+  const filterParam = searchParams.get('filter');
+  const selectedCategory = filterParam && categories.includes(filterParam) ? filterParam : 'Todos';
+
+  // Update URL when category changes
+  const handleCategoryChange = (category: string) => {
+    if (category === 'Todos') {
+      // Remove filter param for 'Todos'
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('filter');
+      setSearchParams(newSearchParams);
+    } else {
+      // Set filter param for specific category
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('filter', category);
+      setSearchParams(newSearchParams);
+    }
+  };
 
   // Filter products by category
   const filteredProducts = selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory);
@@ -143,7 +165,7 @@ const Tienda = () => {
         <div className="container mx-auto px-4">
           {/* Filters and Controls */}
           <div className="flex flex-col lg:flex-row gap-4 mb-8 items-center justify-between">
-            <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full lg:w-auto">
+            <Tabs value={selectedCategory} onValueChange={handleCategoryChange} className="w-full lg:w-auto">
               <TabsList className="grid w-full lg:w-auto" style={{
               gridTemplateColumns: `repeat(${Math.min(categories.length, 5)}, 1fr)`
             }}>
