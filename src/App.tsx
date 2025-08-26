@@ -7,9 +7,11 @@ import { AuthProvider } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
 import { TechnicalServicesProvider } from "./hooks/useTechnicalServices";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RoleBasedRoute from "./components/RoleBasedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import UserManagement from "./pages/UserManagement";
 import Servicios from "./pages/Servicios";
 import Cursos from "./pages/Cursos";
 import Tienda from "./pages/Tienda";
@@ -41,6 +43,16 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard/usuarios" 
+                element={
+                  <ProtectedRoute>
+                    <RoleBasedRoute allowedRoles={['admin', 'superadmin', 'employee']}>
+                      <UserManagement />
+                    </RoleBasedRoute>
                   </ProtectedRoute>
                 } 
               />

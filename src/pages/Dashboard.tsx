@@ -188,12 +188,13 @@ const Dashboard = () => {
       icon: <Wrench className="h-5 w-5" />,
       section: 'Gestión Principal'
     },
-    {
+    // Solo mostrar usuarios para roles administrativos
+    ...(profile && ['admin', 'superadmin', 'employee'].includes(profile.role) ? [{
       id: 'users',
       title: 'Usuarios',
       icon: <Users className="h-5 w-5" />,
       section: 'Otros'
-    },
+    }] : []),
     {
       id: 'config',
       title: 'Configuración',
@@ -503,15 +504,9 @@ const Dashboard = () => {
           </div>
         );
       case 'users':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-glow">Gestión de Usuarios</h2>
-              <p className="text-muted-foreground">Administra los usuarios del sistema y sus órdenes de servicio</p>
-            </div>
-            <GestionUsuarios />
-          </div>
-        );
+        // Navegar a la página dedicada de gestión de usuarios
+        navigate('/dashboard/usuarios');
+        return null;
       case 'config':
         return (
           <div className="space-y-6">
