@@ -227,11 +227,6 @@ const Index = () => {
                   {service.image ? <div className="relative h-56 overflow-hidden">
                       <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
-                      <div className="absolute top-4 right-4">
-                        <Badge variant="secondary" className="bg-primary/90 text-primary-foreground border-none">
-                          Pro Service
-                        </Badge>
-                      </div>
                     </div> : <div className="relative h-56 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
                       <Wrench className="h-16 w-16 text-primary/40" />
                     </div>}
@@ -249,7 +244,7 @@ const Index = () => {
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
                         <span className="text-2xl font-bold text-secondary">
-                          ${service.price.toFixed(2)}
+                          ${service.price.toLocaleString('es-CO')} COP
                         </span>
                         <span className="text-xs text-muted-foreground">
                           Precio base
@@ -257,7 +252,7 @@ const Index = () => {
                       </div>
                       <Button variant="gaming" size="sm" className="px-6">
                         <Play className="mr-2 h-4 w-4" />
-                        Activar
+                        Solicitar
                       </Button>
                     </div>
                   </CardContent>
