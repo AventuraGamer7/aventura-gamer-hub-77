@@ -147,12 +147,12 @@ const Index = () => {
                         </div>
                         
                         {/* Main Title */}
-                        <h1 className="text-5xl text-glow leading-tight font-bold lg:text-4xl">
+                        <h1 className="text-5xl text-glow leading-tight font-bold lg:text-2xl">
                           {slide.title}
                         </h1>
                         
                         {/* Subtitle */}
-                        <p className="text-2xl text-secondary animate-pulse-neon md:text-2xl font-medium">
+                        <p className="text-2xl text-secondary animate-pulse-neon font-medium md:text-xl">
                           {slide.subtitle}
                         </p>
                         
