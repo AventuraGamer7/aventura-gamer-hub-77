@@ -1,17 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarMenu, 
-  SidebarMenuItem, 
-  SidebarMenuButton, 
-  SidebarGroup, 
-  SidebarGroupContent, 
-  SidebarGroupLabel, 
-  useSidebar 
-} from '@/components/ui/sidebar';
 import { LogOut } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -25,6 +14,7 @@ interface AppSidebarProps {
   setActiveSection: (section: string) => void;
   handleLogout: () => void;
   navigate: (path: string) => void;
+  isCollapsed: boolean;
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({
@@ -32,100 +22,98 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   activeSection,
   setActiveSection,
   handleLogout,
-  navigate
+  navigate,
+  isCollapsed
 }) => {
-  const { open } = useSidebar();
-
   return (
-    <Sidebar variant="inset" collapsible="icon">
-      <SidebarContent>
-        {/* Logo */}
-        <div className={`p-6 border-b border-border/50 ${!open ? 'px-3' : ''}`}>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-              🎮
-            </Badge>
-            {open && (
-              <>
-                <button 
-                  onClick={() => navigate('/')} 
-                  className="font-bold text-neon hover:text-primary transition-colors"
-                >
-                  Aventura Gamer
-                </button>
-              </>
-            )}
-          </div>
-          {open && (
-            <p className="text-xs text-muted-foreground mt-1">Panel de Administración</p>
+    <div className={`${isCollapsed ? 'w-16' : 'w-64'} bg-card border-r border-border/50 flex flex-col transition-all duration-300`}>
+      {/* Logo */}
+      <div className={`p-6 border-b border-border/50 ${isCollapsed ? 'px-3' : ''}`}>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
+            🎮
+          </Badge>
+          {!isCollapsed && (
+            <button 
+              onClick={() => navigate('/')} 
+              className="font-bold text-neon hover:text-primary transition-colors"
+            >
+              Aventura Gamer
+            </button>
           )}
         </div>
+        {!isCollapsed && (
+          <p className="text-xs text-muted-foreground mt-1">Panel de Administración</p>
+        )}
+      </div>
 
-        {/* Navigation */}
-        <div className="flex-1 p-4">
-          <div className="space-y-6">
-            <SidebarGroup>
-              {open && (
-                <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Gestión Principal
-                </SidebarGroupLabel>
-              )}
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {sidebarItems.filter(item => item.section === 'Gestión Principal').map((item) => (
-                    <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton 
-                        onClick={() => setActiveSection(item.id)}
-                        isActive={activeSection === item.id}
-                        className="w-full"
-                      >
-                        {item.icon}
-                        {open && <span>{item.title}</span>}
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+      {/* Navigation */}
+      <div className="flex-1 p-4">
+        <div className="space-y-6">
+          <div>
+            {!isCollapsed && (
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                Gestión Principal
+              </p>
+            )}
+            <div className="space-y-1">
+              {sidebarItems.filter(item => item.section === 'Gestión Principal').map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-primary/20 text-primary border border-primary/30'
+                      : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                  }`}
+                  title={isCollapsed ? item.title : undefined}
+                >
+                  {item.icon}
+                  {!isCollapsed && <span>{item.title}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            <SidebarGroup>
-              {open && (
-                <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Otros
-                </SidebarGroupLabel>
-              )}
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {sidebarItems.filter(item => item.section === 'Otros').map((item) => (
-                    <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton 
-                        onClick={() => setActiveSection(item.id)}
-                        isActive={activeSection === item.id}
-                        className="w-full"
-                      >
-                        {item.icon}
-                        {open && <span>{item.title}</span>}
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+          <div>
+            {!isCollapsed && (
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                Otros
+              </p>
+            )}
+            <div className="space-y-1">
+              {sidebarItems.filter(item => item.section === 'Otros').map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-primary/20 text-primary border border-primary/30'
+                      : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                  }`}
+                  title={isCollapsed ? item.title : undefined}
+                >
+                  {item.icon}
+                  {!isCollapsed && <span>{item.title}</span>}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Actions */}
-        <div className={`p-4 border-t border-border/50 space-y-2 ${!open ? 'px-3' : ''}`}>
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            className={`${!open ? 'w-10 h-10 p-0' : 'w-full'} justify-center bg-destructive/20 border-destructive/30 text-destructive hover:bg-destructive/30`}
-          >
-            <LogOut className={`h-4 w-4 ${!open ? '' : 'mr-2'}`} />
-            {open && 'Cerrar Sesión'}
-          </Button>
-        </div>
-      </SidebarContent>
-    </Sidebar>
+      {/* Bottom Actions */}
+      <div className={`p-4 border-t border-border/50 space-y-2 ${isCollapsed ? 'px-3' : ''}`}>
+        <Button
+          variant="destructive"
+          onClick={handleLogout}
+          className={`${isCollapsed ? 'w-10 h-10 p-0' : 'w-full'} justify-center bg-destructive/20 border-destructive/30 text-destructive hover:bg-destructive/30`}
+          title={isCollapsed ? 'Cerrar Sesión' : undefined}
+        >
+          <LogOut className={`h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
+          {!isCollapsed && 'Cerrar Sesión'}
+        </Button>
+      </div>
+    </div>
   );
 };

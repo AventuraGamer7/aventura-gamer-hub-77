@@ -57,6 +57,7 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const { profile, canCreateContent, isSuperadmin, isAdmin } = useProfile();
@@ -409,82 +410,101 @@ const Dashboard = () => {
   };
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen bg-background flex w-full">
-        <AppSidebar 
-          sidebarItems={sidebarItems}
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-          handleLogout={handleLogout}
-          navigate={navigate}
-        />
-        
-        <SidebarInset className="flex-1">
-          {/* Header */}
-          <header className="bg-card/30 border-b border-border/50 p-6 flex items-center gap-4">
-            <SidebarTrigger className="h-8 w-8" />
-            <div className="flex items-center justify-between w-full">
-              <div>
-                <h1 className="text-2xl font-bold text-glow">Panel de Control</h1>
-                <p className="text-muted-foreground">Gestiona todos los aspectos de Aventura Gamer desde aquí</p>
+    <div className="min-h-screen bg-background flex w-full">
+      <AppSidebar 
+        sidebarItems={sidebarItems}
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+        handleLogout={handleLogout}
+        navigate={navigate}
+        isCollapsed={isCollapsed}
+      />
+      
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="bg-card/30 border-b border-border/50 p-6 flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="h-8 w-8"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </Button>
+          <div className="flex items-center justify-between w-full">
+            <div>
+              <h1 className="text-2xl font-bold text-glow">Panel de Control</h1>
+              <p className="text-muted-foreground">Gestiona todos los aspectos de Aventura Gamer desde aquí</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="border-border/50"
+              >
+                <Home className="mr-2 h-4 w-4" />
+                Volver al Sitio
+              </Button>
+              <Badge variant="secondary" className="bg-secondary/20 text-secondary">
+                <Clock className="mr-1 h-3 w-3" />
+                {new Date().toLocaleDateString()}
+              </Badge>
+            </div>
+          </div>
+        </header>
+
+        {/* Content Area */}
+        <main className="flex-1 p-6 overflow-auto">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+              {/* Main Content */}
+              <div className="xl:col-span-3">
+                {renderMainContent()}
               </div>
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/')}
-                  className="border-border/50"
-                >
-                  <Home className="mr-2 h-4 w-4" />
-                  Volver al Sitio
-                </Button>
-                <Badge variant="secondary" className="bg-secondary/20 text-secondary">
-                  <Clock className="mr-1 h-3 w-3" />
-                  {new Date().toLocaleDateString()}
-                </Badge>
+
+              {/* Sidebar Content */}
+              <div className="space-y-6">
+                <GamificationPanel />
+                
+                {/* Quick Stats */}
+                <Card className="card-gaming border-secondary/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Resumen</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Productos activos</span>
+                      <span className="font-bold">{products.length}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Cursos disponibles</span>
+                      <span className="font-bold">{courses.length}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
+                      <span className="font-bold">{services.length}</span>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
-          </header>
-
-          {/* Content Area */}
-          <main className="flex-1 p-6 overflow-auto">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-                {/* Main Content */}
-                <div className="xl:col-span-3">
-                  {renderMainContent()}
-                </div>
-
-                {/* Sidebar Content */}
-                <div className="space-y-6">
-                  <GamificationPanel />
-                  
-                  {/* Quick Stats */}
-                  <Card className="card-gaming border-secondary/20">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Resumen</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Productos activos</span>
-                        <span className="font-bold">{products.length}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Cursos disponibles</span>
-                        <span className="font-bold">{courses.length}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
-                        <span className="font-bold">{services.length}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </main>
-        </SidebarInset>
+          </div>
+        </main>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
