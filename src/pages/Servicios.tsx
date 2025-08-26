@@ -122,7 +122,7 @@ const Servicios = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
                         <div className="relative">
-                          {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
+                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
                               <Wrench className="h-12 w-12 text-primary/30" />
                             </div>}
                         </div>
@@ -168,7 +168,7 @@ const Servicios = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.filter(service => service.name.toLowerCase().includes('control') || service.name.toLowerCase().includes('joy') || service.name.toLowerCase().includes('boton') || service.name.toLowerCase().includes('analog') || service.name.toLowerCase().includes('carga')).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
                           <div className="relative">
-                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
+                             {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
                                 <Gamepad2 className="h-12 w-12 text-primary/30" />
                               </div>}
                           </div>
@@ -214,7 +214,7 @@ const Servicios = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.filter(service => service.name.toLowerCase().includes('consola') || service.name.toLowerCase().includes('switch') || service.name.toLowerCase().includes('play') || service.name.toLowerCase().includes('xbox') || service.name.toLowerCase().includes('mantenimiento') || service.name.toLowerCase().includes('pasta') || service.name.toLowerCase().includes('fuente') || service.name.toLowerCase().includes('lectura') || service.name.toLowerCase().includes('sobrecalentamiento') || service.name.toLowerCase().includes('pantalla') || service.name.toLowerCase().includes('disco')).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
                           <div className="relative">
-                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
+                             {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
                                 <Cpu className="h-12 w-12 text-primary/30" />
                               </div>}
                           </div>
@@ -277,7 +277,7 @@ const Servicios = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.filter(service => service.name.toLowerCase().includes('domicilio') || service.name.toLowerCase().includes('express') || service.name.toLowerCase().includes('urgente') || service.name.toLowerCase().includes('prioridad')).map(service => <Card key={service.id} className="card-gaming border-secondary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-secondary/40">
                           <div className="relative">
-                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-secondary/10 flex items-center justify-center">
+                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-secondary/10 flex items-center justify-center">
                                 <Home className="h-12 w-12 text-secondary/30" />
                               </div>}
                           </div>
