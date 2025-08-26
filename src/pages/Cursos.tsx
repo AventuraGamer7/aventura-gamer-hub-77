@@ -1,7 +1,9 @@
 import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -10,6 +12,8 @@ import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { GraduationCap, Star, Clock, Users, Award, PlayCircle, CheckCircle, Target, ShoppingCart } from 'lucide-react';
 const Cursos = () => {
+  const { categoria } = useParams();
+  const navigate = useNavigate();
   const {
     courses,
     loading,
@@ -45,6 +49,25 @@ const Cursos = () => {
       minimumFractionDigits: 0
     }).format(price);
   };
+
+  const getFilteredCourses = (category: string) => {
+    if (category === 'todos') return courses;
+    
+    const filters = {
+      'reparacion': ['reparación', 'reparar', 'arreglo', 'fix'],
+      'mantenimiento': ['mantenimiento', 'limpieza', 'cuidado', 'maintenance'],
+      'avanzado': ['avanzado', 'profesional', 'expert', 'master'],
+      'basico': ['básico', 'inicio', 'principiante', 'beginner']
+    };
+    
+    const categoryFilters = filters[category as keyof typeof filters] || [];
+    return courses.filter(course => 
+      categoryFilters.some(filter => 
+        course.title.toLowerCase().includes(filter) || 
+        course.description?.toLowerCase().includes(filter)
+      )
+    );
+  };
   return <div className="min-h-screen bg-background">
       <Header />
       <WhatsAppFloat />
@@ -73,7 +96,6 @@ Cursos Especializados</h1>
             <section className="py-20">
               <div className="container mx-auto px-4">
                 
-      
                 {loading ? <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                   </div> : error ? <div className="text-center py-12">
@@ -83,56 +105,232 @@ Cursos Especializados</h1>
                     </Button>
                   </div> : courses.length === 0 ? <div className="text-center py-12">
                     <p className="text-muted-foreground">No hay cursos disponibles en este momento.</p>
-                  </div> : <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {courses.map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
-                        {course.cover ? <div className="relative h-48 overflow-hidden">
-                            <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                          </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                            <GraduationCap className="h-12 w-12 text-primary/30" />
-                          </div>}
-                        
-                        <CardHeader className="space-y-4">
-                          <div className="space-y-2">
-                            <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
-                            <CardDescription className="text-muted-foreground">
-                              {course.description || 'Descripción no disponible'}
-                            </CardDescription>
-                          </div>
-                        </CardHeader>
-                        
-                        <CardContent className="space-y-6">
-                          <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                            <div className="text-right">
-                              <div className="text-sm text-muted-foreground">Precio</div>
-                              <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex gap-3">
-                            <Button variant="gaming" className="flex-1" onClick={() => {
-                  addItem({
-                    id: course.id,
-                    name: course.title,
-                    price: course.price,
-                    image: course.cover || undefined,
-                    type: 'course'
-                  });
-                  toast({
-                    title: 'Curso agregado',
-                    description: `${course.title} se agregó al carrito`
-                  });
-                }}>
-                              <ShoppingCart className="mr-2 h-4 w-4" />
-                              Inscribirse
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <GraduationCap className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>)}
-                  </div>}
+                  </div> : <Tabs value={categoria || "todos"} className="w-full" onValueChange={(value) => {
+                    if (value === "todos") {
+                      navigate("/cursos");
+                    } else {
+                      navigate(`/cursos/${value}`);
+                    }
+                  }}>
+                    <TabsList className="grid w-full grid-cols-4 mb-8">
+                      <TabsTrigger value="todos">Todos</TabsTrigger>
+                      <TabsTrigger value="reparacion">Reparación</TabsTrigger>
+                      <TabsTrigger value="mantenimiento">Mantenimiento</TabsTrigger>
+                      <TabsTrigger value="avanzado">Avanzado</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="todos" className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {getFilteredCourses("todos").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                            {course.cover ? <div className="relative h-48 overflow-hidden">
+                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                                <GraduationCap className="h-12 w-12 text-primary/30" />
+                              </div>}
+                            
+                            <CardHeader className="space-y-4">
+                              <div className="space-y-2">
+                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
+                                <CardDescription className="text-muted-foreground">
+                                  {course.description || 'Descripción no disponible'}
+                                </CardDescription>
+                              </div>
+                            </CardHeader>
+                            
+                            <CardContent className="space-y-6">
+                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                <div className="text-right">
+                                  <div className="text-sm text-muted-foreground">Precio</div>
+                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex gap-3">
+                                <Button variant="gaming" className="flex-1" onClick={() => {
+                      addItem({
+                        id: course.id,
+                        name: course.title,
+                        price: course.price,
+                        image: course.cover || undefined,
+                        type: 'course'
+                      });
+                      toast({
+                        title: 'Curso agregado',
+                        description: `${course.title} se agregó al carrito`
+                      });
+                    }}>
+                                  <ShoppingCart className="mr-2 h-4 w-4" />
+                                  Inscribirse
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <GraduationCap className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>)}
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="reparacion" className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {getFilteredCourses("reparacion").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                            {course.cover ? <div className="relative h-48 overflow-hidden">
+                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                                <GraduationCap className="h-12 w-12 text-primary/30" />
+                              </div>}
+                            
+                            <CardHeader className="space-y-4">
+                              <div className="space-y-2">
+                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
+                                <CardDescription className="text-muted-foreground">
+                                  {course.description || 'Descripción no disponible'}
+                                </CardDescription>
+                              </div>
+                            </CardHeader>
+                            
+                            <CardContent className="space-y-6">
+                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                <div className="text-right">
+                                  <div className="text-sm text-muted-foreground">Precio</div>
+                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex gap-3">
+                                <Button variant="gaming" className="flex-1" onClick={() => {
+                      addItem({
+                        id: course.id,
+                        name: course.title,
+                        price: course.price,
+                        image: course.cover || undefined,
+                        type: 'course'
+                      });
+                      toast({
+                        title: 'Curso agregado',
+                        description: `${course.title} se agregó al carrito`
+                      });
+                    }}>
+                                  <ShoppingCart className="mr-2 h-4 w-4" />
+                                  Inscribirse
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <GraduationCap className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>)}
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="mantenimiento" className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {getFilteredCourses("mantenimiento").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                            {course.cover ? <div className="relative h-48 overflow-hidden">
+                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                                <GraduationCap className="h-12 w-12 text-primary/30" />
+                              </div>}
+                            
+                            <CardHeader className="space-y-4">
+                              <div className="space-y-2">
+                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
+                                <CardDescription className="text-muted-foreground">
+                                  {course.description || 'Descripción no disponible'}
+                                </CardDescription>
+                              </div>
+                            </CardHeader>
+                            
+                            <CardContent className="space-y-6">
+                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                <div className="text-right">
+                                  <div className="text-sm text-muted-foreground">Precio</div>
+                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex gap-3">
+                                <Button variant="gaming" className="flex-1" onClick={() => {
+                      addItem({
+                        id: course.id,
+                        name: course.title,
+                        price: course.price,
+                        image: course.cover || undefined,
+                        type: 'course'
+                      });
+                      toast({
+                        title: 'Curso agregado',
+                        description: `${course.title} se agregó al carrito`
+                      });
+                    }}>
+                                  <ShoppingCart className="mr-2 h-4 w-4" />
+                                  Inscribirse
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <GraduationCap className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>)}
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="avanzado" className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {getFilteredCourses("avanzado").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                            {course.cover ? <div className="relative h-48 overflow-hidden">
+                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
+                                <GraduationCap className="h-12 w-12 text-primary/30" />
+                              </div>}
+                            
+                            <CardHeader className="space-y-4">
+                              <div className="space-y-2">
+                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
+                                <CardDescription className="text-muted-foreground">
+                                  {course.description || 'Descripción no disponible'}
+                                </CardDescription>
+                              </div>
+                            </CardHeader>
+                            
+                            <CardContent className="space-y-6">
+                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                <div className="text-right">
+                                  <div className="text-sm text-muted-foreground">Precio</div>
+                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex gap-3">
+                                <Button variant="gaming" className="flex-1" onClick={() => {
+                      addItem({
+                        id: course.id,
+                        name: course.title,
+                        price: course.price,
+                        image: course.cover || undefined,
+                        type: 'course'
+                      });
+                      toast({
+                        title: 'Curso agregado',
+                        description: `${course.title} se agregó al carrito`
+                      });
+                    }}>
+                                  <ShoppingCart className="mr-2 h-4 w-4" />
+                                  Inscribirse
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <GraduationCap className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>)}
+                      </div>
+                    </TabsContent>
+                  </Tabs>}
               </div>
             </section>
       {/* CTA Section */}

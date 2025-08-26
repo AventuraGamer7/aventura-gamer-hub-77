@@ -6,13 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { Wrench, Home, Cpu, Shield, Clock, CheckCircle, Star, Target, Gamepad2, Zap, Lock, Settings, Flame, Monitor, HardDrive, Battery, ShoppingCart } from 'lucide-react';
 const Servicios = () => {
   const navigate = useNavigate();
+  const { categoria } = useParams();
   const [isLoggedIn] = useState(false); // Mock authentication state
   const { addItem } = useCart();
   const { toast } = useToast();
@@ -110,7 +111,13 @@ const Servicios = () => {
                 </Button>
               </div> : services.length === 0 ? <div className="text-center py-12">
                 <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
-              </div> : <Tabs defaultValue="todos" className="w-full py-[8px] px-0 my-px">
+              </div> : <Tabs value={categoria || "todos"} className="w-full py-[8px] px-0 my-px" onValueChange={(value) => {
+                if (value === "todos") {
+                  navigate("/servicios");
+                } else {
+                  navigate(`/servicios/${value}`);
+                }
+              }}>
                 <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="todos">Todos</TabsTrigger>
                   <TabsTrigger value="controles">Controles</TabsTrigger>
