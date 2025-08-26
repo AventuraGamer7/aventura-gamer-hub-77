@@ -77,7 +77,7 @@ const Header = () => {
             <Button 
               variant="gaming" 
               size="sm"
-              onClick={() => window.open('https://wa.me/573505138557?text=¡Hola! Soy un aventurero y quiero más información sobre un servicio.', '_blank')}
+              onClick={() => window.open('https://wa.me/3505138557', '_blank')}
             >
               WhatsApp
             </Button>
@@ -126,7 +126,7 @@ const Header = () => {
                   size="sm" 
                   className="w-full"
                   onClick={() => {
-                    window.open('https://wa.me/573505138557?text=¡Hola! Soy un aventurero y quiero más información sobre un servicio.', '_blank');
+                    window.open('https://wa.me/3505138557', '_blank');
                     setIsMenuOpen(false);
                   }}
                 >

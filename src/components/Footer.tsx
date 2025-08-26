@@ -108,7 +108,7 @@ const Footer = () => {
                 variant="gaming" 
                 size="sm" 
                 className="w-full"
-                onClick={() => window.open('https://wa.me/573505138557?text=¡Hola! Soy un aventurero y quiero más información sobre un servicio.', '_blank')}
+                onClick={() => window.open('https://wa.me/3505138557', '_blank')}
               >
                 <Phone className="h-4 w-4 mr-2" />
                 WhatsApp

@@ -207,7 +207,7 @@ ${shippingInfo}
 ¿Pueden ayudarme con el proceso de compra?`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/573505138557?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/3505138557?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
   };
 

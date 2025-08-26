@@ -4,8 +4,7 @@ import { MessageCircle, X } from 'lucide-react';
 const WhatsAppFloat = () => {
   const [isVisible, setIsVisible] = useState(true);
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent('¡Hola! Soy un aventurero y quiero más información sobre un servicio.');
-    window.open(`https://wa.me/573505138557?text=${message}`, '_blank');
+    window.open('https://wa.me/3505138557', '_blank');
   };
   if (!isVisible) return null;
   return <div className="fixed bottom-6 right-6 z-50">
