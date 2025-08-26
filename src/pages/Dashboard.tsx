@@ -18,6 +18,8 @@ import {
   SidebarGroupLabel, 
   useSidebar 
 } from '@/components/ui/sidebar';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/useProfile';
@@ -31,6 +33,8 @@ import AddServiceForm from '@/components/AddServiceForm';
 import ManagementPanel from '@/components/ManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import { AppSidebar } from '@/components/AppSidebar';
+import { CustomerOrders } from '@/components/CustomerOrders';
+import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
   LogOut, 
   User, 
@@ -53,8 +57,54 @@ import {
   TrendingUp,
   Calendar,
   Clock,
-  Monitor
+  Monitor,
+  Loader2,
+  CheckCircle,
+  Truck
 } from 'lucide-react';
+
+// Helper functions for status handling
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'pending':
+      return 'bg-yellow-500/20 text-yellow-600 border-yellow-500/30';
+    case 'processing':
+      return 'bg-blue-500/20 text-blue-600 border-blue-500/30';
+    case 'shipped':
+      return 'bg-purple-500/20 text-purple-600 border-purple-500/30';
+    case 'in_transit':
+      return 'bg-indigo-500/20 text-indigo-600 border-indigo-500/30';
+    case 'out_for_delivery':
+      return 'bg-orange-500/20 text-orange-600 border-orange-500/30';
+    case 'delivered':
+      return 'bg-green-500/20 text-green-600 border-green-500/30';
+    case 'cancelled':
+      return 'bg-red-500/20 text-red-600 border-red-500/30';
+    default:
+      return 'bg-gray-500/20 text-gray-600 border-gray-500/30';
+  }
+};
+
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'pending':
+      return 'Pendiente';
+    case 'processing':
+      return 'Procesando';
+    case 'shipped':
+      return 'Enviado';
+    case 'in_transit':
+      return 'En tránsito';
+    case 'out_for_delivery':
+      return 'En reparto';
+    case 'delivered':
+      return 'Entregado';
+    case 'cancelled':
+      return 'Cancelado';
+    default:
+      return 'Desconocido';
+  }
+};
 
 const Dashboard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -64,6 +114,7 @@ const Dashboard = () => {
   const { products } = useProducts();
   const { courses } = useCourses();
   const { services } = useServices();
+  const { orders, loading: ordersLoading } = useCustomerOrders();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('dashboard');
 
@@ -84,7 +135,27 @@ const Dashboard = () => {
     }
   };
 
-  const sidebarItems = [
+  // Different sidebar items based on user role
+  const sidebarItems = profile?.role === 'cliente' ? [
+    {
+      id: 'dashboard',
+      title: 'Mi Panel',
+      icon: <BarChart3 className="h-5 w-5" />,
+      section: 'Principal'
+    },
+    {
+      id: 'orders',
+      title: 'Mis Pedidos',
+      icon: <Package className="h-5 w-5" />,
+      section: 'Principal'
+    },
+    {
+      id: 'profile',
+      title: 'Mi Perfil',
+      icon: <User className="h-5 w-5" />,
+      section: 'Principal'
+    }
+  ] : [
     {
       id: 'dashboard',
       title: 'Dashboard',
@@ -129,7 +200,41 @@ const Dashboard = () => {
     }
   ];
 
-  const stats = [
+  // Different stats based on user role
+  const stats = profile?.role === 'cliente' ? [
+    {
+      title: 'Mis Pedidos',
+      value: orders.length,
+      subtitle: 'Total de pedidos',
+      icon: <Package className="h-6 w-6" />,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10'
+    },
+    {
+      title: 'Enviados',
+      value: orders.filter(o => ['shipped', 'in_transit', 'out_for_delivery'].includes(o.shipping_status)).length,
+      subtitle: 'En camino',
+      icon: <Truck className="h-6 w-6" />,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10'
+    },
+    {
+      title: 'Entregados',
+      value: orders.filter(o => o.shipping_status === 'delivered').length,
+      subtitle: 'Completados',
+      icon: <CheckCircle className="h-6 w-6" />,
+      color: 'text-green-500',
+      bgColor: 'bg-green-500/10'
+    },
+    {
+      title: 'Puntos',
+      value: profile?.points || 0,
+      subtitle: `Nivel ${profile?.level || 1}`,
+      icon: <Trophy className="h-6 w-6" />,
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-500/10'
+    }
+  ] : [
     {
       title: 'Total Cursos',
       value: courses.length,
@@ -210,6 +315,139 @@ const Dashboard = () => {
   ];
 
   const renderMainContent = () => {
+    // Customer view
+    if (profile?.role === 'cliente') {
+      switch (activeSection) {
+        case 'orders':
+          return (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-glow">Mis Pedidos</h2>
+                <p className="text-muted-foreground">Seguimiento de tus compras y envíos</p>
+              </div>
+              {ordersLoading ? (
+                <div className="flex items-center justify-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : (
+                <CustomerOrders orders={orders} />
+              )}
+            </div>
+          );
+        case 'profile':
+          return (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-glow">Mi Perfil</h2>
+                <p className="text-muted-foreground">Información de tu cuenta</p>
+              </div>
+              <Card className="card-gaming border-primary/20">
+                <CardContent className="p-8 text-center">
+                  <User className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">Configuración de perfil próximamente</p>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        default:
+          return (
+            <div className="space-y-6">
+              {/* Welcome Section for Customer */}
+              <Card className="card-gaming border-primary/20">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <User className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl text-glow">
+                        ¡Bienvenido, Aventurero!
+                      </CardTitle>
+                      <CardDescription className="space-y-1">
+                        <div>{user?.email}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs bg-secondary/20 text-secondary px-2 py-1 rounded">
+                            Cliente Nivel {profile?.level || 1}
+                          </span>
+                          <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded">
+                            {profile?.points || 0} puntos
+                          </span>
+                        </div>
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Gestiona tus pedidos, revisa el estado de tus envíos y descubre nuevas aventuras.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {stats.map((stat, index) => (
+                  <Card key={index} className="card-gaming border-primary/20">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                          <p className="text-3xl font-bold">{stat.value}</p>
+                          <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
+                        </div>
+                        <div className={`p-3 rounded-full ${stat.bgColor}`}>
+                          <div className={stat.color}>
+                            {stat.icon}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Recent Orders Preview */}
+              {orders.length > 0 && (
+                <Card className="card-gaming border-primary/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5 text-secondary" />
+                      Pedidos Recientes
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {orders.slice(0, 3).map((order) => (
+                        <div key={order.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                          <div>
+                            <p className="text-sm font-medium">Pedido #{order.id.slice(0, 8)}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {format(new Date(order.created_at), 'dd MMM yyyy', { locale: es })}
+                            </p>
+                          </div>
+                          <Badge className={getStatusColor(order.shipping_status)}>
+                            {getStatusText(order.shipping_status)}
+                          </Badge>
+                        </div>
+                      ))}
+                      {orders.length > 3 && (
+                        <button 
+                          onClick={() => setActiveSection('orders')}
+                          className="w-full text-center text-sm text-primary hover:text-primary/80 transition-colors"
+                        >
+                          Ver todos los pedidos ({orders.length})
+                        </button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          );
+      }
+    }
+
+    // Admin/Manager view (existing functionality)
     switch (activeSection) {
       case 'hero':
         return (

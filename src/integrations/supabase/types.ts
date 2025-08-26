@@ -92,29 +92,53 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          delivered_at: string | null
+          estimated_delivery: string | null
           id: string
           item_id: string
           item_type: string
           quantity: number
+          shipped_at: string | null
+          shipping_address: string | null
+          shipping_status:
+            | Database["public"]["Enums"]["shipping_status_enum"]
+            | null
           total_price: number
+          tracking_number: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
+          delivered_at?: string | null
+          estimated_delivery?: string | null
           id?: string
           item_id: string
           item_type: string
           quantity?: number
+          shipped_at?: string | null
+          shipping_address?: string | null
+          shipping_status?:
+            | Database["public"]["Enums"]["shipping_status_enum"]
+            | null
           total_price: number
+          tracking_number?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
+          delivered_at?: string | null
+          estimated_delivery?: string | null
           id?: string
           item_id?: string
           item_type?: string
           quantity?: number
+          shipped_at?: string | null
+          shipping_address?: string | null
+          shipping_status?:
+            | Database["public"]["Enums"]["shipping_status_enum"]
+            | null
           total_price?: number
+          tracking_number?: string | null
           user_id?: string
         }
         Relationships: []
@@ -232,6 +256,14 @@ export type Database = {
       }
     }
     Enums: {
+      shipping_status_enum:
+        | "pending"
+        | "processing"
+        | "shipped"
+        | "in_transit"
+        | "out_for_delivery"
+        | "delivered"
+        | "cancelled"
       user_role:
         | "superadmin"
         | "employee"
@@ -366,6 +398,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      shipping_status_enum: [
+        "pending",
+        "processing",
+        "shipped",
+        "in_transit",
+        "out_for_delivery",
+        "delivered",
+        "cancelled",
+      ],
       user_role: [
         "superadmin",
         "employee",
