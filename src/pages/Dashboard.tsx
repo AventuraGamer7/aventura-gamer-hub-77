@@ -424,13 +424,13 @@ const Dashboard = () => {
         {/* Header */}
         <header className="bg-card/30 border-b border-border/50 p-6 flex items-center gap-4">
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="h-8 w-8"
+            className="h-10 w-10 bg-purple-600 hover:bg-purple-700 border-purple-500 text-white shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
           >
             <svg
-              className="h-4 w-4"
+              className="h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
