@@ -120,31 +120,39 @@ const Servicios = () => {
                 
                 <TabsContent value="todos" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.map(service => <Card key={service.id} className="card-gaming border-primary/20">
-                        {service.image ? <div className="relative h-48 overflow-hidden">
-                            <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                          </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                            <Wrench className="h-12 w-12 text-primary/30" />
-                          </div>}
+                    {services.map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
+                        <div className="relative">
+                          {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
+                              <Wrench className="h-12 w-12 text-primary/30" />
+                            </div>}
+                        </div>
                         
-                        <CardHeader>
-                          <CardTitle className="text-lg">{service.name}</CardTitle>
-                          <CardDescription className="text-muted-foreground mt-2">
+                        <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
+                          <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                          <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                             {service.description || 'Descripción no disponible'}
                           </CardDescription>
+                          
+                          {/* Expanded content on hover */}
+                          <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                            <div className="space-y-2 pt-2 border-t border-muted/20">
+                              <p className="text-xs text-muted-foreground">✓ Diagnóstico gratuito</p>
+                              <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
+                              <p className="text-xs text-muted-foreground">✓ Servicio a domicilio disponible</p>
+                            </div>
+                          </div>
                         </CardHeader>
                         
                         <CardContent className="space-y-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <div>
-                              <span className="text-muted-foreground">Precio: </span>
-                              <span className="font-semibold text-secondary">${service.price.toFixed(2)}</span>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl font-bold text-primary">${service.price.toFixed(0)}</span>
                             </div>
                           </div>
                           
                           <div className="flex gap-2">
                             <Button variant="gaming" size="sm" className="flex-1">
+                              <ShoppingCart className="mr-1 h-3 w-3" />
                               Solicitar
                             </Button>
                             <Button variant="gaming-secondary" size="sm" onClick={() => handleAcceptMission(service.name)}>
@@ -158,31 +166,39 @@ const Servicios = () => {
                 
                 <TabsContent value="controles" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.filter(service => service.name.toLowerCase().includes('control') || service.name.toLowerCase().includes('joy') || service.name.toLowerCase().includes('boton') || service.name.toLowerCase().includes('analog') || service.name.toLowerCase().includes('carga')).map(service => <Card key={service.id} className="card-gaming border-primary/20">
-                          {service.image ? <div className="relative h-48 overflow-hidden">
-                              <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                            </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                              <Gamepad2 className="h-12 w-12 text-primary/30" />
-                            </div>}
+                    {services.filter(service => service.name.toLowerCase().includes('control') || service.name.toLowerCase().includes('joy') || service.name.toLowerCase().includes('boton') || service.name.toLowerCase().includes('analog') || service.name.toLowerCase().includes('carga')).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
+                          <div className="relative">
+                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
+                                <Gamepad2 className="h-12 w-12 text-primary/30" />
+                              </div>}
+                          </div>
                           
-                          <CardHeader>
-                            <CardTitle className="text-lg">{service.name}</CardTitle>
-                            <CardDescription className="text-muted-foreground mt-2">
+                          <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
+                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                               {service.description || 'Descripción no disponible'}
                             </CardDescription>
+                            
+                            {/* Expanded content on hover */}
+                            <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                              <div className="space-y-2 pt-2 border-t border-muted/20">
+                                <p className="text-xs text-muted-foreground">✓ Diagnóstico gratuito</p>
+                                <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
+                                <p className="text-xs text-muted-foreground">✓ Servicio a domicilio disponible</p>
+                              </div>
+                            </div>
                           </CardHeader>
                           
                           <CardContent className="space-y-4">
-                            <div className="flex justify-between items-center text-sm">
-                              <div>
-                                <span className="text-muted-foreground">Precio: </span>
-                                <span className="font-semibold text-secondary">${service.price.toFixed(2)}</span>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold text-primary">${service.price.toFixed(0)}</span>
                               </div>
                             </div>
                             
                             <div className="flex gap-2">
                               <Button variant="gaming" size="sm" className="flex-1">
+                                <ShoppingCart className="mr-1 h-3 w-3" />
                                 Solicitar
                               </Button>
                               <Button variant="gaming-secondary" size="sm" onClick={() => handleAcceptMission(service.name)}>
@@ -196,26 +212,33 @@ const Servicios = () => {
                 
                 <TabsContent value="consolas" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.filter(service => service.name.toLowerCase().includes('consola') || service.name.toLowerCase().includes('switch') || service.name.toLowerCase().includes('play') || service.name.toLowerCase().includes('xbox') || service.name.toLowerCase().includes('mantenimiento') || service.name.toLowerCase().includes('pasta') || service.name.toLowerCase().includes('fuente') || service.name.toLowerCase().includes('lectura') || service.name.toLowerCase().includes('sobrecalentamiento') || service.name.toLowerCase().includes('pantalla') || service.name.toLowerCase().includes('disco')).map(service => <Card key={service.id} className="card-gaming border-primary/20">
-                          {service.image ? <div className="relative h-48 overflow-hidden">
-                              <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                            </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                              <Cpu className="h-12 w-12 text-primary/30" />
-                            </div>}
+                    {services.filter(service => service.name.toLowerCase().includes('consola') || service.name.toLowerCase().includes('switch') || service.name.toLowerCase().includes('play') || service.name.toLowerCase().includes('xbox') || service.name.toLowerCase().includes('mantenimiento') || service.name.toLowerCase().includes('pasta') || service.name.toLowerCase().includes('fuente') || service.name.toLowerCase().includes('lectura') || service.name.toLowerCase().includes('sobrecalentamiento') || service.name.toLowerCase().includes('pantalla') || service.name.toLowerCase().includes('disco')).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
+                          <div className="relative">
+                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
+                                <Cpu className="h-12 w-12 text-primary/30" />
+                              </div>}
+                          </div>
                           
-                          <CardHeader>
-                            <CardTitle className="text-lg">{service.name}</CardTitle>
-                            <CardDescription className="text-muted-foreground mt-2">
+                          <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
+                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                               {service.description || 'Descripción no disponible'}
                             </CardDescription>
+                            
+                            {/* Expanded content on hover */}
+                            <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                              <div className="space-y-2 pt-2 border-t border-muted/20">
+                                <p className="text-xs text-muted-foreground">✓ Diagnóstico gratuito</p>
+                                <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
+                                <p className="text-xs text-muted-foreground">✓ Servicio a domicilio disponible</p>
+                              </div>
+                            </div>
                           </CardHeader>
                           
                           <CardContent className="space-y-4">
-                            <div className="flex justify-between items-center text-sm">
-                              <div>
-                                <span className="text-muted-foreground">Precio: </span>
-                                <span className="font-semibold text-secondary">${service.price.toFixed(2)}</span>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold text-primary">${service.price.toFixed(0)}</span>
                               </div>
                             </div>
                             
@@ -252,30 +275,38 @@ const Servicios = () => {
                 
                 <TabsContent value="extras" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.filter(service => service.name.toLowerCase().includes('domicilio') || service.name.toLowerCase().includes('express') || service.name.toLowerCase().includes('urgente') || service.name.toLowerCase().includes('prioridad')).map(service => <Card key={service.id} className="card-gaming border-secondary/20">
-                          {service.image ? <div className="relative h-48 overflow-hidden">
-                              <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                            </div> : <div className="relative h-48 bg-secondary/10 flex items-center justify-center">
-                              <Home className="h-12 w-12 text-secondary/30" />
-                            </div>}
+                    {services.filter(service => service.name.toLowerCase().includes('domicilio') || service.name.toLowerCase().includes('express') || service.name.toLowerCase().includes('urgente') || service.name.toLowerCase().includes('prioridad')).map(service => <Card key={service.id} className="card-gaming border-secondary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-secondary/40">
+                          <div className="relative">
+                            {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-secondary/10 flex items-center justify-center">
+                                <Home className="h-12 w-12 text-secondary/30" />
+                              </div>}
+                          </div>
                           
-                          <CardHeader>
-                            <CardTitle className="text-lg">{service.name}</CardTitle>
-                            <CardDescription className="text-muted-foreground mt-2">
+                          <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
+                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                               {service.description || 'Descripción no disponible'}
                             </CardDescription>
+                            
+                            {/* Expanded content on hover */}
+                            <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                              <div className="space-y-2 pt-2 border-t border-muted/20">
+                                <p className="text-xs text-muted-foreground">✓ Diagnóstico gratuito</p>
+                                <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
+                                <p className="text-xs text-muted-foreground">✓ Servicio a domicilio disponible</p>
+                              </div>
+                            </div>
                           </CardHeader>
                           
                           <CardContent className="space-y-4">
-                            <div className="flex justify-between items-center text-sm">
-                              <div>
-                                <span className="text-muted-foreground">Precio: </span>
-                                <span className="font-semibold text-secondary">${service.price.toFixed(2)}</span>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold text-secondary">${service.price.toFixed(0)}</span>
                               </div>
                             </div>
                             
                             <Button variant="gaming" className="w-full">
+                              <ShoppingCart className="mr-2 h-4 w-4" />
                               Solicitar Información
                             </Button>
                           </CardContent>
