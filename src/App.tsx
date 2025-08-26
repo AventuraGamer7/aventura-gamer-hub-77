@@ -42,7 +42,8 @@ const App = () => (
               />
               <Route path="/servicios" element={<Servicios />} />
               <Route path="/cursos" element={<Cursos />} />
-              <Route path="/tienda" element={<Tienda />} />
+          <Route path="/tienda" element={<Tienda />} />
+          <Route path="/tienda/:categoria" element={<Tienda />} />
               <Route path="/carrito" element={<Carrito />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/contacto" element={<Contacto />} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List } from 'lucide-react';
 const Tienda = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { categoria } = useParams();
   const navigate = useNavigate();
   
   const {
@@ -33,9 +33,8 @@ const Tienda = () => {
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
   
-  // Get selected category from URL or default to 'Todos'
-  const filterParam = searchParams.get('filter');
-  const selectedCategory = filterParam && categories.includes(filterParam) ? filterParam : 'Todos';
+  // Get selected category from URL params or default to 'Todos'
+  const selectedCategory = categoria && categories.includes(categoria) ? categoria : 'Todos';
 
   // SEO data for different categories
   const seoData = {
@@ -62,15 +61,11 @@ const Tienda = () => {
   // Update URL when category changes
   const handleCategoryChange = (category: string) => {
     if (category === 'Todos') {
-      // Remove filter param for 'Todos'
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.delete('filter');
-      setSearchParams(newSearchParams);
+      // Navigate to base tienda route for 'Todos'
+      navigate('/tienda');
     } else {
-      // Set filter param for specific category
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('filter', category);
-      setSearchParams(newSearchParams);
+      // Navigate to category route
+      navigate(`/tienda/${category}`);
     }
   };
 
