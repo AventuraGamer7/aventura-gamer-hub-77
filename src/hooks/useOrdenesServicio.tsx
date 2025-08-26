@@ -7,6 +7,8 @@ interface OrdenServicio {
   usuario_id: string;
   estado: string;
   descripcion: string;
+  admin_descripcion?: string;
+  admin_imagenes?: string[];
   created_at: string;
   updated_at: string;
 }
@@ -121,12 +123,22 @@ export const useOrdenesServicio = () => {
     }
   };
 
-  // Actualizar estado de orden
-  const actualizarEstadoOrden = async (ordenId: string, nuevoEstado: string) => {
+  // Actualizar estado de orden con descripción e imágenes del admin
+  const actualizarEstadoOrden = async (ordenId: string, nuevoEstado: string, adminDescripcion?: string, adminImagenes?: string[]) => {
     try {
+      const updateData: any = { estado: nuevoEstado };
+      
+      if (adminDescripcion !== undefined) {
+        updateData.admin_descripcion = adminDescripcion;
+      }
+      
+      if (adminImagenes !== undefined) {
+        updateData.admin_imagenes = adminImagenes;
+      }
+
       const { data, error } = await supabase
         .from('ordenes_servicio')
-        .update({ estado: nuevoEstado })
+        .update(updateData)
         .eq('id', ordenId)
         .select()
         .single();
@@ -134,7 +146,7 @@ export const useOrdenesServicio = () => {
       if (error) throw error;
 
       setOrdenes(prev => prev.map(orden => 
-        orden.id === ordenId ? { ...orden, estado: nuevoEstado } : orden
+        orden.id === ordenId ? { ...orden, ...updateData } : orden
       ));
 
       toast({
@@ -148,6 +160,34 @@ export const useOrdenesServicio = () => {
       toast({
         title: 'Error',
         description: 'No se pudo actualizar el estado',
+        variant: 'destructive'
+      });
+      return null;
+    }
+  };
+
+  // Subir imagen a Supabase Storage
+  const subirImagen = async (file: File, ordenId: string): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${ordenId}/${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('service-orders')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: publicUrl } = supabase.storage
+        .from('service-orders')
+        .getPublicUrl(fileName);
+
+      return publicUrl.publicUrl;
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudo subir la imagen',
         variant: 'destructive'
       });
       return null;
@@ -171,6 +211,7 @@ export const useOrdenesServicio = () => {
     fetchOrdenesByUsuario,
     crearOrden,
     actualizarEstadoOrden,
+    subirImagen,
     refetchData: () => Promise.all([fetchUsuarios(), fetchOrdenes()])
   };
 };

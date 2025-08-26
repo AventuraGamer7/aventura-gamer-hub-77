@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOrdenesServicio } from '@/hooks/useOrdenesServicio';
+import GamingImageUpload from '@/components/GamingImageUpload';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { 
@@ -26,6 +27,8 @@ interface OrdenServicio {
   usuario_id: string;
   estado: string;
   descripcion: string;
+  admin_descripcion?: string;
+  admin_imagenes?: string[];
   created_at: string;
   updated_at: string;
 }
@@ -69,10 +72,13 @@ const getStatusIcon = (estado: string) => {
 };
 
 const GestionUsuarios = () => {
-  const { usuarios, loading, fetchOrdenesByUsuario, crearOrden, actualizarEstadoOrden } = useOrdenesServicio();
+  const { usuarios, loading, fetchOrdenesByUsuario, crearOrden, actualizarEstadoOrden, subirImagen } = useOrdenesServicio();
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<typeof usuarios[0] | null>(null);
   const [ordenesUsuario, setOrdenesUsuario] = useState<OrdenServicio[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<OrdenServicio | null>(null);
+  const [newStatus, setNewStatus] = useState('');
   const [nuevaDescripcion, setNuevaDescripcion] = useState('');
   const [loadingOrdenes, setLoadingOrdenes] = useState(false);
 
@@ -100,6 +106,51 @@ const GestionUsuarios = () => {
     setOrdenesUsuario(prev => prev.map(orden => 
       orden.id === ordenId ? { ...orden, estado: nuevoEstado } : orden
     ));
+  };
+
+  const handleUpdateWithImages = async (files: File[], description: string) => {
+    if (!selectedOrder) return;
+
+    try {
+      // Subir imágenes
+      const imageUrls: string[] = [];
+      for (const file of files) {
+        const url = await subirImagen(file, selectedOrder.id);
+        if (url) imageUrls.push(url);
+      }
+
+      // Actualizar orden con nuevo estado, descripción e imágenes
+      await actualizarEstadoOrden(
+        selectedOrder.id, 
+        newStatus, 
+        description, 
+        imageUrls.length > 0 ? imageUrls : undefined
+      );
+
+      // Actualizar estado local
+      setOrdenesUsuario(prev => prev.map(orden => 
+        orden.id === selectedOrder.id 
+          ? { 
+              ...orden, 
+              estado: newStatus,
+              admin_descripcion: description,
+              admin_imagenes: [...(orden.admin_imagenes || []), ...imageUrls]
+            } 
+          : orden
+      ));
+
+      setIsUpdateOpen(false);
+      setSelectedOrder(null);
+      setNewStatus('');
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
+  };
+
+  const openUpdateDialog = (orden: OrdenServicio, estado: string) => {
+    setSelectedOrder(orden);
+    setNewStatus(estado);
+    setIsUpdateOpen(true);
   };
 
   if (loading) {
@@ -254,32 +305,94 @@ const GestionUsuarios = () => {
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+               <CardContent className="space-y-4">
                 <p className="text-sm">{orden.descripcion}</p>
                 
-                <div className="flex gap-2">
-                  <Select 
-                    onValueChange={(value) => handleUpdateStatus(orden.id, value)}
-                    defaultValue={orden.estado}
+                {/* Mostrar descripción e imágenes del admin si existen */}
+                {orden.admin_descripcion && (
+                  <div className="bg-primary/10 rounded-lg p-3 space-y-2">
+                    <h4 className="text-sm font-semibold text-primary">Actualización del Técnico:</h4>
+                    <p className="text-sm text-muted-foreground">{orden.admin_descripcion}</p>
+                  </div>
+                )}
+                
+                {orden.admin_imagenes && orden.admin_imagenes.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-secondary">Imágenes del servicio:</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {orden.admin_imagenes.map((imagen, index) => (
+                        <div key={index} className="aspect-square bg-muted/30 rounded-lg overflow-hidden">
+                          <img
+                            src={imagen}
+                            alt={`Imagen ${index + 1}`}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                            onClick={() => window.open(imagen, '_blank')}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openUpdateDialog(orden, 'En_Diagnostico')}
+                    className="border-yellow-500/30 text-yellow-600 hover:bg-yellow-500/10"
                   >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Cambiar estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Recibido">Recibido</SelectItem>
-                      <SelectItem value="En_Diagnostico">En Diagnóstico</SelectItem>
-                      <SelectItem value="Esperando_Aprobacion">Esperando Aprobación</SelectItem>
-                      <SelectItem value="Reparando">Reparando</SelectItem>
-                      <SelectItem value="Completado">Completado</SelectItem>
-                      <SelectItem value="Entregado">Entregado</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    En Diagnóstico
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openUpdateDialog(orden, 'Esperando_Aprobacion')}
+                    className="border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
+                  >
+                    Esperando Aprobación
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openUpdateDialog(orden, 'Reparando')}
+                    className="border-purple-500/30 text-purple-600 hover:bg-purple-500/10"
+                  >
+                    Reparando
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openUpdateDialog(orden, 'Completado')}
+                    className="border-green-500/30 text-green-600 hover:bg-green-500/10"
+                  >
+                    Completado
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openUpdateDialog(orden, 'Entregado')}
+                    className="border-gray-500/30 text-gray-600 hover:bg-gray-500/10"
+                  >
+                    Entregado
+                  </Button>
                 </div>
-              </CardContent>
+               </CardContent>
             </Card>
           ))
         )}
       </div>
+
+      {/* Dialog para actualización con imágenes */}
+      <GamingImageUpload
+        isOpen={isUpdateOpen}
+        onClose={() => {
+          setIsUpdateOpen(false);
+          setSelectedOrder(null);
+          setNewStatus('');
+        }}
+        onUpload={handleUpdateWithImages}
+        title={`Actualizar a: ${newStatus.replace('_', ' ')}`}
+      />
     </div>
   );
 };

@@ -20,6 +20,8 @@ interface OrdenServicio {
   usuario_id: string;
   estado: string;
   descripcion: string;
+  admin_descripcion?: string;
+  admin_imagenes?: string[];
   created_at: string;
   updated_at: string;
 }
@@ -164,11 +166,51 @@ const OrdenesCliente = () => {
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-4">
+                   <CardContent className="space-y-4">
                     <div>
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2">Descripción:</h4>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2">Descripción del problema:</h4>
                       <p className="text-sm">{orden.descripcion}</p>
                     </div>
+                    
+                    {/* Mostrar actualización del técnico si existe */}
+                    {orden.admin_descripcion && (
+                      <div className="bg-primary/10 rounded-lg p-3 space-y-2 animate-fade-in">
+                        <h4 className="font-medium text-sm text-primary flex items-center gap-2">
+                          <Wrench className="h-4 w-4" />
+                          Actualización del Técnico:
+                        </h4>
+                        <p className="text-sm text-muted-foreground">{orden.admin_descripcion}</p>
+                      </div>
+                    )}
+                    
+                    {/* Mostrar imágenes del servicio si existen */}
+                    {orden.admin_imagenes && orden.admin_imagenes.length > 0 && (
+                      <div className="space-y-3 animate-fade-in">
+                        <h4 className="font-medium text-sm text-secondary flex items-center gap-2">
+                          <Eye className="h-4 w-4" />
+                          Progreso del servicio:
+                        </h4>
+                        <div className="grid grid-cols-2 gap-2">
+                          {orden.admin_imagenes.map((imagen, index) => (
+                            <div 
+                              key={index} 
+                              className="aspect-square bg-muted/30 rounded-lg overflow-hidden group cursor-pointer hover-scale"
+                              onClick={() => window.open(imagen, '_blank')}
+                            >
+                              <img
+                                src={imagen}
+                                alt={`Progreso ${index + 1}`}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                loading="lazy"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          💡 Toca las imágenes para verlas en tamaño completo
+                        </p>
+                      </div>
+                    )}
                     
                     <div className="grid grid-cols-2 gap-4 text-xs">
                       <div>
@@ -184,7 +226,7 @@ const OrdenesCliente = () => {
                     <div className="pt-2 border-t border-border/50">
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <span>Estado actual:</span>
-                        <span className="font-medium">{orden.estado}</span>
+                        <span className="font-medium text-primary">{orden.estado.replace('_', ' ')}</span>
                       </div>
                     </div>
                   </CardContent>

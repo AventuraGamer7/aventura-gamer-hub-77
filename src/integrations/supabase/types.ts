@@ -91,6 +91,8 @@ export type Database = {
       }
       ordenes_servicio: {
         Row: {
+          admin_descripcion: string | null
+          admin_imagenes: string[] | null
           created_at: string
           descripcion: string
           estado: string
@@ -99,6 +101,8 @@ export type Database = {
           usuario_id: string
         }
         Insert: {
+          admin_descripcion?: string | null
+          admin_imagenes?: string[] | null
           created_at?: string
           descripcion: string
           estado?: string
@@ -107,6 +111,8 @@ export type Database = {
           usuario_id: string
         }
         Update: {
+          admin_descripcion?: string | null
+          admin_imagenes?: string[] | null
           created_at?: string
           descripcion?: string
           estado?: string
