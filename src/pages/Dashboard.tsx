@@ -35,6 +35,7 @@ import HeroManagementPanel from '@/components/HeroManagementPanel';
 import GestionUsuarios from '@/components/GestionUsuarios';
 import { AppSidebar } from '@/components/AppSidebar';
 import { CustomerOrders } from '@/components/CustomerOrders';
+import OrdenesCliente from '@/components/OrdenesCliente';
 // Import customer orders hook
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
@@ -149,6 +150,12 @@ const Dashboard = () => {
       id: 'orders',
       title: 'Mis Pedidos',
       icon: <Package className="h-5 w-5" />,
+      section: 'Principal'
+    },
+    {
+      id: 'services',
+      title: 'Mis Servicios',
+      icon: <Wrench className="h-5 w-5" />,
       section: 'Principal'
     },
     {
@@ -335,6 +342,16 @@ const Dashboard = () => {
               ) : (
                 <CustomerOrders orders={orders} />
               )}
+            </div>
+          );
+        case 'services':
+          return (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-glow">Mis Servicios</h2>
+                <p className="text-muted-foreground">Estado de tus órdenes de servicio técnico</p>
+              </div>
+              <OrdenesCliente />
             </div>
           );
         case 'profile':
