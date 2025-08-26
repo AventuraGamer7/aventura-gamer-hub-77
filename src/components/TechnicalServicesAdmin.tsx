@@ -93,8 +93,8 @@ const getStatusIcon = (estado: string) => {
 const TechnicalServicesAdmin = () => {
   const { services, createService, updateService, addComment } = useTechnicalServices();
   const { toast } = useToast();
+  const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingService, setEditingService] = useState<TechnicalService | null>(null);
   const [newComment, setNewComment] = useState('');
 
   const form = useForm<CreateServiceForm>({
@@ -105,23 +105,26 @@ const TechnicalServicesAdmin = () => {
   });
 
   const handleCreateService = (data: CreateServiceForm) => {
-    const client = mockUsers.find(u => u.id === data.clienteId);
-    if (!client) return;
+    if (!selectedUser) return;
 
     createService({
-      clienteId: data.clienteId,
-      clienteName: client.name,
+      clienteId: selectedUser.id,
+      clienteName: selectedUser.name,
       descripcion: data.descripcion,
       imagenes: []
     });
 
     toast({
       title: "Servicio creado",
-      description: `Servicio para ${client.name} creado exitosamente`,
+      description: `Servicio para ${selectedUser.name} creado exitosamente`,
     });
 
     form.reset();
     setIsCreateOpen(false);
+  };
+
+  const getUserServices = (userId: string) => {
+    return services.filter(service => service.clienteId === userId);
   };
 
   const handleStatusUpdate = (serviceId: string, newStatus: TechnicalService['estado']) => {
@@ -151,24 +154,80 @@ const TechnicalServicesAdmin = () => {
     }
   };
 
+  // Vista de lista de usuarios
+  if (!selectedUser) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-glow">Panel Admin - Usuarios</h2>
+            <p className="text-muted-foreground">Selecciona un usuario para gestionar sus servicios técnicos</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {mockUsers.map((user) => {
+            const userServices = getUserServices(user.id);
+            const activeServices = userServices.filter(s => s.estado !== 'entregado').length;
+            
+            return (
+              <Card key={user.id} className="card-gaming border-primary/20 cursor-pointer hover:border-primary/40 transition-colors"
+                    onClick={() => setSelectedUser(user)}>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <User className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{user.name}</h3>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <div className="flex gap-2 mt-2">
+                        <Badge variant="outline" className="text-xs">
+                          {userServices.length} servicios
+                        </Badge>
+                        {activeServices > 0 && (
+                          <Badge className="text-xs bg-primary/20 text-primary border-primary/30">
+                            {activeServices} activos
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Vista de detalle del usuario seleccionado
+  const userServices = getUserServices(selectedUser.id);
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-glow">Panel Admin - Servicios Técnicos</h2>
-          <p className="text-muted-foreground">Gestiona todas las órdenes de servicio</p>
+        <div className="flex items-center gap-4">
+          <Button variant="outline" onClick={() => setSelectedUser(null)}>
+            ← Volver a usuarios
+          </Button>
+          <div>
+            <h2 className="text-2xl font-bold text-glow">Servicios de {selectedUser.name}</h2>
+            <p className="text-muted-foreground">{selectedUser.email}</p>
+          </div>
         </div>
         
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button className="btn-gaming">
               <Plus className="h-4 w-4 mr-2" />
-              Crear Servicio
+              Nueva Orden de Servicio
             </Button>
           </DialogTrigger>
           <DialogContent className="card-gaming border-primary/20">
             <DialogHeader>
-              <DialogTitle className="text-glow">Crear Nueva Orden de Servicio</DialogTitle>
+              <DialogTitle className="text-glow">Nueva Orden para {selectedUser.name}</DialogTitle>
               <DialogDescription>
                 Registra un nuevo equipo para reparación o mantenimiento
               </DialogDescription>
@@ -176,34 +235,6 @@ const TechnicalServicesAdmin = () => {
             
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleCreateService)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="clienteId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cliente</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un cliente" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {mockUsers.map((user) => (
-                            <SelectItem key={user.id} value={user.id}>
-                              <div className="flex items-center gap-2">
-                                <User className="h-4 w-4" />
-                                {user.name} - {user.email}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
                 <FormField
                   control={form.control}
                   name="descripcion"
@@ -300,20 +331,20 @@ const TechnicalServicesAdmin = () => {
         </Card>
       </div>
 
-      {/* Services List */}
+      {/* Services List for selected user */}
       <div className="space-y-4">
-        {services.length === 0 ? (
+        {userServices.length === 0 ? (
           <Card className="card-gaming border-primary/20">
             <CardContent className="p-8 text-center">
               <Wrench className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No hay servicios registrados</h3>
+              <h3 className="text-lg font-semibold mb-2">No hay servicios para este usuario</h3>
               <p className="text-muted-foreground">
-                Crea la primera orden de servicio para comenzar
+                Crea la primera orden de servicio para {selectedUser.name}
               </p>
             </CardContent>
           </Card>
         ) : (
-          services.map((service) => (
+          userServices.map((service) => (
             <Card key={service.id} className="card-gaming border-primary/20">
               <CardHeader>
                 <div className="flex items-center justify-between">
