@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
+import { TechnicalServicesProvider } from "./hooks/useTechnicalServices";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -18,6 +19,8 @@ import Contacto from "./pages/Contacto";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailure from "./pages/PaymentFailure";
 import NotFound from "./pages/NotFound";
+import TechnicalServicesDashboard from "./pages/TechnicalServicesDashboard";
+import TechnicalServicesAdmin from "./pages/TechnicalServicesAdmin";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +28,8 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <CartProvider>
-        <TooltipProvider>
+        <TechnicalServicesProvider>
+          <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -52,11 +56,28 @@ const App = () => (
               <Route path="/payment/success" element={<PaymentSuccess />} />
               <Route path="/payment/failure" element={<PaymentFailure />} />
               <Route path="/payment/pending" element={<PaymentFailure />} />
+              <Route 
+                path="/servicios-tecnicos" 
+                element={
+                  <ProtectedRoute>
+                    <TechnicalServicesDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/servicios-tecnicos" 
+                element={
+                  <ProtectedRoute>
+                    <TechnicalServicesAdmin />
+                  </ProtectedRoute>
+                } 
+              />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </TooltipProvider>
+          </TooltipProvider>
+        </TechnicalServicesProvider>
       </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
