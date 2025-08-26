@@ -147,17 +147,17 @@ const Index = () => {
                         </div>
                         
                         {/* Main Title */}
-                        <h1 className="text-5xl lg:text-8xl text-glow font-bold leading-tight">
+                        <h1 className="text-5xl text-glow leading-tight lg:text-5xl font-bold">
                           {slide.title}
                         </h1>
                         
                         {/* Subtitle */}
-                        <p className="text-2xl md:text-3xl text-secondary font-medium animate-pulse-neon">
+                        <p className="text-2xl text-secondary animate-pulse-neon md:text-2xl font-medium">
                           {slide.subtitle}
                         </p>
                         
                         {/* Description */}
-                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                        <p className="max-w-3xl mx-auto leading-relaxed text-slate-50 font-extralight text-xl">
                           {slide.description}
                         </p>
                         
