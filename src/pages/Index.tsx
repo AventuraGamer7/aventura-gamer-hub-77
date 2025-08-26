@@ -147,7 +147,7 @@ const Index = () => {
                         </div>
                         
                         {/* Main Title */}
-                        <h1 className="text-5xl text-glow leading-tight font-bold lg:text-2xl">
+                        <h1 className="text-glow leading-tight font-bold lg:text-2xl text-2xl">
                           {slide.title}
                         </h1>
                         
