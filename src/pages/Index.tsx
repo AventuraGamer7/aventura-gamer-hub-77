@@ -115,7 +115,7 @@ const Index = () => {
       <WhatsAppFloat />
       
       {/* Dynamic Hero Section with Carousel */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="relative h-[75vh] overflow-hidden">
         <Carousel opts={{
         align: "start",
         loop: true
@@ -139,7 +139,7 @@ const Index = () => {
                   {/* Content */}
                   <div className="relative h-full flex items-center justify-center">
                     <div className="container mx-auto px-4">
-                      <div className="max-w-5xl mx-auto text-center space-y-8 animate-fade-in">
+                      <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
                         
                         {/* Gaming Badge */}
                         <div className="flex justify-center">
