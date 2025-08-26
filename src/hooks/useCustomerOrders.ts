@@ -6,7 +6,7 @@ interface Order {
   id: string;
   user_id: string;
   item_id: string;
-  item_type: string; // Changed from union type to string to match database
+  item_type: string;
   quantity: number;
   total_price: number;
   created_at: string;
@@ -18,7 +18,7 @@ interface Order {
   delivered_at?: string;
 }
 
-export const useCustomerOrders = () => {
+export function useCustomerOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -86,4 +86,4 @@ export const useCustomerOrders = () => {
     loading,
     refetch: fetchOrders
   };
-};
+}

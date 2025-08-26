@@ -34,6 +34,7 @@ import ManagementPanel from '@/components/ManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import { AppSidebar } from '@/components/AppSidebar';
 import { CustomerOrders } from '@/components/CustomerOrders';
+// Import customer orders hook
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
   LogOut, 
