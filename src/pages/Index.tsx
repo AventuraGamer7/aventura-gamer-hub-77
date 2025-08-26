@@ -115,7 +115,7 @@ const Index = () => {
       <WhatsAppFloat />
       
       {/* Dynamic Hero Section with Carousel */}
-      <section className="relative h-[75vh] md:h-[75vh] sm:h-[60vh] overflow-hidden">
+      <section className="relative h-[75vh] overflow-hidden">
         <Carousel opts={{
         align: "start",
         loop: true
@@ -139,7 +139,7 @@ const Index = () => {
                   {/* Content */}
                   <div className="relative h-full flex items-center justify-center">
                     <div className="container mx-auto px-4">
-                      <div className="max-w-4xl sm:max-w-xs mx-auto text-center space-y-6 sm:space-y-3 animate-fade-in">
+                      <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
                         
                         {/* Gaming Badge */}
                         <div className="flex justify-center">
@@ -147,36 +147,36 @@ const Index = () => {
                         </div>
                         
                         {/* Main Title */}
-                        <h1 className="text-5xl lg:text-8xl sm:text-3xl text-glow font-bold leading-tight">
+                        <h1 className="text-5xl lg:text-8xl text-glow font-bold leading-tight">
                           {slide.title}
                         </h1>
                         
                         {/* Subtitle */}
-                        <p className="text-2xl md:text-3xl sm:text-lg text-secondary font-medium animate-pulse-neon">
+                        <p className="text-2xl md:text-3xl text-secondary font-medium animate-pulse-neon">
                           {slide.subtitle}
                         </p>
                         
                         {/* Description */}
-                        <p className="text-xl sm:text-base text-muted-foreground max-w-3xl sm:max-w-xs mx-auto leading-relaxed">
+                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                           {slide.description}
                         </p>
                         
                         {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-col gap-6 sm:gap-3 justify-center items-center pt-8 sm:pt-4">
-                          <Button variant="gaming" size="xl" className="text-lg sm:text-base px-8 sm:px-6 py-4 sm:py-3" onClick={() => handleSlideNavigation(slide.button_url)}>
-                            <Play className="mr-2 h-6 w-6 sm:h-4 sm:w-4" />
+                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
+                          <Button variant="gaming" size="xl" className="text-lg px-8 py-4" onClick={() => handleSlideNavigation(slide.button_url)}>
+                            <Play className="mr-2 h-6 w-6" />
                             {slide.button_text}
-                            <ChevronRight className="ml-2 h-6 w-6 sm:h-4 sm:w-4" />
+                            <ChevronRight className="ml-2 h-6 w-6" />
                           </Button>
-                          {user && <Button variant="gaming-secondary" size="xl" className="text-lg sm:text-base px-8 sm:px-6 py-4 sm:py-3" onClick={() => navigate('/dashboard')}>
-                              <Star className="mr-2 h-6 w-6 sm:h-4 sm:w-4" />
+                          {user && <Button variant="gaming-secondary" size="xl" className="text-lg px-8 py-4" onClick={() => navigate('/dashboard')}>
+                              <Star className="mr-2 h-6 w-6" />
                               Dashboard
                             </Button>}
                         </div>
                         
                         {/* Progress Indicators */}
-                        <div className="flex justify-center gap-3 sm:gap-2 pt-8 sm:pt-4">
-                          {activeHeroSlides.map((_, indicatorIndex) => <div key={indicatorIndex} className={`w-3 h-3 sm:w-2 sm:h-2 rounded-full transition-all duration-300 ${indicatorIndex === index ? 'bg-primary shadow-glow' : 'bg-muted-foreground/30'}`} />)}
+                        <div className="flex justify-center gap-3 pt-8">
+                          {activeHeroSlides.map((_, indicatorIndex) => <div key={indicatorIndex} className={`w-3 h-3 rounded-full transition-all duration-300 ${indicatorIndex === index ? 'bg-primary shadow-glow' : 'bg-muted-foreground/30'}`} />)}
                         </div>
                       </div>
                     </div>
