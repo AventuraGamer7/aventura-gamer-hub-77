@@ -39,20 +39,32 @@ const Tienda = () => {
   // SEO data for different categories
   const seoData = {
     'Todos': {
-      title: 'Tienda Gamer',
-      description: 'Descubre nuestra amplia selección de productos gaming: controles, consolas, accesorios y más. Los mejores precios y calidad garantizada.'
+      title: 'Tienda Gamer - Gaming Store | Aventura Gamer',
+      description: 'Descubre nuestra amplia selección de productos gaming: controles, consolas, accesorios y más. Los mejores precios y calidad garantizada en Aventura Gamer.'
     },
     'Controles': {
-      title: 'Tienda Gamer - Controles Gaming',
-      description: 'Controles gaming de alta calidad para Xbox, PlayStation y PC. Mejora tu experiencia de juego con nuestros controles profesionales.'
+      title: 'Controles para PS4, Xbox y más | Aventura Gamer',
+      description: 'Controles gaming profesionales para Xbox, PlayStation y PC. Mejora tu experiencia de juego con nuestros controles de alta calidad en Aventura Gamer.'
     },
     'Consolas': {
-      title: 'Tienda Gamer - Consolas Gaming',
-      description: 'Las mejores consolas de videojuegos: Xbox, PlayStation, Nintendo Switch y más. Encuentra tu consola ideal al mejor precio.'
+      title: 'Consolas de Videojuegos Xbox, PlayStation | Aventura Gamer',
+      description: 'Las mejores consolas gaming: Xbox Series X/S, PlayStation 5, Nintendo Switch y más. Encuentra tu consola ideal al mejor precio en Aventura Gamer.'
     },
     'Extras': {
-      title: 'Tienda Gamer - Accesorios y Extras',
-      description: 'Accesorios gaming y extras para mejorar tu setup: auriculares, teclados, mouse, cables y mucho más.'
+      title: 'Accesorios Gaming y Extras | Aventura Gamer',
+      description: 'Accesorios gaming premium: auriculares, teclados mecánicos, mouse gaming, cables y componentes. Mejora tu setup gaming en Aventura Gamer.'
+    },
+    'XBOX': {
+      title: 'Accesorios y Controles Xbox | Aventura Gamer',
+      description: 'Controles Xbox Series X/S, accesorios oficiales y compatibles. La mejor selección de productos Xbox al mejor precio en Aventura Gamer.'
+    },
+    'PS4': {
+      title: 'Controles y Accesorios PS4 | Aventura Gamer',
+      description: 'Controles DualShock 4, accesorios y repuestos para PlayStation 4. Productos originales y compatibles en Aventura Gamer.'
+    },
+    'PS5': {
+      title: 'Controles DualSense y Accesorios PS5 | Aventura Gamer',
+      description: 'Controles DualSense, cargadores y accesorios para PlayStation 5. La mejor experiencia gaming de nueva generación en Aventura Gamer.'
     }
   };
 
