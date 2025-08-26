@@ -33,42 +33,61 @@ const Tienda = () => {
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
   
+  // Normalize category to lowercase and redirect if needed
+  useEffect(() => {
+    if (categoria && categoria !== categoria.toLowerCase()) {
+      navigate(`/tienda/${categoria.toLowerCase()}`, { replace: true });
+      return;
+    }
+  }, [categoria, navigate]);
+  
   // Get selected category from URL params or default to 'Todos'
-  const selectedCategory = categoria && categories.includes(categoria) ? categoria : 'Todos';
+  const normalizedCategory = categoria?.toLowerCase();
+  const selectedCategory = normalizedCategory && categories.map(c => c.toLowerCase()).includes(normalizedCategory) 
+    ? categories.find(c => c.toLowerCase() === normalizedCategory) || 'Todos'
+    : 'Todos';
 
   // SEO data for different categories
   const seoData = {
     'Todos': {
       title: 'Tienda Gamer - Gaming Store | Aventura Gamer',
-      description: 'Descubre nuestra amplia selección de productos gaming: controles, consolas, accesorios y más. Los mejores precios y calidad garantizada en Aventura Gamer.'
+      description: 'Descubre nuestra amplia selección de productos gaming: controles, consolas, accesorios y más. Los mejores precios y calidad garantizada en Aventura Gamer.',
+      url: '/tienda'
     },
     'Controles': {
       title: 'Controles para PS4, Xbox y más | Aventura Gamer',
-      description: 'Controles gaming profesionales para Xbox, PlayStation y PC. Mejora tu experiencia de juego con nuestros controles de alta calidad en Aventura Gamer.'
+      description: 'Controles gaming profesionales para Xbox, PlayStation y PC. Mejora tu experiencia de juego con nuestros controles de alta calidad en Aventura Gamer.',
+      url: '/tienda/controles'
     },
     'Consolas': {
       title: 'Consolas de Videojuegos Xbox, PlayStation | Aventura Gamer',
-      description: 'Las mejores consolas gaming: Xbox Series X/S, PlayStation 5, Nintendo Switch y más. Encuentra tu consola ideal al mejor precio en Aventura Gamer.'
+      description: 'Las mejores consolas gaming: Xbox Series X/S, PlayStation 5, Nintendo Switch y más. Encuentra tu consola ideal al mejor precio en Aventura Gamer.',
+      url: '/tienda/consolas'
     },
     'Extras': {
       title: 'Accesorios Gaming y Extras | Aventura Gamer',
-      description: 'Accesorios gaming premium: auriculares, teclados mecánicos, mouse gaming, cables y componentes. Mejora tu setup gaming en Aventura Gamer.'
+      description: 'Accesorios gaming premium: auriculares, teclados mecánicos, mouse gaming, cables y componentes. Mejora tu setup gaming en Aventura Gamer.',
+      url: '/tienda/extras'
     },
     'XBOX': {
       title: 'Accesorios y Controles Xbox | Aventura Gamer',
-      description: 'Controles Xbox Series X/S, accesorios oficiales y compatibles. La mejor selección de productos Xbox al mejor precio en Aventura Gamer.'
+      description: 'Controles Xbox Series X/S, accesorios oficiales y compatibles. La mejor selección de productos Xbox al mejor precio en Aventura Gamer.',
+      url: '/tienda/xbox'
     },
     'PS4': {
       title: 'Controles y Accesorios PS4 | Aventura Gamer',
-      description: 'Controles DualShock 4, accesorios y repuestos para PlayStation 4. Productos originales y compatibles en Aventura Gamer.'
+      description: 'Controles DualShock 4, accesorios y repuestos para PlayStation 4. Productos originales y compatibles en Aventura Gamer.',
+      url: '/tienda/ps4'
     },
     'PS5': {
       title: 'Controles DualSense y Accesorios PS5 | Aventura Gamer',
-      description: 'Controles DualSense, cargadores y accesorios para PlayStation 5. La mejor experiencia gaming de nueva generación en Aventura Gamer.'
+      description: 'Controles DualSense, cargadores y accesorios para PlayStation 5. La mejor experiencia gaming de nueva generación en Aventura Gamer.',
+      url: '/tienda/ps5'
     }
   };
 
   const currentSeo = seoData[selectedCategory as keyof typeof seoData] || seoData['Todos'];
+  const canonicalUrl = `https://aventuragamer.com${currentSeo.url}`;
 
   // Update URL when category changes
   const handleCategoryChange = (category: string) => {
@@ -76,8 +95,8 @@ const Tienda = () => {
       // Navigate to base tienda route for 'Todos'
       navigate('/tienda');
     } else {
-      // Navigate to category route
-      navigate(`/tienda/${category}`);
+      // Navigate to category route with lowercase
+      navigate(`/tienda/${category.toLowerCase()}`);
     }
   };
 
@@ -171,12 +190,22 @@ const Tienda = () => {
       <Helmet>
         <title>{currentSeo.title}</title>
         <meta name="description" content={currentSeo.description} />
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Open Graph */}
         <meta property="og:title" content={currentSeo.title} />
         <meta property="og:description" content={currentSeo.description} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Aventura Gamer" />
+        <meta property="og:locale" content="es_CO" />
+        
+        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@aventuragamer" />
         <meta name="twitter:title" content={currentSeo.title} />
         <meta name="twitter:description" content={currentSeo.description} />
+        <meta name="twitter:url" content={canonicalUrl} />
       </Helmet>
       <Header />
       <WhatsAppFloat />
