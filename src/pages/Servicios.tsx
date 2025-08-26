@@ -146,12 +146,29 @@ const Servicios = () => {
                         <CardContent className="space-y-4">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl font-bold text-primary">${service.price.toFixed(0)}</span>
+                              <span className="text-2xl font-bold text-primary">$ {service.price.toLocaleString('es-CO')} COP</span>
                             </div>
                           </div>
                           
                           <div className="flex gap-2">
-                            <Button variant="gaming" size="sm" className="flex-1">
+                            <Button 
+                              variant="gaming" 
+                              size="sm" 
+                              className="flex-1"
+                              onClick={() => {
+                                addItem({
+                                  id: service.id,
+                                  name: service.name,
+                                  price: service.price,
+                                  image: service.image || undefined,
+                                  type: 'service'
+                                });
+                                toast({
+                                  title: 'Servicio agregado',
+                                  description: `${service.name} se agregó al carrito`,
+                                });
+                              }}
+                            >
                               <ShoppingCart className="mr-1 h-3 w-3" />
                               Solicitar
                             </Button>
@@ -192,12 +209,29 @@ const Servicios = () => {
                           <CardContent className="space-y-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-primary">${service.price.toFixed(0)}</span>
+                                <span className="text-2xl font-bold text-primary">$ {service.price.toLocaleString('es-CO')} COP</span>
                               </div>
                             </div>
                             
                             <div className="flex gap-2">
-                              <Button variant="gaming" size="sm" className="flex-1">
+                              <Button 
+                                variant="gaming" 
+                                size="sm" 
+                                className="flex-1"
+                                onClick={() => {
+                                  addItem({
+                                    id: service.id,
+                                    name: service.name,
+                                    price: service.price,
+                                    image: service.image || undefined,
+                                    type: 'service'
+                                  });
+                                  toast({
+                                    title: 'Servicio agregado',
+                                    description: `${service.name} se agregó al carrito`,
+                                  });
+                                }}
+                              >
                                 <ShoppingCart className="mr-1 h-3 w-3" />
                                 Solicitar
                               </Button>
@@ -238,7 +272,7 @@ const Servicios = () => {
                           <CardContent className="space-y-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-primary">${service.price.toFixed(0)}</span>
+                                <span className="text-2xl font-bold text-primary">$ {service.price.toLocaleString('es-CO')} COP</span>
                               </div>
                             </div>
                             
@@ -301,11 +335,27 @@ const Servicios = () => {
                           <CardContent className="space-y-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-secondary">${service.price.toFixed(0)}</span>
+                                <span className="text-2xl font-bold text-secondary">$ {service.price.toLocaleString('es-CO')} COP</span>
                               </div>
                             </div>
                             
-                            <Button variant="gaming" className="w-full">
+                            <Button 
+                              variant="gaming" 
+                              className="w-full"
+                              onClick={() => {
+                                addItem({
+                                  id: service.id,
+                                  name: service.name,
+                                  price: service.price,
+                                  image: service.image || undefined,
+                                  type: 'service'
+                                });
+                                toast({
+                                  title: 'Servicio agregado',
+                                  description: `${service.name} se agregó al carrito`,
+                                });
+                              }}
+                            >
                               <ShoppingCart className="mr-2 h-4 w-4" />
                               Solicitar Información
                             </Button>
