@@ -19,7 +19,9 @@ import {
   Clock,
   CheckCircle,
   Package,
-  Eye
+  Eye,
+  Search,
+  X
 } from 'lucide-react';
 
 interface OrdenServicio {
@@ -81,6 +83,7 @@ const GestionUsuarios = () => {
   const [newStatus, setNewStatus] = useState('');
   const [nuevaDescripcion, setNuevaDescripcion] = useState('');
   const [loadingOrdenes, setLoadingOrdenes] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSelectUser = async (usuario: typeof usuarios[0]) => {
     setUsuarioSeleccionado(usuario);
@@ -153,6 +156,16 @@ const GestionUsuarios = () => {
     setIsUpdateOpen(true);
   };
 
+  // Filtrar usuarios por término de búsqueda
+  const usuariosFiltrados = usuarios.filter(usuario => 
+    usuario.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -172,31 +185,90 @@ const GestionUsuarios = () => {
           </div>
         </div>
 
+        {/* Barra de búsqueda */}
+        <Card className="card-gaming border-primary/20">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar usuario por nombre o email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-10 bg-background/50 border-primary/20"
+                />
+                {searchTerm && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSearch}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-destructive/20"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {usuariosFiltrados.length} de {usuarios.length} usuarios
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Lista de usuarios filtrados */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {usuarios.map((usuario) => (
-            <Card 
-              key={usuario.id} 
-              className="card-gaming border-primary/20 cursor-pointer hover:border-primary/40 transition-colors"
-              onClick={() => handleSelectUser(usuario)}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    <User className="h-6 w-6 text-primary" />
+          {usuariosFiltrados.length === 0 ? (
+            <div className="col-span-full">
+              <Card className="card-gaming border-primary/20">
+                <CardContent className="p-8 text-center">
+                  <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    {searchTerm ? 'No se encontraron usuarios' : 'No hay usuarios registrados'}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {searchTerm 
+                      ? `No hay usuarios que coincidan con "${searchTerm}"`
+                      : 'Aún no hay usuarios registrados en el sistema'
+                    }
+                  </p>
+                  {searchTerm && (
+                    <Button
+                      variant="outline"
+                      onClick={clearSearch}
+                      className="mt-4 border-primary/30"
+                    >
+                      Limpiar búsqueda
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            usuariosFiltrados.map((usuario) => (
+              <Card 
+                key={usuario.id} 
+                className="card-gaming border-primary/20 cursor-pointer hover:border-primary/40 transition-all duration-200 hover-scale"
+                onClick={() => handleSelectUser(usuario)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <User className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{usuario.username || 'Sin nombre'}</h3>
+                      <p className="text-sm text-muted-foreground">{usuario.email}</p>
+                      {usuario.role && (
+                        <Badge variant="outline" className="text-xs mt-1">
+                          {usuario.role}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{usuario.username || 'Sin nombre'}</h3>
-                    <p className="text-sm text-muted-foreground">{usuario.email}</p>
-                    {usuario.role && (
-                      <Badge variant="outline" className="text-xs mt-1">
-                        {usuario.role}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
     );
