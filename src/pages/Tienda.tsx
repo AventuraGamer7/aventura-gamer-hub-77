@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +36,28 @@ const Tienda = () => {
   // Get selected category from URL or default to 'Todos'
   const filterParam = searchParams.get('filter');
   const selectedCategory = filterParam && categories.includes(filterParam) ? filterParam : 'Todos';
+
+  // SEO data for different categories
+  const seoData = {
+    'Todos': {
+      title: 'Tienda Gamer',
+      description: 'Descubre nuestra amplia selección de productos gaming: controles, consolas, accesorios y más. Los mejores precios y calidad garantizada.'
+    },
+    'Controles': {
+      title: 'Tienda Gamer - Controles Gaming',
+      description: 'Controles gaming de alta calidad para Xbox, PlayStation y PC. Mejora tu experiencia de juego con nuestros controles profesionales.'
+    },
+    'Consolas': {
+      title: 'Tienda Gamer - Consolas Gaming',
+      description: 'Las mejores consolas de videojuegos: Xbox, PlayStation, Nintendo Switch y más. Encuentra tu consola ideal al mejor precio.'
+    },
+    'Extras': {
+      title: 'Tienda Gamer - Accesorios y Extras',
+      description: 'Accesorios gaming y extras para mejorar tu setup: auriculares, teclados, mouse, cables y mucho más.'
+    }
+  };
+
+  const currentSeo = seoData[selectedCategory as keyof typeof seoData] || seoData['Todos'];
 
   // Update URL when category changes
   const handleCategoryChange = (category: string) => {
@@ -138,6 +161,16 @@ const Tienda = () => {
       </CardContent>
     </Card>;
   return <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{currentSeo.title}</title>
+        <meta name="description" content={currentSeo.description} />
+        <meta property="og:title" content={currentSeo.title} />
+        <meta property="og:description" content={currentSeo.description} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={currentSeo.title} />
+        <meta name="twitter:description" content={currentSeo.description} />
+      </Helmet>
       <Header />
       <WhatsAppFloat />
       
