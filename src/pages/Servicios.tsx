@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+import OrdenesCliente from '@/components/OrdenesCliente';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
 import { useCart } from '@/hooks/useCart';
@@ -47,6 +48,9 @@ const Servicios = () => {
           </div>
         </div>
       </section>
+
+      {/* Órdenes de Servicio del Cliente */}
+      <OrdenesCliente />
 
       {/* Misiones Disponibles */}
       {isLoggedIn && <section className="py-16 bg-muted/30">

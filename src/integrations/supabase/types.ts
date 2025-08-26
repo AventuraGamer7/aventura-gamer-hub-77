@@ -89,6 +89,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ordenes_servicio: {
+        Row: {
+          created_at: string
+          descripcion: string
+          estado: string
+          id: string
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          descripcion: string
+          estado?: string
+          id?: string
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string
+          estado?: string
+          id?: string
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string

@@ -32,6 +32,7 @@ import AddCourseForm from '@/components/AddCourseForm';
 import AddServiceForm from '@/components/AddServiceForm';
 import ManagementPanel from '@/components/ManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
+import GestionUsuarios from '@/components/GestionUsuarios';
 import { AppSidebar } from '@/components/AppSidebar';
 import { CustomerOrders } from '@/components/CustomerOrders';
 // Import customer orders hook
@@ -506,14 +507,9 @@ const Dashboard = () => {
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-glow">Gestión de Usuarios</h2>
-              <p className="text-muted-foreground">Administra los usuarios del sistema</p>
+              <p className="text-muted-foreground">Administra los usuarios del sistema y sus órdenes de servicio</p>
             </div>
-            <Card className="card-gaming border-primary/20">
-              <CardContent className="p-8 text-center">
-                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">Funcionalidad en desarrollo</p>
-              </CardContent>
-            </Card>
+            <GestionUsuarios />
           </div>
         );
       case 'config':
