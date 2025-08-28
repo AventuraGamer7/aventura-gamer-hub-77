@@ -127,7 +127,8 @@ export default {
 				'glow': 'glow 2s ease-in-out infinite alternate'
 			},
 			fontFamily: {
-				'gaming': ['Inter', 'system-ui', 'sans-serif']
+				'gaming': ['Inter', 'system-ui', 'sans-serif'],
+				'bungee': ['Bungee', 'cursive']
 			}
 		}
 	},

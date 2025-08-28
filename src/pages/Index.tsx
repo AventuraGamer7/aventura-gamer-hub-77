@@ -147,7 +147,7 @@ const Index = () => {
                         </div>
                         
                         {/* Main Title */}
-                        <h1 className="text-glow leading-tight font-bold lg:text-2xl text-2xl">
+                        <h1 className="text-glow leading-tight font-bungee lg:text-6xl text-4xl">
                           {slide.title}
                         </h1>
                         
@@ -197,7 +197,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-glow">
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
               Experiencia Técnica de Elite
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">Servicios profesionales y garantía completa para maximizar tu experiencia gaming</p>
@@ -281,7 +281,7 @@ const Index = () => {
                 Sistema de Progresión Gaming
               </Badge>
               
-              <h2 className="text-4xl md:text-5xl font-bold text-glow leading-tight">
+              <h2 className="text-4xl md:text-5xl font-bungee text-glow leading-tight">
                 De <span className="text-secondary">APRENDIZ</span> a<br />
                 <span className="text-primary">AVENTURERO PRO</span>
               </h2>
