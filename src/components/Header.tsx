@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Phone, MapPin, Gamepad2 } from 'lucide-react';
+import { Menu, X, Phone, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
@@ -44,9 +44,11 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-            <div className="p-2 rounded-lg bg-gradient-to-r from-primary to-secondary">
-              <Gamepad2 className="h-6 w-6 text-white" />
-            </div>
+            <img 
+              src="/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png" 
+              alt="Aventura Gamer Logo" 
+              className="h-10 w-auto rounded-lg"
+            />
             <span className="text-neon">Aventura Gamer</span>
           </Link>
 
