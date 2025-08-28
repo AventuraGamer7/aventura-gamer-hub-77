@@ -49,7 +49,7 @@ const Header = () => {
               alt="Aventura Gamer Logo" 
               className="h-10 w-auto rounded-lg"
             />
-            <span className="text-neon">Aventura Gamer</span>
+            <span className="text-neon font-stencil font-black">Aventura Gamer</span>
           </Link>
 
           {/* Desktop Navigation */}
