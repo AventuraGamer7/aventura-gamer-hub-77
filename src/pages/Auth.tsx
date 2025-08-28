@@ -11,10 +11,11 @@ import { GamepadIcon, UserPlus, LogIn, Loader2 } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user, signIn, signUp } = useAuth();
+  const { user, signIn, signUp, resetPassword } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -31,28 +32,48 @@ const Auth = () => {
 
     try {
       let result;
-      if (isLogin) {
-        result = await signIn(email, password);
-      } else {
-        result = await signUp(email, password);
-      }
-
-      if (result.error) {
-        toast({
-          title: "Error",
-          description: result.error.message,
-          variant: "destructive"
-        });
-      } else {
-        if (!isLogin) {
+      if (isForgotPassword) {
+        result = await resetPassword(email);
+        if (result.error) {
           toast({
-            title: "¡Cuenta creada!",
-            description: "Revisa tu email para confirmar tu cuenta.",
+            title: "Error",
+            description: result.error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "¡Email enviado!",
+            description: "Revisa tu correo para restablecer tu contraseña.",
+          });
+          setIsForgotPassword(false);
+          setEmail('');
+        }
+      } else if (isLogin) {
+        result = await signIn(email, password);
+        if (result.error) {
+          toast({
+            title: "Error",
+            description: result.error.message,
+            variant: "destructive"
           });
         } else {
           toast({
             title: "¡Bienvenido Aventurero!",
             description: "Has iniciado sesión exitosamente.",
+          });
+        }
+      } else {
+        result = await signUp(email, password);
+        if (result.error) {
+          toast({
+            title: "Error",
+            description: result.error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "¡Cuenta creada!",
+            description: "Revisa tu email para confirmar tu cuenta.",
           });
         }
       }
@@ -82,13 +103,18 @@ const Auth = () => {
           </Badge>
           
           <CardTitle className="text-2xl font-bold text-glow">
-            {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+            {isForgotPassword 
+              ? 'Recuperar Contraseña' 
+              : isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'
+            }
           </CardTitle>
           
           <CardDescription>
-            {isLogin 
-              ? 'Continúa tu aventura gaming' 
-              : 'Únete a la comunidad de aventureros'
+            {isForgotPassword
+              ? 'Te enviaremos un enlace para restablecer tu contraseña'
+              : isLogin 
+                ? 'Continúa tu aventura gaming' 
+                : 'Únete a la comunidad de aventureros'
             }
           </CardDescription>
         </CardHeader>
@@ -108,23 +134,25 @@ const Auth = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-background/50 border-border/50 focus:border-primary"
-              />
-              {!isLogin && (
-                <p className="text-xs text-muted-foreground">
-                  Mínimo 6 caracteres
-                </p>
-              )}
-            </div>
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Contraseña</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-background/50 border-border/50 focus:border-primary"
+                />
+                {!isLogin && (
+                  <p className="text-xs text-muted-foreground">
+                    Mínimo 6 caracteres
+                  </p>
+                )}
+              </div>
+            )}
 
             <Button 
               type="submit" 
@@ -138,25 +166,58 @@ const Auth = () => {
                 </>
               ) : (
                 <>
-                  {isLogin ? <LogIn className="mr-2 h-4 w-4" /> : <UserPlus className="mr-2 h-4 w-4" />}
-                  {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+                  {isForgotPassword 
+                    ? 'Enviar Enlace de Recuperación'
+                    : isLogin ? <><LogIn className="mr-2 h-4 w-4" />Iniciar Sesión</> : <><UserPlus className="mr-2 h-4 w-4" />Crear Cuenta</>
+                  }
                 </>
               )}
             </Button>
           </form>
 
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:bg-primary/10"
-            >
-              {isLogin 
-                ? '¿No tienes cuenta? Crear una' 
-                : '¿Ya tienes cuenta? Iniciar sesión'
-              }
-            </Button>
-          </div>
+          {!isForgotPassword && (
+            <>
+              {isLogin && (
+                <div className="text-center">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-sm text-muted-foreground hover:text-primary hover:bg-primary/10"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </Button>
+                </div>
+              )}
+              
+              <div className="text-center">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-primary hover:bg-primary/10"
+                >
+                  {isLogin 
+                    ? '¿No tienes cuenta? Crear una' 
+                    : '¿Ya tienes cuenta? Iniciar sesión'
+                  }
+                </Button>
+              </div>
+            </>
+          )}
+
+          {isForgotPassword && (
+            <div className="text-center">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setIsForgotPassword(false);
+                  setEmail('');
+                }}
+                className="text-primary hover:bg-primary/10"
+              >
+                Volver al inicio de sesión
+              </Button>
+            </div>
+          )}
 
           <div className="text-center pt-4">
             <Button
