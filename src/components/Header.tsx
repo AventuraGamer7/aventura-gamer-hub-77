@@ -92,8 +92,10 @@ const Header = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="relative bg-gradient-to-r from-primary/20 to-secondary/20 border-2 border-primary/30 hover:from-primary/30 hover:to-secondary/30 hover:border-primary/50 animate-pulse-neon"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-md animate-pulse"></div>
+              {isMenuOpen ? <X className="h-5 w-5 relative z-10 text-primary" /> : <Menu className="h-5 w-5 relative z-10 text-primary" />}
             </Button>
           </div>
         </div>
