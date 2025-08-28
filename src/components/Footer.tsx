@@ -30,8 +30,12 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-gradient-to-r from-primary to-secondary">
-                <Gamepad2 className="h-6 w-6 text-white" />
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center p-1">
+                <img 
+                  src="/lovable-uploads/8d12c7f6-549e-4ee6-b31b-3ef2838c9bb8.png" 
+                  alt="Aventura Gamer Logo" 
+                  className="w-full h-full object-contain rounded"
+                />
               </div>
               <span className="text-xl font-bold text-neon">Aventura Gamer</span>
             </div>

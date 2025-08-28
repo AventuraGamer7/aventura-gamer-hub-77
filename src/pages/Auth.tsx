@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { GamepadIcon, UserPlus, LogIn, Loader2 } from 'lucide-react';
+import { UserPlus, LogIn, Loader2 } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -94,8 +94,12 @@ const Auth = () => {
       
       <Card className="w-full max-w-md card-gaming border-primary/20 relative">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-            <GamepadIcon className="h-8 w-8 text-primary-foreground" />
+          <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center p-2">
+            <img 
+              src="/lovable-uploads/8d12c7f6-549e-4ee6-b31b-3ef2838c9bb8.png" 
+              alt="Aventura Gamer Logo" 
+              className="w-full h-full object-contain rounded-lg"
+            />
           </div>
           
           <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
