@@ -19,7 +19,6 @@ import heroImage from '@/assets/gaming-hero.jpg';
 import repairImage from '@/assets/repair-services.jpg';
 import coursesImage from '@/assets/gaming-courses.jpg';
 import storeImage from '@/assets/gaming-store.jpg';
-import aventuraGamerBg from '/lovable-uploads/4fae3e39-3d44-4ebc-8457-5d4b6cc4b28e.png';
 const Index = () => {
   const {
     user
@@ -117,25 +116,21 @@ const Index = () => {
       
       {/* Dynamic Hero Section with Carousel */}
       <section className="relative h-[75vh] overflow-hidden">
-        {/* Aventura Gamer Background */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${aventuraGamerBg})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-background/60 via-background/40 to-background/60" />
-        
         <Carousel opts={{
         align: "start",
         loop: true
       }} plugins={[Autoplay({
         delay: 6000,
         stopOnInteraction: false
-      })]} className="w-full h-full mx-0 py-[57px] relative z-10">
+      })]} className="w-full h-full mx-0 py-[57px]">
           <CarouselContent className="h-full">
             {activeHeroSlides.map((slide, index) => <CarouselItem key={slide.id} className="h-full">
                 <div className="relative h-full w-full">
-                  {/* Slide specific overlay */}
-                  <div className="absolute inset-0 bg-black/20" />
+                  {/* Background Image */}
+                  <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000" style={{
+                backgroundImage: `url(${slide.image_url})`,
+                filter: 'brightness(0.3)'
+              }} />
                   
                   {/* Gradient Overlay */}
                   
