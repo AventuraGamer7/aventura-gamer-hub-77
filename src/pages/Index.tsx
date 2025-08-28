@@ -193,8 +193,17 @@ const Index = () => {
 
       
       {/* Featured Services Section - Modular */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="py-24 relative overflow-hidden">
+        {/* Cyberpunk Background */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-80"
+          style={{
+            backgroundImage: `url('/lovable-uploads/3c2896db-3cf4-4e76-9ec3-47702dba466d.png')`
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 animate-fade-in">
             
             <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
