@@ -196,7 +196,7 @@ const Index = () => {
       <section className="py-24 relative overflow-hidden">
         {/* Cyberpunk Background */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-80"
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-80"
           style={{
             backgroundImage: `url('/lovable-uploads/3c2896db-3cf4-4e76-9ec3-47702dba466d.png')`
           }}
