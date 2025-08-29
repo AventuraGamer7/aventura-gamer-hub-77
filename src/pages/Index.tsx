@@ -10,6 +10,7 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import GamificationPanel from '@/components/GamificationPanel';
 import { useAuth } from '@/hooks/useAuth';
 import { useServices } from '@/hooks/useServices';
+import { useProducts } from '@/hooks/useProducts';
 import { useHeroSlides } from '@/hooks/useHeroSlides';
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -33,6 +34,11 @@ const Index = () => {
     slides: heroSlides,
     loading: heroLoading
   } = useHeroSlides();
+  const {
+    products,
+    loading: productsLoading,
+    error: productsError
+  } = useProducts();
 
   // Fallback hero slides if no slides from database
   const fallbackHeroSlides = [{
@@ -201,62 +207,121 @@ const Index = () => {
           </div>
               </div>
             </section>
-      {/* Gaming Experience Section - Modular */}
+      {/* Featured Products Section - Modular */}
       <section className="py-24 bg-muted/20 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
         
-        <div className="container mx-auto px-4 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8 animate-fade-in">
-              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 px-6 py-3 text-base">
-                <Trophy className="mr-2 h-5 w-5" />
-                Sistema de Progresión Gaming
-              </Badge>
-              
-              <h2 className="text-4xl md:text-5xl font-bungee text-glow leading-tight">
-                De <span className="text-secondary">APRENDIZ</span> a<br />
-                <span className="text-primary">AVENTURERO PRO</span>
-              </h2>
-              
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Experimenta un sistema de recompensas único. Gana XP, desbloquea logros épicos y accede a 
-                beneficios exclusivos mientras dominas el arte de la tecnología gaming.
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {achievements.map((achievement, index) => <Card key={index} className="card-gaming border-primary/20 p-6 group">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                        {achievement.icon}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-foreground mb-2">{achievement.title}</h4>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{achievement.description}</p>
-                      </div>
-                    </div>
-                  </Card>)}
-              </div>
-              
-              <div className="flex gap-4">
-                <Button variant="gaming" size="lg" className="px-8">
-                  <Target className="mr-2 h-5 w-5" />
-                  Comenzar Aventura
-                </Button>
-                <Button variant="gaming-secondary" size="lg" className="px-8">
-                  Ver Logros
-                </Button>
-              </div>
-            </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16 animate-fade-in">
+            <Badge variant="secondary" className="bg-secondary/20 text-secondary border-secondary/30 px-6 py-3 text-base mb-6">
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              Tienda Elite Gaming
+            </Badge>
             
-            <div className="lg:pl-8 animate-fade-in">
-              <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-xl" />
-                <div className="relative bg-card/80 rounded-2xl border border-border/50 p-8">
-                  <GamificationPanel />
-                </div>
-              </div>
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
+              Descubre la Élite en Aventura Gamer
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Productos premium y accesorios gaming de la más alta calidad para elevar tu experiencia
+            </p>
+          </div>
+      
+          {productsLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow"></div>
             </div>
+          ) : productsError ? (
+            <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
+                  <ShoppingCart className="h-8 w-8 text-destructive" />
+                </div>
+                <p className="text-destructive mb-4">Error al cargar los productos: {productsError}</p>
+                <Button variant="gaming" onClick={() => window.location.reload()}>
+                  Reintentar Carga
+                </Button>
+              </CardContent>
+            </Card>
+          ) : products.length === 0 ? (
+            <Card className="card-gaming max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
+                  <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <p className="text-muted-foreground">No hay productos disponibles en este momento.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.slice(0, 3).map(product => (
+                <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
+                  {product.image ? (
+                    <div className="relative h-56 overflow-hidden">
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+                      {product.badge_text && (
+                        <div className="absolute top-4 right-4">
+                          <Badge 
+                            variant="secondary" 
+                            className="bg-secondary/90 text-secondary-foreground border-secondary/50"
+                          >
+                            {product.badge_text}
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="relative h-56 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
+                      <ShoppingCart className="h-16 w-16 text-secondary/40" />
+                    </div>
+                  )}
+                  
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-xl text-neon group-hover:text-secondary transition-colors">
+                      {product.name}
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground line-clamp-2">
+                      {product.description || 'Producto gaming premium de alta calidad'}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="pt-0">
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <span className="text-2xl font-bold text-primary">
+                          ${product.price.toLocaleString('es-CO')} COP
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Stock: {product.stock}
+                        </span>
+                      </div>
+                      <Button variant="gaming" size="sm" className="px-6">
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        Comprar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+          
+          {/* View All Products CTA */}
+          <div className="text-center mt-16">
+            <Button 
+              variant="gaming-secondary" 
+              size="lg" 
+              className="px-8 py-4 text-lg" 
+              onClick={() => navigate('/tienda')}
+            >
+              Ver Todos los Productos
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
