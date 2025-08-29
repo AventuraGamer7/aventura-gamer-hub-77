@@ -192,6 +192,91 @@ const Index = () => {
       </section>
 
       
+      {/* Featured Services Section - Modular */}
+      <section className="py-24 relative overflow-hidden">
+        {/* Cyberpunk Background */}
+        <div 
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-80"
+          style={{
+            backgroundImage: `url('/lovable-uploads/3c2896db-3cf4-4e76-9ec3-47702dba466d.png')`
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16 animate-fade-in">
+            
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
+              Experiencia Técnica de Elite
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">Servicios profesionales y garantía completa para maximizar tu experiencia gaming</p>
+          </div>
+      
+          {loading ? <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow"></div>
+            </div> : error ? <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
+                  <Wrench className="h-8 w-8 text-destructive" />
+                </div>
+                <p className="text-destructive mb-4">Error al cargar los servicios: {error}</p>
+                <Button variant="gaming" onClick={() => window.location.reload()}>
+                  Reintentar Carga
+                </Button>
+              </CardContent>
+            </Card> : services.length === 0 ? <Card className="card-gaming max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
+                  <Wrench className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
+              </CardContent>
+            </Card> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.slice(0, 6).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
+                  {service.image ? <div className="relative h-56 overflow-hidden">
+                      <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+                    </div> : <div className="relative h-56 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <Wrench className="h-16 w-16 text-primary/40" />
+                    </div>}
+                  
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-xl text-neon group-hover:text-primary transition-colors">
+                      {service.name}
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground line-clamp-2">
+                      {service.description || 'Servicio profesional gaming especializado'}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="pt-0">
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <span className="text-2xl font-bold text-secondary">
+                          ${service.price.toLocaleString('es-CO')} COP
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Precio base
+                        </span>
+                      </div>
+                      <Button variant="gaming" size="sm" className="px-6">
+                        <Play className="mr-2 h-4 w-4" />
+                        Solicitar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>)}
+            </div>}
+          
+          {/* View All Services CTA */}
+          <div className="text-center mt-16">
+            <Button variant="gaming-secondary" size="lg" className="px-8 py-4 text-lg" onClick={() => navigate('/servicios')}>
+              Ver Todos los Servicios
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+              </div>
+            </section>
       {/* Gaming Experience Section - Modular */}
       <section className="py-24 bg-muted/20 relative overflow-hidden">
         {/* Background Effects */}
