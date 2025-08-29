@@ -128,8 +128,7 @@ export default {
 			},
 			fontFamily: {
 				'gaming': ['Inter', 'system-ui', 'sans-serif'],
-				'bungee': ['Bungee', 'cursive'],
-				'stencil': ['Orbitron', 'monospace']
+				'bungee': ['Bungee', 'cursive']
 			}
 		}
 	},
