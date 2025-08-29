@@ -145,7 +145,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
               Experiencia Técnica de Elite
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">Servicios profesionales y garantía completa para maximizar tu experiencia gaming</p>
+            
           </div>
       
           {loading ? <div className="flex justify-center items-center h-64">
