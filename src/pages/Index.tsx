@@ -11,6 +11,7 @@ import GamificationPanel from '@/components/GamificationPanel';
 import { useAuth } from '@/hooks/useAuth';
 import { useServices } from '@/hooks/useServices';
 import { useProducts } from '@/hooks/useProducts';
+import { useCourses } from '@/hooks/useCourses';
 import { useHeroSlides } from '@/hooks/useHeroSlides';
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -39,6 +40,11 @@ const Index = () => {
     loading: productsLoading,
     error: productsError
   } = useProducts();
+  const {
+    courses,
+    loading: coursesLoading,
+    error: coursesError
+  } = useCourses();
 
   // Fallback hero slides if no slides from database
   const fallbackHeroSlides = [{
@@ -326,71 +332,152 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Content Modules - PlayStation Style */}
-      <section className="py-24">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Featured Courses Section - Modular */}
+      <section className="py-24 relative overflow-hidden">
+        {/* Gaming Background */}
+        <div 
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-60"
+          style={{
+            backgroundImage: `url('/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png')`
+          }}
+        />
+        <div className="absolute inset-0 bg-background/85" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16 animate-fade-in">
+            <Badge variant="secondary" className="bg-gaming-blue/20 text-gaming-blue border-gaming-blue/30 px-6 py-3 text-base mb-6">
+              <GraduationCap className="mr-2 h-5 w-5" />
+              Academia Elite Gaming
+            </Badge>
             
-            {/* DIY Challenge Module */}
-            <Card className="card-gaming border-secondary/30 overflow-hidden group">
-              <div className="relative h-64 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('/api/placeholder/600/300')] bg-cover bg-center opacity-20" />
-                <div className="relative z-10 text-center space-y-4 p-8">
-                  <Badge variant="secondary" className="bg-secondary/30 text-secondary border-secondary/50 px-6 py-2">
-                    <Target className="mr-2 h-4 w-4" />
-                    Desafío Épico
-                  </Badge>
-                  <h3 className="text-2xl font-bold text-glow">Misión: Hazlo Tú Mismo</h3>
-                  <p className="text-muted-foreground">Conviértete en maestro de la reparación</p>
-                </div>
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
+              Sube de Nivel<br />
+              <span className="text-gaming-blue">Aventura Gamer</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Domina las habilidades técnicas más avanzadas con nuestros cursos especializados y certificaciones profesionales
+            </p>
+            
+            {/* Progress Bar */}
+            <div className="max-w-2xl mx-auto mt-8">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-muted-foreground">Progreso de la Comunidad</span>
+                <span className="text-sm font-bold text-gaming-blue">75% Completado</span>
               </div>
-              
-              <CardContent className="p-8">
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Acepta el desafío definitivo: domina las técnicas profesionales de reparación gaming. 
-                  Cursos hands-on con certificación incluida.
-                </p>
-                
-                <div className="flex gap-4">
-                  <Button variant="gaming" className="flex-1">
-                    <Play className="mr-2 h-4 w-4" />
-                    Acepto el Desafío
-                  </Button>
+              <div className="w-full bg-muted/30 rounded-full h-3 overflow-hidden">
+                <div className="bg-gradient-to-r from-gaming-blue to-primary h-full rounded-full animate-pulse shadow-glow transition-all duration-1000" style={{width: '75%'}}></div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">+2,500 aventureros mejorando sus habilidades</p>
+            </div>
+          </div>
+      
+          {coursesLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gaming-blue shadow-glow"></div>
+            </div>
+          ) : coursesError ? (
+            <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
+                  <GraduationCap className="h-8 w-8 text-destructive" />
                 </div>
+                <p className="text-destructive mb-4">Error al cargar los cursos: {coursesError}</p>
+                <Button variant="gaming" onClick={() => window.location.reload()}>
+                  Reintentar Carga
+                </Button>
               </CardContent>
             </Card>
-
-            {/* Latest Courses Module */}
-            <Card className="card-gaming border-primary/30 overflow-hidden group">
-              <div className="relative h-64 bg-gradient-to-br from-primary/20 to-gaming-blue/20 flex items-center justify-center">
-                <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{
-                backgroundImage: `url(${coursesImage})`
-              }} />
-                <div className="relative z-10 text-center space-y-4 p-8">
-                  <Badge variant="secondary" className="bg-primary/30 text-primary border-primary/50 px-6 py-2">
-                    <GraduationCap className="mr-2 h-4 w-4" />
-                    Nuevo Contenido
-                  </Badge>
-                  <h3 className="text-2xl font-bold text-glow">Cursos Avanzados</h3>
-                  <p className="text-muted-foreground">Técnicas de última generación</p>
+          ) : courses.length === 0 ? (
+            <Card className="card-gaming max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
+                  <GraduationCap className="h-8 w-8 text-muted-foreground" />
                 </div>
-              </div>
-              
-              <CardContent className="p-8">
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  Accede a contenido exclusivo creado por expertos. Aprende técnicas avanzadas de 
-                  reparación para consolas next-gen.
-                </p>
-                
-                <div className="flex gap-4">
-                  <Button variant="gaming" className="flex-1" onClick={() => navigate('/cursos')}>
-                    <Star className="mr-2 h-4 w-4" />
-                    Explorar Cursos
-                  </Button>
-                </div>
+                <p className="text-muted-foreground">No hay cursos disponibles en este momento.</p>
               </CardContent>
             </Card>
-
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {courses.slice(0, 3).map(course => (
+                <Card key={course.id} className="card-gaming border-gaming-blue/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
+                  {course.cover ? (
+                    <div className="relative h-56 overflow-hidden">
+                      <img 
+                        src={course.cover}
+                        alt={course.title} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+                      <div className="absolute top-4 right-4">
+                        <Badge 
+                          variant="secondary" 
+                          className="bg-gaming-blue/90 text-white border-gaming-blue/50"
+                        >
+                          Curso Elite
+                        </Badge>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative h-56 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
+                      <GraduationCap className="h-16 w-16 text-gaming-blue/40" />
+                    </div>
+                  )}
+                  
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-xl text-neon group-hover:text-gaming-blue transition-colors">
+                      {course.title}
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground line-clamp-2">
+                      {course.description || 'Curso especializado en tecnología gaming avanzada'}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="pt-0">
+                    {/* Course Progress */}
+                    <div className="mb-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs text-muted-foreground">Progreso del Curso</span>
+                        <span className="text-xs font-bold text-gaming-blue">Nivel {Math.floor(Math.random() * 5) + 1}</span>
+                      </div>
+                      <div className="w-full bg-muted/30 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-gaming-blue to-primary h-full rounded-full transition-all duration-500"
+                          style={{width: `${Math.floor(Math.random() * 80) + 20}%`}}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <span className="text-2xl font-bold text-gaming-orange">
+                          ${course.price.toLocaleString('es-CO')} COP
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Certificación incluida
+                        </span>
+                      </div>
+                      <Button variant="gaming" size="sm" className="px-6">
+                        <Play className="mr-2 h-4 w-4" />
+                        Iniciar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+          
+          {/* View All Courses CTA */}
+          <div className="text-center mt-16">
+            <Button 
+              variant="gaming-secondary" 
+              size="lg" 
+              className="px-8 py-4 text-lg" 
+              onClick={() => navigate('/cursos')}
+            >
+              Ver Todos los Cursos
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
