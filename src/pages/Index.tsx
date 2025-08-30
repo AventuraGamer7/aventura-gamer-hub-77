@@ -207,7 +207,7 @@ const Index = () => {
           {/* Social Media Buttons */}
           <div className="flex justify-center gap-4 mt-12 mb-8">
             <Button
-              variant="gaming"
+              variant="outline"
               size="lg"
               className="px-6 py-3 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-red-400"
               onClick={() => window.open('https://www.youtube.com/@aventuragamer777', '_blank')}
@@ -216,7 +216,7 @@ const Index = () => {
               Canal YouTube
             </Button>
             <Button
-              variant="gaming"
+              variant="outline"
               size="lg"
               className="px-6 py-3 bg-pink-600/20 border-pink-500/30 hover:bg-pink-600/30 text-pink-400"
               onClick={() => window.open('https://www.instagram.com/aventuragamer777/', '_blank')}
