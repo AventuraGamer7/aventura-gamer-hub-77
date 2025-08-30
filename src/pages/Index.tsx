@@ -504,6 +504,31 @@ const Index = () => {
               </p>
             </div>
 
+            {/* Interactive Map */}
+            <div className="mb-16">
+              <Card className="card-gaming border-primary/30 overflow-hidden">
+                <CardHeader className="text-center">
+                  <h3 className="text-2xl font-bold text-neon mb-2">Nuestra Ubicación</h3>
+                  <p className="text-muted-foreground">Encuéntranos en el corazón de Envigado</p>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.9463822928747!2d-75.59047032501901!3d6.168064593822529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682f7b8b8b8b8%3A0x1234567890abcdef!2sCalle%2036%20Sur%20%2341-36%2C%20Envigado%2C%20Antioquia%2C%20Colombia!5e0!3m2!1ses!2sco!4v1735001234567!5m2!1ses!2sco"
+                      width="100%"
+                      height="300"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      className="w-full"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Contact Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
               <Card className="card-gaming border-primary/30 text-center group">
@@ -517,9 +542,14 @@ const Index = () => {
                     <p>Local 116, Envigado</p>
                     <p>Antioquia, Colombia</p>
                   </div>
-                  <Badge variant="secondary" className="mt-4 bg-primary/10 text-primary border-primary/20">
-                    Fácil Acceso Metro
-                  </Badge>
+                  <Button 
+                    variant="gaming" 
+                    size="sm" 
+                    className="mt-4"
+                    onClick={() => window.open('https://maps.google.com/?q=Aventura+Gamer+Envigado', '_blank')}
+                  >
+                    Ver en Google Maps
+                  </Button>
                 </CardContent>
               </Card>
 
