@@ -13,7 +13,7 @@ import { useServices } from '@/hooks/useServices';
 import { useProducts } from '@/hooks/useProducts';
 import { useCourses } from '@/hooks/useCourses';
 import { useHeroSlides } from '@/hooks/useHeroSlides';
-import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon, Youtube, Instagram } from 'lucide-react';
+import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon, Instagram } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 
 // Import images
@@ -212,7 +212,7 @@ const Index = () => {
               className="px-6 py-3 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-red-400"
               onClick={() => window.open('https://www.youtube.com/@aventuragamer777', '_blank')}
             >
-              <Youtube className="mr-2 h-5 w-5" />
+              <img src="/lovable-uploads/cc10dbd8-68ed-412d-9016-15dd833460b9.png" alt="YouTube" className="mr-2 h-5 w-5" />
               Canal YouTube
             </Button>
             <Button
