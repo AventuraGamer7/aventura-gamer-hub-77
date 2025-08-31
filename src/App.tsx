@@ -23,6 +23,8 @@ import PaymentFailure from "./pages/PaymentFailure";
 import NotFound from "./pages/NotFound";
 import TechnicalServicesDashboard from "./pages/TechnicalServicesDashboard";
 import TechnicalServicesAdmin from "./pages/TechnicalServicesAdmin";
+import ServiciosSpecific from "./pages/ServiciosSpecific";
+import Sitemap from "./pages/Sitemap";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +60,10 @@ const App = () => (
               />
               <Route path="/servicios" element={<Servicios />} />
               <Route path="/servicios/:categoria" element={<Servicios />} />
+              <Route path="/servicios/reparacion-playstation" element={<ServiciosSpecific />} />
+              <Route path="/servicios/reparacion-xbox" element={<ServiciosSpecific />} />
+              <Route path="/servicios/reparacion-nintendo" element={<ServiciosSpecific />} />
+              <Route path="/sitemap.xml" element={<Sitemap />} />
               <Route path="/cursos" element={<Cursos />} />
               <Route path="/cursos/:categoria" element={<Cursos />} />
           <Route path="/tienda" element={<Tienda />} />

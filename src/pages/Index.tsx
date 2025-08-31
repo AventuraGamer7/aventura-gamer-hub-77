@@ -8,11 +8,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import GamificationPanel from '@/components/GamificationPanel';
+import SEOHead from '@/components/SEO/SEOHead';
+import FAQSection from '@/components/SEO/FAQSection';
 import { useAuth } from '@/hooks/useAuth';
 import { useServices } from '@/hooks/useServices';
 import { useProducts } from '@/hooks/useProducts';
 import { useCourses } from '@/hooks/useCourses';
 import { useHeroSlides } from '@/hooks/useHeroSlides';
+import { generateServiceSchema, generateProductSchema, generateCourseSchema } from '@/utils/seoUtils';
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon, Instagram } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 
@@ -122,9 +125,88 @@ const Index = () => {
     description: 'Tarifas competitivas y transparentes',
     icon: <Target className="h-6 w-6" />
   }];
-  return <div className="min-h-screen bg-background">
-      <Header />
-      <WhatsAppFloat />
+
+  // FAQ data for homepage
+  const homepageFAQs = [
+    {
+      question: '¿Qué tipos de consolas reparan?',
+      answer: 'Reparamos todas las consolas gaming: PlayStation (5, 4, 3, 2, 1), Xbox (Series X/S, One, 360, Original), Nintendo (Switch, Wii U, Wii, GameCube), consolas retro y handhelds como 3DS, PSP y Game Boy.'
+    },
+    {
+      question: '¿Cuánto tiempo toman las reparaciones?',
+      answer: 'El diagnóstico es gratuito y toma 24 horas. Las reparaciones simples toman 1-2 días, mientras que las complejas pueden tomar 3-5 días hábiles. Te mantenemos informado del progreso constantemente.'
+    },
+    {
+      question: '¿Ofrecen garantía en las reparaciones?',
+      answer: 'Sí, todas nuestras reparaciones incluyen garantía: 6 meses para PlayStation y Xbox, 4 meses para Nintendo. Además, ofrecemos soporte técnico post-reparación gratuito.'
+    },
+    {
+      question: '¿Tienen cursos disponibles?',
+      answer: 'Ofrecemos cursos especializados en reparación de consolas, desde nivel básico hasta avanzado. Incluyen certificación, material de práctica y acceso a nuestro laboratorio técnico.'
+    },
+    {
+      question: '¿Dónde están ubicados?',
+      answer: 'Estamos en Calle 36 Sur #41-36 Local 116, Envigado, Antioquia. Atendemos de lunes a sábado de 9:00 AM a 7:00 PM. También ofrecemos servicio de domicilio en el área metropolitana.'
+    },
+    {
+      question: '¿Cómo puedo solicitar un servicio?',
+      answer: 'Puedes contactarnos por WhatsApp al 350 513 85 57, llamarnos, visitarnos directamente o usar nuestro formulario web. El diagnóstico es gratuito y sin compromiso.'
+    }
+  ];
+
+  // Generate structured data for services, products, and courses
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://aventuragamer.com/#organization",
+        "name": "Aventura Gamer",
+        "url": "https://aventuragamer.com",
+        "logo": "https://aventuragamer.com/logo.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+573505138557",
+          "contactType": "customer service",
+          "availableLanguage": "Spanish"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Calle 36 Sur #41-36 Local 116",
+          "addressLocality": "Envigado",
+          "addressRegion": "Antioquia",
+          "addressCountry": "CO"
+        },
+        "sameAs": [
+          "https://www.instagram.com/aventuragamer777/",
+          "https://www.youtube.com/@aventuragamer777"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://aventuragamer.com/#website",
+        "url": "https://aventuragamer.com",
+        "name": "Aventura Gamer",
+        "description": "Centro especializado en reparación de consolas gaming y cursos técnicos en Envigado",
+        "publisher": {
+          "@id": "https://aventuragamer.com/#organization"
+        }
+      }
+    ]
+  };
+  return (
+    <>
+      <SEOHead
+        title="Aventura Gamer - Reparación de Consolas y Cursos Gaming en Envigado"
+        description="Expertos en reparación de PlayStation, Xbox y Nintendo en Envigado. Cursos especializados en tecnología gaming, repuestos originales y servicio técnico certificado con garantía completa."
+        keywords="reparación consolas Envigado, PlayStation Xbox Nintendo, cursos gaming Colombia, repuestos originales Antioquia, servicio técnico gaming certificado"
+        image="/og-aventura-gamer.jpg"
+        structuredData={structuredData}
+      />
+      
+      <div className="min-h-screen bg-background">
+        <Header />
+        <WhatsAppFloat />
       
 
       
@@ -628,7 +710,17 @@ const Index = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <FAQSection
+        title="Preguntas Frecuentes"
+        description="Encuentra respuestas a las dudas más comunes sobre nuestros servicios gaming"
+        faqs={homepageFAQs}
+        className="bg-muted/10"
+      />
+
       <Footer />
-    </div>;
+    </div>
+  </>
+  );
 };
 export default Index;

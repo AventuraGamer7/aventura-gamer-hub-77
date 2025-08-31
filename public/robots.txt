@@ -1,8 +1,43 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://aventuragamer.com/sitemap.xml
+
+# High-value pages for crawling
+Allow: /servicios
+Allow: /servicios/reparacion-playstation
+Allow: /servicios/reparacion-xbox  
+Allow: /servicios/reparacion-nintendo
+Allow: /tienda
+Allow: /cursos
+Allow: /contacto
+Allow: /blog
+
+# Block admin and user areas
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /auth
+Disallow: /carrito
+Disallow: /payment
+
+# Block temporary or development files
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /tmp/
+Disallow: /api/
+
+# Crawl delay (be nice to servers)
+Crawl-delay: 1
+
+# Additional directives for major search engines
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +45,6 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: Slurp
 Allow: /
+Crawl-delay: 2
