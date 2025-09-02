@@ -114,7 +114,11 @@ const Tienda = () => {
     product
   }: {
     product: typeof products[0];
-  }) => <Card className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
+  }) => (
+    <Card 
+      className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40 cursor-pointer"
+      onClick={() => navigate(`/producto/${product.id}`)}
+    >
       <div className="relative">
         <img src={product.image || '/api/placeholder/300/300'} alt={product.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" />
         {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -158,19 +162,25 @@ const Tienda = () => {
         </div>
         
         <div className="flex gap-2">
-          <Button variant="gaming" className="flex-1" disabled={product.stock === 0} onClick={() => {
-          addItem({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image || undefined,
-            type: 'product'
-          });
-          toast({
-            title: 'Producto agregado',
-            description: `${product.name} se agregó al carrito`
-          });
-        }}>
+          <Button 
+            variant="gaming" 
+            className="flex-1" 
+            disabled={product.stock === 0} 
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card click when clicking button
+              addItem({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image || undefined,
+                type: 'product'
+              });
+              toast({
+                title: 'Producto agregado',
+                description: `${product.name} se agregó al carrito`
+              });
+            }}
+          >
             <ShoppingCart className="mr-2 h-4 w-4" />
             {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
           </Button>
@@ -185,7 +195,8 @@ const Tienda = () => {
           </div>
         )}
       </CardContent>
-    </Card>;
+    </Card>
+  );
   return <div className="min-h-screen bg-background">
       <Helmet>
         <title>{currentSeo.title}</title>

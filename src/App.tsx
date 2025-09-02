@@ -15,6 +15,7 @@ import UserManagement from "./pages/UserManagement";
 import Servicios from "./pages/Servicios";
 import Cursos from "./pages/Cursos";
 import Tienda from "./pages/Tienda";
+import ProductDetails from "./pages/ProductDetails";
 import Carrito from "./pages/Carrito";
 import Blog from "./pages/Blog";
 import Contacto from "./pages/Contacto";
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/cursos/:categoria" element={<Cursos />} />
           <Route path="/tienda" element={<Tienda />} />
           <Route path="/tienda/:categoria" element={<Tienda />} />
+          <Route path="/producto/:id" element={<ProductDetails />} />
               <Route path="/carrito" element={<Carrito />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/contacto" element={<Contacto />} />

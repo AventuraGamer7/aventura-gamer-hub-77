@@ -9,6 +9,7 @@ interface Product {
   stock: number;
   category: string | null;
   image: string | null;
+  images: string[] | null;
   badge_text: string | null;
   badge_color: string | null;
   created_at: string;

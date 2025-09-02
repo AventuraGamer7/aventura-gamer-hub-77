@@ -21,6 +21,7 @@ const AddProductForm = () => {
     stock: '',
     category: '',
     image: '',
+    images: [] as string[],
     badge_text: '',
     badge_color: 'primary'
   });
@@ -55,6 +56,7 @@ const AddProductForm = () => {
             stock: parseInt(formData.stock) || 0,
             category: formData.category || null,
             image: formData.image || null,
+            images: formData.images.length > 0 ? formData.images : null,
             badge_text: formData.badge_text || null,
             badge_color: formData.badge_color || 'primary'
           }
@@ -75,6 +77,7 @@ const AddProductForm = () => {
         stock: '',
         category: '',
         image: '',
+        images: [],
         badge_text: '',
         badge_color: 'primary'
       });
@@ -176,7 +179,7 @@ const AddProductForm = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">URL de la Imagen</Label>
+            <Label htmlFor="image">URL de la Imagen Principal</Label>
             <Input
               id="image"
               name="image"
@@ -185,6 +188,47 @@ const AddProductForm = () => {
               onChange={handleInputChange}
               placeholder="https://ejemplo.com/imagen.jpg"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Imágenes Adicionales</Label>
+            <div className="space-y-2">
+              {formData.images.map((img, index) => (
+                <div key={index} className="flex gap-2">
+                  <Input
+                    type="url"
+                    value={img}
+                    onChange={(e) => {
+                      const newImages = [...formData.images];
+                      newImages[index] = e.target.value;
+                      setFormData(prev => ({ ...prev, images: newImages }));
+                    }}
+                    placeholder="https://ejemplo.com/imagen.jpg"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newImages = formData.images.filter((_, i) => i !== index);
+                      setFormData(prev => ({ ...prev, images: newImages }));
+                    }}
+                  >
+                    Eliminar
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, images: [...prev.images, ''] }));
+                }}
+              >
+                + Agregar Imagen
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

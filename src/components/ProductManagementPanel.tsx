@@ -1,0 +1,379 @@
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useProducts } from '@/hooks/useProducts';
+import { useProfile } from '@/hooks/useProfile';
+import ProductImageManager from './ProductImageManager';
+import { Edit, Trash2, Package, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+const ProductManagementPanel = () => {
+  const { toast } = useToast();
+  const { isSuperadmin } = useProfile();
+  const { products } = useProducts();
+  const navigate = useNavigate();
+  
+  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0
+    }).format(price);
+  };
+
+  const handleEdit = (product: any) => {
+    setEditingProduct(product);
+    setIsEditOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!isSuperadmin()) {
+      toast({
+        title: "Sin permisos",
+        description: "Solo el superadmin puede eliminar productos.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Producto eliminado",
+        description: "El producto se ha eliminado exitosamente.",
+      });
+    } catch (error: any) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el producto.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+
+    setLoading(true);
+    
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({
+          name: editingProduct.name,
+          description: editingProduct.description,
+          price: parseFloat(editingProduct.price),
+          stock: parseInt(editingProduct.stock) || 0,
+          category: editingProduct.category,
+          image: editingProduct.image,
+          images: editingProduct.images,
+          badge_text: editingProduct.badge_text,
+          badge_color: editingProduct.badge_color
+        })
+        .eq('id', editingProduct.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Producto actualizado",
+        description: "El producto se ha actualizado exitosamente.",
+      });
+
+      setIsEditOpen(false);
+      setEditingProduct(null);
+    } catch (error: any) {
+      console.error('Error updating product:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el producto.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setEditingProduct((prev: any) => ({ ...prev, [name]: value }));
+  };
+
+  const getMainImage = (product: any) => {
+    if (product.images && product.images.length > 0) {
+      return product.images[0];
+    }
+    return product.image || '/api/placeholder/100/100';
+  };
+
+  return (
+    <Card className="card-gaming border-primary/20">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Package className="h-5 w-5" />
+          Gestión de Productos ({products?.length || 0})
+        </CardTitle>
+        <CardDescription>
+          Gestiona los productos existentes. {isSuperadmin() ? 'Puedes editar y eliminar.' : 'Solo puedes editar.'}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {products?.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">
+              No hay productos registrados aún.
+            </p>
+          ) : (
+            <div className="grid gap-4">
+              {products?.map((product: any) => (
+                <div key={product.id} className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
+                  <img
+                    src={getMainImage(product)}
+                    alt={product.name}
+                    className="w-16 h-16 object-cover rounded-lg border"
+                  />
+                  
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-medium">{product.name}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {product.category || 'Sin categoría'} • Stock: {product.stock}
+                        </p>
+                        <p className="text-sm font-semibold text-primary">
+                          {formatPrice(product.price)}
+                        </p>
+                      </div>
+                      
+                      {product.badge_text && (
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          product.badge_color === 'primary' ? 'bg-primary text-primary-foreground' :
+                          product.badge_color === 'secondary' ? 'bg-secondary text-secondary-foreground' :
+                          product.badge_color === 'destructive' ? 'bg-destructive text-destructive-foreground' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {product.badge_text}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/producto/${product.id}`)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(product)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    
+                    {isSuperadmin() && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="sm">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>¿Eliminar producto?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta acción no se puede deshacer. El producto será eliminado permanentemente.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(product.id)}>
+                              Eliminar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Editar Producto</DialogTitle>
+              <DialogDescription>
+                Modifica la información del producto seleccionado
+              </DialogDescription>
+            </DialogHeader>
+
+            {editingProduct && (
+              <Tabs defaultValue="general" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="general">Información General</TabsTrigger>
+                  <TabsTrigger value="images">Imágenes</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="general">
+                  <form onSubmit={handleUpdate} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Nombre del Producto *</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          value={editingProduct.name || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="category">Categoría</Label>
+                        <Input
+                          id="category"
+                          name="category"
+                          value={editingProduct.category || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="price">Precio *</Label>
+                        <Input
+                          id="price"
+                          name="price"
+                          type="number"
+                          value={editingProduct.price || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="stock">Stock</Label>
+                        <Input
+                          id="stock"
+                          name="stock"
+                          type="number"
+                          value={editingProduct.stock || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="description">Descripción</Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        value={editingProduct.description || ''}
+                        onChange={handleInputChange}
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="image">Imagen Principal</Label>
+                      <Input
+                        id="image"
+                        name="image"
+                        type="url"
+                        value={editingProduct.image || ''}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="badge_text">Texto del Badge</Label>
+                        <Input
+                          id="badge_text"
+                          name="badge_text"
+                          value={editingProduct.badge_text || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="badge_color">Color del Badge</Label>
+                        <select
+                          id="badge_color"
+                          name="badge_color"
+                          value={editingProduct.badge_color || 'primary'}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                        >
+                          <option value="primary">Primario</option>
+                          <option value="secondary">Secundario</option>
+                          <option value="destructive">Destructivo</option>
+                          <option value="outline">Contorno</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsEditOpen(false)}
+                        disabled={loading}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="gaming"
+                        disabled={loading}
+                      >
+                        {loading ? 'Guardando...' : 'Guardar Cambios'}
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+
+                <TabsContent value="images">
+                  <ProductImageManager 
+                    productId={editingProduct.id}
+                    onImagesChange={(images) => {
+                      setEditingProduct((prev: any) => ({ ...prev, images }));
+                    }}
+                  />
+                </TabsContent>
+              </Tabs>
+            )}
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ProductManagementPanel;

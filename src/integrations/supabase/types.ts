@@ -176,8 +176,50 @@ export type Database = {
         }
         Relationships: []
       }
+      product_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          image_url: string
+          is_primary: boolean | null
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
+          active: boolean
           badge_color: string | null
           badge_text: string | null
           category: string | null
@@ -185,12 +227,14 @@ export type Database = {
           description: string | null
           id: string
           image: string | null
+          images: string[] | null
           name: string
           price: number
           stock: number
           updated_at: string
         }
         Insert: {
+          active?: boolean
           badge_color?: string | null
           badge_text?: string | null
           category?: string | null
@@ -198,12 +242,14 @@ export type Database = {
           description?: string | null
           id?: string
           image?: string | null
+          images?: string[] | null
           name: string
           price: number
           stock?: number
           updated_at?: string
         }
         Update: {
+          active?: boolean
           badge_color?: string | null
           badge_text?: string | null
           category?: string | null
@@ -211,6 +257,7 @@ export type Database = {
           description?: string | null
           id?: string
           image?: string | null
+          images?: string[] | null
           name?: string
           price?: number
           stock?: number

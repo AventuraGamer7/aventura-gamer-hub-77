@@ -30,6 +30,7 @@ import GamificationPanel from '@/components/GamificationPanel';
 import AddProductForm from '@/components/AddProductForm';
 import AddCourseForm from '@/components/AddCourseForm';
 import AddServiceForm from '@/components/AddServiceForm';
+import ProductManagementPanel from '@/components/ProductManagementPanel';
 import ManagementPanel from '@/components/ManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import GestionUsuarios from '@/components/GestionUsuarios';
@@ -504,7 +505,7 @@ const Dashboard = () => {
               </div>
               {canCreateContent() && <AddProductForm />}
             </div>
-            <ManagementPanel type="products" />
+            <ProductManagementPanel />
           </div>
         );
       case 'services':
