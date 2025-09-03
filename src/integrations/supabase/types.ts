@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          condition_type: string
+          condition_value: number | null
+          created_at: string
+          description: string
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+          xp_reward: number
+        }
+        Insert: {
+          condition_type: string
+          condition_value?: number | null
+          created_at?: string
+          description: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+          xp_reward: number
+        }
+        Update: {
+          condition_type?: string
+          condition_value?: number | null
+          created_at?: string
+          description?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           content: string | null
@@ -44,6 +83,42 @@ export type Database = {
           price?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      gamification_rules: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          rule_name: string
+          rule_type: string
+          threshold_value: number | null
+          updated_at: string
+          xp_amount: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          rule_name: string
+          rule_type: string
+          threshold_value?: number | null
+          updated_at?: string
+          xp_amount: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          rule_name?: string
+          rule_type?: string
+          threshold_value?: number | null
+          updated_at?: string
+          xp_amount?: number
         }
         Relationships: []
       }
@@ -292,6 +367,39 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
           username?: string
+        }
+        Relationships: []
+      }
+      rewards: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+          xp_cost: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+          xp_cost: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+          xp_cost?: number
         }
         Relationships: []
       }
