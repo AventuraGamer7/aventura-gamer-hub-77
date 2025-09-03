@@ -119,8 +119,12 @@ const Tienda = () => {
       className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40 cursor-pointer"
       onClick={() => navigate(`/producto/${product.id}`)}
     >
-      <div className="relative">
-        <img src={product.image || '/api/placeholder/300/300'} alt={product.name} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" />
+      <div className="relative h-72 bg-muted/10 rounded-lg overflow-hidden flex items-center justify-center">
+        <img 
+          src={product.image || '/api/placeholder/300/300'} 
+          alt={product.name} 
+          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105" 
+        />
         {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <Badge variant="destructive">Agotado</Badge>
           </div>}
