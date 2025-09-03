@@ -227,11 +227,11 @@ const ProductDetails = () => {
           <div className="space-y-4">
             <Card className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="relative">
+                <div className="relative h-96 bg-muted/10 rounded-lg overflow-hidden flex items-center justify-center">
                   <img
                     src={images[selectedImageIndex]}
                     alt={product.name}
-                    className="w-full h-96 object-cover"
+                    className="max-w-full max-h-full object-contain"
                   />
                   {product.stock === 0 && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
