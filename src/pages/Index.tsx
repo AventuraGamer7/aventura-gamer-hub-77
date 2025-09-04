@@ -277,7 +277,7 @@ const Index = () => {
                           Precio base
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6">
+                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate('/servicios')}>
                         <Play className="mr-2 h-4 w-4" />
                         Solicitar
                       </Button>
@@ -410,7 +410,7 @@ const Index = () => {
                           Stock: {product.stock}
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6">
+                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate(`/product/${product.id}`)}>
                         <ShoppingCart className="mr-2 h-4 w-4" />
                         Comprar
                       </Button>
@@ -560,7 +560,7 @@ const Index = () => {
                           Certificación incluida
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6">
+                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate('/cursos')}>
                         <Play className="mr-2 h-4 w-4" />
                         Iniciar
                       </Button>
@@ -695,7 +695,7 @@ const Index = () => {
             {/* Call to Action */}
             <div className="text-center">
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <Button variant="gaming" size="lg" className="px-8 py-4 text-lg">
+                <Button variant="gaming" size="lg" className="px-8 py-4 text-lg" onClick={() => window.open('https://wa.me/573505138557', '_blank')}>
                   <Phone className="mr-2 h-6 w-6" />
                   Contactar Ahora
                 </Button>
