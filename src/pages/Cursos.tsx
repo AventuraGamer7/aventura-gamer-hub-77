@@ -121,7 +121,7 @@ Cursos Especializados</h1>
                     
                     <TabsContent value="todos" className="space-y-6">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("todos").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                        {getFilteredCourses("todos").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
                             {course.cover ? <div className="relative h-48 overflow-hidden">
                                 <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
@@ -147,23 +147,27 @@ Cursos Especializados</h1>
                               </div>
                               
                               <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={() => {
-                      addItem({
-                        id: course.id,
-                        name: course.title,
-                        price: course.price,
-                        image: course.cover || undefined,
-                        type: 'course'
-                      });
-                      toast({
-                        title: 'Curso agregado',
-                        description: `${course.title} se agregó al carrito`
-                      });
-                    }}>
+                                <Button variant="gaming" className="flex-1" onClick={(e) => {
+                                  e.stopPropagation();
+                                  addItem({
+                                    id: course.id,
+                                    name: course.title,
+                                    price: course.price,
+                                    image: course.cover || undefined,
+                                    type: 'course'
+                                  });
+                                  toast({
+                                    title: 'Curso agregado',
+                                    description: `${course.title} se agregó al carrito`
+                                  });
+                                }}>
                                   <ShoppingCart className="mr-2 h-4 w-4" />
                                   Inscribirse
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/curso/${course.id}`);
+                                }}>
                                   <GraduationCap className="h-4 w-4" />
                                 </Button>
                               </div>
@@ -174,7 +178,7 @@ Cursos Especializados</h1>
                     
                     <TabsContent value="reparacion" className="space-y-6">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("reparacion").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                        {getFilteredCourses("reparacion").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
                             {course.cover ? <div className="relative h-48 overflow-hidden">
                                 <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
@@ -200,23 +204,27 @@ Cursos Especializados</h1>
                               </div>
                               
                               <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={() => {
-                      addItem({
-                        id: course.id,
-                        name: course.title,
-                        price: course.price,
-                        image: course.cover || undefined,
-                        type: 'course'
-                      });
-                      toast({
-                        title: 'Curso agregado',
-                        description: `${course.title} se agregó al carrito`
-                      });
-                    }}>
+                                <Button variant="gaming" className="flex-1" onClick={(e) => {
+                                  e.stopPropagation();
+                                  addItem({
+                                    id: course.id,
+                                    name: course.title,
+                                    price: course.price,
+                                    image: course.cover || undefined,
+                                    type: 'course'
+                                  });
+                                  toast({
+                                    title: 'Curso agregado',
+                                    description: `${course.title} se agregó al carrito`
+                                  });
+                                }}>
                                   <ShoppingCart className="mr-2 h-4 w-4" />
                                   Inscribirse
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/curso/${course.id}`);
+                                }}>
                                   <GraduationCap className="h-4 w-4" />
                                 </Button>
                               </div>
@@ -227,7 +235,7 @@ Cursos Especializados</h1>
                     
                     <TabsContent value="mantenimiento" className="space-y-6">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("mantenimiento").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                        {getFilteredCourses("mantenimiento").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
                             {course.cover ? <div className="relative h-48 overflow-hidden">
                                 <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
@@ -253,23 +261,27 @@ Cursos Especializados</h1>
                               </div>
                               
                               <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={() => {
-                      addItem({
-                        id: course.id,
-                        name: course.title,
-                        price: course.price,
-                        image: course.cover || undefined,
-                        type: 'course'
-                      });
-                      toast({
-                        title: 'Curso agregado',
-                        description: `${course.title} se agregó al carrito`
-                      });
-                    }}>
+                                <Button variant="gaming" className="flex-1" onClick={(e) => {
+                                  e.stopPropagation();
+                                  addItem({
+                                    id: course.id,
+                                    name: course.title,
+                                    price: course.price,
+                                    image: course.cover || undefined,
+                                    type: 'course'
+                                  });
+                                  toast({
+                                    title: 'Curso agregado',
+                                    description: `${course.title} se agregó al carrito`
+                                  });
+                                }}>
                                   <ShoppingCart className="mr-2 h-4 w-4" />
                                   Inscribirse
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/curso/${course.id}`);
+                                }}>
                                   <GraduationCap className="h-4 w-4" />
                                 </Button>
                               </div>
@@ -280,7 +292,7 @@ Cursos Especializados</h1>
                     
                     <TabsContent value="avanzado" className="space-y-6">
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("avanzado").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group">
+                        {getFilteredCourses("avanzado").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
                             {course.cover ? <div className="relative h-48 overflow-hidden">
                                 <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
@@ -306,23 +318,27 @@ Cursos Especializados</h1>
                               </div>
                               
                               <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={() => {
-                      addItem({
-                        id: course.id,
-                        name: course.title,
-                        price: course.price,
-                        image: course.cover || undefined,
-                        type: 'course'
-                      });
-                      toast({
-                        title: 'Curso agregado',
-                        description: `${course.title} se agregó al carrito`
-                      });
-                    }}>
+                                <Button variant="gaming" className="flex-1" onClick={(e) => {
+                                  e.stopPropagation();
+                                  addItem({
+                                    id: course.id,
+                                    name: course.title,
+                                    price: course.price,
+                                    image: course.cover || undefined,
+                                    type: 'course'
+                                  });
+                                  toast({
+                                    title: 'Curso agregado',
+                                    description: `${course.title} se agregó al carrito`
+                                  });
+                                }}>
                                   <ShoppingCart className="mr-2 h-4 w-4" />
                                   Inscribirse
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/curso/${course.id}`);
+                                }}>
                                   <GraduationCap className="h-4 w-4" />
                                 </Button>
                               </div>

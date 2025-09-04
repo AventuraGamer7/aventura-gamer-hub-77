@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import UserManagement from "./pages/UserManagement";
 import Servicios from "./pages/Servicios";
 import Cursos from "./pages/Cursos";
+import CourseDetails from "./pages/CourseDetails";
 import Tienda from "./pages/Tienda";
 import ProductDetails from "./pages/ProductDetails";
 import Carrito from "./pages/Carrito";
@@ -67,6 +68,7 @@ const App = () => (
               <Route path="/sitemap.xml" element={<Sitemap />} />
               <Route path="/cursos" element={<Cursos />} />
               <Route path="/cursos/:categoria" element={<Cursos />} />
+              <Route path="/curso/:id" element={<CourseDetails />} />
           <Route path="/tienda" element={<Tienda />} />
           <Route path="/tienda/:categoria" element={<Tienda />} />
           <Route path="/producto/:id" element={<ProductDetails />} />
