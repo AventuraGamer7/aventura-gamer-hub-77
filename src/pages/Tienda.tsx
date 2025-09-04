@@ -6,15 +6,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List } from 'lucide-react';
+import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
 const Tienda = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
+  const [priceRange, setPriceRange] = useState('all');
   const { categoria } = useParams();
   const navigate = useNavigate();
   
@@ -100,8 +105,46 @@ const Tienda = () => {
     }
   };
 
-  // Filter products by category
-  const filteredProducts = selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory);
+  // Filter and sort products
+  let filteredProducts = selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory);
+  
+  // Apply search filter
+  if (searchTerm) {
+    filteredProducts = filteredProducts.filter(p => 
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.category?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+  
+  // Apply price filter
+  if (priceRange !== 'all') {
+    const [min, max] = priceRange.split('-').map(Number);
+    filteredProducts = filteredProducts.filter(p => {
+      if (max) {
+        return p.price >= min && p.price <= max;
+      } else {
+        return p.price >= min;
+      }
+    });
+  }
+  
+  // Apply sorting
+  filteredProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'stock':
+        return b.stock - a.stock;
+      case 'newest':
+      default:
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+  });
   const wholesaleFeatures = ['Precios especiales mayoristas', 'Envíos gratuitos en pedidos >$200.000', 'Acceso prioritario a nuevos productos', 'Soporte técnico especializado', 'Descuentos progresivos por volumen', 'Facturación empresarial'];
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -247,23 +290,96 @@ const Tienda = () => {
       {/* Products Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          {/* Filters and Controls */}
-          <div className="flex flex-col lg:flex-row gap-4 mb-8 items-center justify-between">
-            <Tabs value={selectedCategory} onValueChange={handleCategoryChange} className="w-full lg:w-auto">
-              <TabsList className="grid w-full lg:w-auto" style={{
-              gridTemplateColumns: `repeat(${Math.min(categories.length, 5)}, 1fr)`
-            }}>
-                {categories.slice(0, 5).map(category => <TabsTrigger key={category} value={category} className="text-xs">
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="relative max-w-2xl mx-auto">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar productos por nombre, categoría o descripción..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-12 text-base border-primary/20 focus:border-primary transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Categories Tabs */}
+          <div className="mb-6">
+            <Tabs value={selectedCategory} onValueChange={handleCategoryChange} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 h-auto p-2 bg-muted/50">
+                {categories.map(category => (
+                  <TabsTrigger 
+                    key={category} 
+                    value={category} 
+                    className="text-xs sm:text-sm py-2 px-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
+                  >
                     {category}
-                  </TabsTrigger>)}
+                  </TabsTrigger>
+                ))}
               </TabsList>
             </Tabs>
+          </div>
+
+          {/* Filters and Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 items-center justify-between bg-muted/30 p-4 rounded-lg">
+            <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
+              {/* Sort Filter */}
+              <div className="flex items-center gap-2">
+                <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Ordenar por" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Más recientes</SelectItem>
+                    <SelectItem value="price-low">Precio: menor a mayor</SelectItem>
+                    <SelectItem value="price-high">Precio: mayor a menor</SelectItem>
+                    <SelectItem value="name">Nombre A-Z</SelectItem>
+                    <SelectItem value="stock">Mayor stock</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Price Range Filter */}
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+                <Select value={priceRange} onValueChange={setPriceRange}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Rango de precio" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los precios</SelectItem>
+                    <SelectItem value="0-50000">Menos de $50.000</SelectItem>
+                    <SelectItem value="50000-100000">$50.000 - $100.000</SelectItem>
+                    <SelectItem value="100000-200000">$100.000 - $200.000</SelectItem>
+                    <SelectItem value="200000-500000">$200.000 - $500.000</SelectItem>
+                    <SelectItem value="500000">Más de $500.000</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Results Count */}
+              <div className="text-sm text-muted-foreground">
+                {filteredProducts.length} productos encontrados
+              </div>
+            </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant={viewMode === 'grid' ? 'default' : 'outline'} size="sm" onClick={() => setViewMode('grid')}>
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-2 border rounded-lg p-1">
+              <Button 
+                variant={viewMode === 'grid' ? 'default' : 'ghost'} 
+                size="sm" 
+                onClick={() => setViewMode('grid')}
+                className="h-8 w-8 p-0"
+              >
                 <Grid className="h-4 w-4" />
               </Button>
-              <Button variant={viewMode === 'list' ? 'default' : 'outline'} size="sm" onClick={() => setViewMode('list')}>
+              <Button 
+                variant={viewMode === 'list' ? 'default' : 'ghost'} 
+                size="sm" 
+                onClick={() => setViewMode('list')}
+                className="h-8 w-8 p-0"
+              >
                 <List className="h-4 w-4" />
               </Button>
             </div>
