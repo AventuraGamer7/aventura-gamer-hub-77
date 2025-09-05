@@ -410,7 +410,7 @@ const Index = () => {
                           Stock: {product.stock}
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate(`/product/${product.id}`)}>
+                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate(`/producto/${product.id}`)}>
                         <ShoppingCart className="mr-2 h-4 w-4" />
                         Comprar
                       </Button>
