@@ -58,9 +58,17 @@ export type Database = {
           content: string | null
           cover: string | null
           created_at: string
+          curriculum: Json | null
           description: string | null
+          duration_weeks: number | null
+          estimated_students: number | null
+          has_certification: boolean | null
           id: string
+          includes: Json | null
+          learning_outcomes: Json | null
+          level: string | null
           price: number
+          requirements: Json | null
           title: string
           updated_at: string
         }
@@ -68,9 +76,17 @@ export type Database = {
           content?: string | null
           cover?: string | null
           created_at?: string
+          curriculum?: Json | null
           description?: string | null
+          duration_weeks?: number | null
+          estimated_students?: number | null
+          has_certification?: boolean | null
           id?: string
+          includes?: Json | null
+          learning_outcomes?: Json | null
+          level?: string | null
           price: number
+          requirements?: Json | null
           title: string
           updated_at?: string
         }
@@ -78,9 +94,17 @@ export type Database = {
           content?: string | null
           cover?: string | null
           created_at?: string
+          curriculum?: Json | null
           description?: string | null
+          duration_weeks?: number | null
+          estimated_students?: number | null
+          has_certification?: boolean | null
           id?: string
+          includes?: Json | null
+          learning_outcomes?: Json | null
+          level?: string | null
           price?: number
+          requirements?: Json | null
           title?: string
           updated_at?: string
         }

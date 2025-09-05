@@ -18,7 +18,11 @@ const AddCourseForm = () => {
     description: '',
     price: '',
     content: '',
-    cover: ''
+    cover: '',
+    duration_weeks: '4',
+    level: 'principiante',
+    estimated_students: '0',
+    has_certification: false
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -49,7 +53,15 @@ const AddCourseForm = () => {
             description: formData.description,
             price: parseFloat(formData.price),
             content: formData.content,
-            cover: formData.cover
+            cover: formData.cover,
+            duration_weeks: parseInt(formData.duration_weeks),
+            level: formData.level,
+            estimated_students: parseInt(formData.estimated_students),
+            has_certification: formData.has_certification,
+            curriculum: [],
+            requirements: [],
+            includes: [],
+            learning_outcomes: []
           }
         ]);
 
@@ -66,7 +78,11 @@ const AddCourseForm = () => {
         description: '',
         price: '',
         content: '',
-        cover: ''
+        cover: '',
+        duration_weeks: '4',
+        level: 'principiante',
+        estimated_students: '0',
+        has_certification: false
       });
       
       setIsOpen(false);

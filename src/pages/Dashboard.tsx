@@ -32,6 +32,7 @@ import AddCourseForm from '@/components/AddCourseForm';
 import AddServiceForm from '@/components/AddServiceForm';
 import ProductManagementPanel from '@/components/ProductManagementPanel';
 import ManagementPanel from '@/components/ManagementPanel';
+import CourseManagementPanel from '@/components/CourseManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import GestionUsuarios from '@/components/GestionUsuarios';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -492,7 +493,7 @@ const Dashboard = () => {
               </div>
               {canCreateContent() && <AddCourseForm />}
             </div>
-            <ManagementPanel type="courses" />
+            <CourseManagementPanel />
           </div>
         );
       case 'products':

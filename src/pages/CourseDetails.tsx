@@ -21,7 +21,9 @@ import {
   Star,
   BookOpen,
   Target,
-  TrendingUp
+  TrendingUp,
+  Check,
+  Package
 } from 'lucide-react';
 
 const CourseDetails = () => {
@@ -198,22 +200,22 @@ const CourseDetails = () => {
                 <div className="text-center p-4 bg-card/50 rounded-lg border border-border/50">
                   <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Duración</div>
-                  <div className="font-semibold">{courseDetails.duration}</div>
+                  <div className="font-semibold">{course.duration_weeks || 4} semanas</div>
                 </div>
                 <div className="text-center p-4 bg-card/50 rounded-lg border border-border/50">
                   <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Nivel</div>
-                  <div className="font-semibold">{courseDetails.level}</div>
+                  <div className="font-semibold">{course.level || 'Principiante'}</div>
                 </div>
                 <div className="text-center p-4 bg-card/50 rounded-lg border border-border/50">
                   <Users className="h-6 w-6 text-primary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Estudiantes</div>
-                  <div className="font-semibold">{courseDetails.students}</div>
+                  <div className="font-semibold">{course.estimated_students || 0}+</div>
                 </div>
                 <div className="text-center p-4 bg-card/50 rounded-lg border border-border/50">
                   <Award className="h-6 w-6 text-primary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Certificado</div>
-                  <div className="font-semibold">Incluido</div>
+                  <div className="font-semibold">{course.has_certification ? 'Incluido' : 'No incluido'}</div>
                 </div>
               </div>
 
@@ -253,49 +255,122 @@ const CourseDetails = () => {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
-              {/* Course Modules */}
-              <div>
-                <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
-                  <BookOpen className="mr-3 h-6 w-6" />
-                  Contenido del Curso
-                </h2>
-                <div className="space-y-4">
-                  {courseDetails.modules.map((module, index) => (
-                    <Card key={index} className="border-border/50 hover:border-primary/50 transition-colors">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
+              {/* Curriculum from Database */}
+              {course.curriculum && course.curriculum.length > 0 ? (
+                <div>
+                  <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
+                    <BookOpen className="mr-3 h-6 w-6" />
+                    Temario del Curso
+                  </h2>
+                  <div className="space-y-4">
+                    {course.curriculum.map((module: any, moduleIndex: number) => (
+                      <Card key={moduleIndex} className="border-border/50 hover:border-primary/50 transition-colors">
+                        <CardHeader className="pb-3">
                           <CardTitle className="text-lg">
-                            Módulo {index + 1}: {module.title}
+                            Módulo {moduleIndex + 1}: {module.module}
                           </CardTitle>
-                          <Badge variant="outline">
-                            {module.lessons} lecciones
-                          </Badge>
+                          {module.lessons && module.lessons.length > 0 && (
+                            <div className="space-y-2 mt-3">
+                              {module.lessons.map((lesson: any, lessonIndex: number) => (
+                                <div key={lessonIndex} className="flex items-center justify-between p-2 bg-muted/30 rounded text-sm">
+                                  <div>
+                                    <div className="font-medium">{lesson.title}</div>
+                                    {lesson.description && (
+                                      <div className="text-xs text-muted-foreground">{lesson.description}</div>
+                                    )}
+                                  </div>
+                                  <Badge variant="outline" className="text-xs">
+                                    <Clock className="mr-1 h-3 w-3" />
+                                    {lesson.duration} min
+                                  </Badge>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </CardHeader>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                // Fallback to traditional content or mock data
+                course.content ? (
+                  <div>
+                    <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
+                      <BookOpen className="mr-3 h-6 w-6" />
+                      Contenido del Curso
+                    </h2>
+                    <Card className="border-border/50">
+                      <CardContent className="p-6">
+                        <div className="whitespace-pre-wrap text-muted-foreground">
+                          {course.content}
                         </div>
-                        <CardDescription className="flex items-center text-sm">
-                          <Clock className="mr-2 h-4 w-4" />
-                          {module.duration}
-                        </CardDescription>
-                      </CardHeader>
+                      </CardContent>
                     </Card>
-                  ))}
-                </div>
-              </div>
-
-              {/* Skills */}
-              <div>
-                <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
-                  <Target className="mr-3 h-6 w-6" />
-                  Lo que aprenderás
-                </h2>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {courseDetails.skills.map((skill, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                      <span className="text-muted-foreground">{skill}</span>
+                  </div>
+                ) : (
+                  <div>
+                    <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
+                      <BookOpen className="mr-3 h-6 w-6" />
+                      Contenido del Curso
+                    </h2>
+                    <div className="space-y-4">
+                      {courseDetails.modules.map((module, index) => (
+                        <Card key={index} className="border-border/50 hover:border-primary/50 transition-colors">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center justify-between">
+                              <CardTitle className="text-lg">
+                                Módulo {index + 1}: {module.title}
+                              </CardTitle>
+                              <Badge variant="outline">
+                                {module.lessons} lecciones
+                              </Badge>
+                            </div>
+                            <CardDescription className="flex items-center text-sm">
+                              <Clock className="mr-2 h-4 w-4" />
+                              {module.duration}
+                            </CardDescription>
+                          </CardHeader>
+                        </Card>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                )
+              )}
+
+              {/* Learning Outcomes from Database */}
+              {course.learning_outcomes && course.learning_outcomes.length > 0 ? (
+                <div>
+                  <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
+                    <Target className="mr-3 h-6 w-6" />
+                    Lo que aprenderás
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {course.learning_outcomes.map((outcome: string, index: number) => (
+                      <div key={index} className="flex items-start space-x-3">
+                        <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                        <span className="text-muted-foreground">{outcome}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                // Fallback to mock data
+                <div>
+                  <h2 className="text-2xl font-bold text-neon mb-6 flex items-center">
+                    <Target className="mr-3 h-6 w-6" />
+                    Lo que aprenderás
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {courseDetails.skills.map((skill, index) => (
+                      <div key={index} className="flex items-start space-x-3">
+                        <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                        <span className="text-muted-foreground">{skill}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -306,37 +381,60 @@ const CourseDetails = () => {
                   <CardTitle className="text-lg">Requisitos</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {courseDetails.requirements.map((req, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <div className="h-2 w-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">{req}</span>
-                    </div>
-                  ))}
+                  {course.requirements && course.requirements.length > 0 ? (
+                    course.requirements.map((req: string, index: number) => (
+                      <div key={index} className="flex items-start space-x-3">
+                        <div className="h-2 w-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-sm text-muted-foreground">{req}</span>
+                      </div>
+                    ))
+                  ) : (
+                    courseDetails.requirements.map((req, index) => (
+                      <div key={index} className="flex items-start space-x-3">
+                        <div className="h-2 w-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-sm text-muted-foreground">{req}</span>
+                      </div>
+                    ))
+                  )}
                 </CardContent>
               </Card>
 
               {/* Course Features */}
               <Card className="border-border/50">
                 <CardHeader>
-                  <CardTitle className="text-lg">Incluye</CardTitle>
+                  <CardTitle className="text-lg">¿Qué Incluye?</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <PlayCircle className="h-5 w-5 text-primary" />
-                    <span className="text-sm">Videos explicativos HD</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <BookOpen className="h-5 w-5 text-primary" />
-                    <span className="text-sm">Material descargable</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Users className="h-5 w-5 text-primary" />
-                    <span className="text-sm">Soporte de instructor</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Award className="h-5 w-5 text-primary" />
-                    <span className="text-sm">Certificado de finalización</span>
-                  </div>
+                  {course.includes && course.includes.length > 0 ? (
+                    course.includes.map((include: string, index: number) => (
+                      <div key={index} className="flex items-center space-x-3">
+                        <Package className="h-5 w-5 text-primary" />
+                        <span className="text-sm">{include}</span>
+                      </div>
+                    ))
+                  ) : (
+                    // Fallback to default features
+                    <>
+                      <div className="flex items-center space-x-3">
+                        <PlayCircle className="h-5 w-5 text-primary" />
+                        <span className="text-sm">Videos explicativos HD</span>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                        <span className="text-sm">Material descargable</span>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <Users className="h-5 w-5 text-primary" />
+                        <span className="text-sm">Soporte de instructor</span>
+                      </div>
+                      {course.has_certification && (
+                        <div className="flex items-center space-x-3">
+                          <Award className="h-5 w-5 text-primary" />
+                          <span className="text-sm">Certificado de finalización</span>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </div>
