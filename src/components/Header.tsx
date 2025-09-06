@@ -101,24 +101,24 @@ const Header = () => {
         </div>
 
         {/* Mobile Quick Access Links */}
-        <div className="md:hidden bg-white/90 backdrop-blur-sm border-y border-primary/30 shadow-sm">
+        <div className="md:hidden bg-gradient-to-r from-primary/10 to-secondary/10 border-y border-primary/20">
           <nav className="flex justify-center items-center py-3 px-4">
             <div className="flex gap-6">
               <Link
                 to="/tienda"
-                className="text-sm font-bold text-primary hover:text-neon transition-colors animate-pulse-neon"
+                className="text-sm font-bold text-primary hover:text-neon transition-colors"
               >
                 Tienda
               </Link>
               <Link
                 to="/cursos"
-                className="text-sm font-bold text-primary hover:text-neon transition-colors animate-pulse-neon"
+                className="text-sm font-bold text-primary hover:text-neon transition-colors"
               >
                 Cursos
               </Link>
               <Link
                 to="/servicios"
-                className="text-sm font-bold text-primary hover:text-neon transition-colors animate-pulse-neon"
+                className="text-sm font-bold text-primary hover:text-neon transition-colors"
               >
                 Servicios
               </Link>
