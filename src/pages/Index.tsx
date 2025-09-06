@@ -363,17 +363,17 @@ const Index = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products.slice(0, 3).map(product => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {products.slice(0, 2).map(product => (
                 <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
                   {product.image ? (
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-72 overflow-hidden">
                       <img 
                         src={product.image} 
                         alt={product.name} 
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       {product.badge_text && (
                         <div className="absolute top-4 right-4">
                           <Badge 
@@ -386,32 +386,32 @@ const Index = () => {
                       )}
                     </div>
                   ) : (
-                    <div className="relative h-56 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
-                      <ShoppingCart className="h-16 w-16 text-secondary/40" />
+                    <div className="relative h-72 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
+                      <ShoppingCart className="h-20 w-20 text-secondary/40" />
                     </div>
                   )}
                   
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-xl text-neon group-hover:text-secondary transition-colors">
+                  <CardHeader className="pb-2 px-4">
+                    <CardTitle className="text-lg text-neon group-hover:text-secondary transition-colors line-clamp-1">
                       {product.name}
                     </CardTitle>
-                    <CardDescription className="text-muted-foreground line-clamp-2">
+                    <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
                       {product.description || 'Producto gaming premium de alta calidad'}
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
+                  <CardContent className="pt-0 px-4 pb-4">
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <span className="text-2xl font-bold text-primary">
+                        <span className="text-xl font-bold text-primary">
                           ${product.price.toLocaleString('es-CO')} COP
                         </span>
                         <span className="text-xs text-muted-foreground">
                           Stock: {product.stock}
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate(`/producto/${product.id}`)}>
-                        <ShoppingCart className="mr-2 h-4 w-4" />
+                      <Button variant="gaming" size="sm" className="px-4" onClick={() => navigate(`/producto/${product.id}`)}>
+                        <ShoppingCart className="mr-1 h-4 w-4" />
                         Comprar
                       </Button>
                     </div>
