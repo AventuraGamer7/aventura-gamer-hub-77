@@ -249,36 +249,36 @@ const Index = () => {
                 </div>
                 <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
               </CardContent>
-            </Card> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.slice(0, 6).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {service.image ? <div className="relative h-56 overflow-hidden">
+            </Card> : <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {services.slice(0, 2).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
+                  {service.image ? <div className="relative h-72 overflow-hidden">
                       <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
-                    </div> : <div className="relative h-56 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                      <Wrench className="h-16 w-16 text-primary/40" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                    </div> : <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <Wrench className="h-20 w-20 text-primary/40" />
                     </div>}
                   
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-xl text-neon group-hover:text-primary transition-colors">
+                  <CardHeader className="pb-2 px-4">
+                    <CardTitle className="text-lg text-neon group-hover:text-primary transition-colors line-clamp-1">
                       {service.name}
                     </CardTitle>
-                    <CardDescription className="text-muted-foreground line-clamp-2">
+                    <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
                       {service.description || 'Servicio profesional gaming especializado'}
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
+                  <CardContent className="pt-0 px-4 pb-4">
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <span className="text-2xl font-bold text-secondary">
+                        <span className="text-xl font-bold text-secondary">
                           ${service.price.toLocaleString('es-CO')} COP
                         </span>
                         <span className="text-xs text-muted-foreground">
                           Precio base
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate('/servicios')}>
-                        <Play className="mr-2 h-4 w-4" />
+                      <Button variant="gaming" size="sm" className="px-4" onClick={() => navigate('/servicios')}>
+                        <Play className="mr-1 h-4 w-4" />
                         Solicitar
                       </Button>
                     </div>
@@ -501,17 +501,17 @@ const Index = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {courses.slice(0, 3).map(course => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {courses.slice(0, 2).map(course => (
                 <Card key={course.id} className="card-gaming border-gaming-blue/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
                   {course.cover ? (
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-72 overflow-hidden">
                       <img 
                         src={course.cover}
                         alt={course.title} 
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       <div className="absolute top-4 right-4">
                         <Badge 
                           variant="secondary" 
@@ -522,24 +522,24 @@ const Index = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="relative h-56 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
-                      <GraduationCap className="h-16 w-16 text-gaming-blue/40" />
+                    <div className="relative h-72 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
+                      <GraduationCap className="h-20 w-20 text-gaming-blue/40" />
                     </div>
                   )}
                   
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-xl text-neon group-hover:text-gaming-blue transition-colors">
+                  <CardHeader className="pb-2 px-4">
+                    <CardTitle className="text-lg text-neon group-hover:text-gaming-blue transition-colors line-clamp-1">
                       {course.title}
                     </CardTitle>
-                    <CardDescription className="text-muted-foreground line-clamp-2">
+                    <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
                       {course.description || 'Curso especializado en tecnología gaming avanzada'}
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
+                  <CardContent className="pt-0 px-4 pb-4">
                     {/* Course Progress */}
-                    <div className="mb-4">
-                      <div className="flex justify-between items-center mb-2">
+                    <div className="mb-3">
+                      <div className="flex justify-between items-center mb-1">
                         <span className="text-xs text-muted-foreground">Progreso del Curso</span>
                         <span className="text-xs font-bold text-gaming-blue">Nivel {Math.floor(Math.random() * 5) + 1}</span>
                       </div>
@@ -553,15 +553,15 @@ const Index = () => {
                     
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <span className="text-2xl font-bold text-gaming-orange">
+                        <span className="text-xl font-bold text-gaming-orange">
                           ${course.price.toLocaleString('es-CO')} COP
                         </span>
                         <span className="text-xs text-muted-foreground">
                           Certificación incluida
                         </span>
                       </div>
-                      <Button variant="gaming" size="sm" className="px-6" onClick={() => navigate('/cursos')}>
-                        <Play className="mr-2 h-4 w-4" />
+                      <Button variant="gaming" size="sm" className="px-4" onClick={() => navigate('/cursos')}>
+                        <Play className="mr-1 h-4 w-4" />
                         Iniciar
                       </Button>
                     </div>
