@@ -100,11 +100,37 @@ const Header = () => {
           </div>
         </div>
 
+        {/* Mobile Quick Access Links */}
+        <div className="md:hidden bg-gradient-to-r from-primary/10 to-secondary/10 border-y border-primary/20">
+          <nav className="flex justify-center items-center py-3 px-4">
+            <div className="flex gap-6">
+              <Link
+                to="/tienda"
+                className="text-sm font-bold text-primary hover:text-neon transition-colors"
+              >
+                Tienda
+              </Link>
+              <Link
+                to="/cursos"
+                className="text-sm font-bold text-primary hover:text-neon transition-colors"
+              >
+                Cursos
+              </Link>
+              <Link
+                to="/servicios"
+                className="text-sm font-bold text-primary hover:text-neon transition-colors"
+              >
+                Servicios
+              </Link>
+            </div>
+          </nav>
+        </div>
+
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border">
+          <div className="md:hidden absolute top-24 left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border">
             <nav className="flex flex-col p-4 space-y-4">
-              {navItems.map((item) => (
+              {navItems.filter(item => !['Tienda', 'Cursos', 'Servicios Técnicos'].includes(item.name)).map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
