@@ -106,19 +106,19 @@ const Header = () => {
             <div className="flex gap-6">
               <Link
                 to="/tienda"
-                className="text-sm font-bold text-primary hover:text-neon transition-colors"
+                className="text-sm font-bold text-primary hover:text-neon transition-all duration-1000 animate-pulse hover:scale-105"
               >
                 Tienda
               </Link>
               <Link
                 to="/cursos"
-                className="text-sm font-bold text-primary hover:text-neon transition-colors"
+                className="text-sm font-bold text-primary hover:text-neon transition-all duration-1000 animate-pulse hover:scale-105"
               >
                 Cursos
               </Link>
               <Link
                 to="/servicios"
-                className="text-sm font-bold text-primary hover:text-neon transition-colors"
+                className="text-sm font-bold text-primary hover:text-neon transition-all duration-1000 animate-pulse hover:scale-105"
               >
                 Servicios
               </Link>
