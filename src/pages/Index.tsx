@@ -291,7 +291,7 @@ const Index = () => {
           <div className="text-center mb-16 animate-fade-in">
             
             
-            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">TIENDA DE Gamer</h2>
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">Tienda Gamer</h2>
             
           </div>
       
