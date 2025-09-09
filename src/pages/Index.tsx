@@ -379,8 +379,7 @@ const Index = () => {
             
             
             <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
-              Sube de Nivel<br />
-              <span className="text-gaming-blue">Aventura Gamer</span>
+              sube de nivel Con aventura gamer
             </h2>
             
             
