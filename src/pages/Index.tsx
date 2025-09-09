@@ -127,82 +127,62 @@ const Index = () => {
   }];
 
   // FAQ data for homepage
-  const homepageFAQs = [
-    {
-      question: '¿Qué tipos de consolas reparan?',
-      answer: 'Reparamos todas las consolas gaming: PlayStation (5, 4, 3, 2, 1), Xbox (Series X/S, One, 360, Original), Nintendo (Switch, Wii U, Wii, GameCube), consolas retro y handhelds como 3DS, PSP y Game Boy.'
-    },
-    {
-      question: '¿Cuánto tiempo toman las reparaciones?',
-      answer: 'El diagnóstico es gratuito y toma 24 horas. Las reparaciones simples toman 1-2 días, mientras que las complejas pueden tomar 3-5 días hábiles. Te mantenemos informado del progreso constantemente.'
-    },
-    {
-      question: '¿Ofrecen garantía en las reparaciones?',
-      answer: 'Sí, todas nuestras reparaciones incluyen garantía: 6 meses para PlayStation y Xbox, 4 meses para Nintendo. Además, ofrecemos soporte técnico post-reparación gratuito.'
-    },
-    {
-      question: '¿Tienen cursos disponibles?',
-      answer: 'Ofrecemos cursos especializados en reparación de consolas, desde nivel básico hasta avanzado. Incluyen certificación, material de práctica y acceso a nuestro laboratorio técnico.'
-    },
-    {
-      question: '¿Dónde están ubicados?',
-      answer: 'Estamos en Calle 36 Sur #41-36 Local 116, Envigado, Antioquia. Atendemos de lunes a sábado de 9:00 AM a 7:00 PM. También ofrecemos servicio de domicilio en el área metropolitana.'
-    },
-    {
-      question: '¿Cómo puedo solicitar un servicio?',
-      answer: 'Puedes contactarnos por WhatsApp al 350 513 85 57, llamarnos, visitarnos directamente o usar nuestro formulario web. El diagnóstico es gratuito y sin compromiso.'
-    }
-  ];
+  const homepageFAQs = [{
+    question: '¿Qué tipos de consolas reparan?',
+    answer: 'Reparamos todas las consolas gaming: PlayStation (5, 4, 3, 2, 1), Xbox (Series X/S, One, 360, Original), Nintendo (Switch, Wii U, Wii, GameCube), consolas retro y handhelds como 3DS, PSP y Game Boy.'
+  }, {
+    question: '¿Cuánto tiempo toman las reparaciones?',
+    answer: 'El diagnóstico es gratuito y toma 24 horas. Las reparaciones simples toman 1-2 días, mientras que las complejas pueden tomar 3-5 días hábiles. Te mantenemos informado del progreso constantemente.'
+  }, {
+    question: '¿Ofrecen garantía en las reparaciones?',
+    answer: 'Sí, todas nuestras reparaciones incluyen garantía: 6 meses para PlayStation y Xbox, 4 meses para Nintendo. Además, ofrecemos soporte técnico post-reparación gratuito.'
+  }, {
+    question: '¿Tienen cursos disponibles?',
+    answer: 'Ofrecemos cursos especializados en reparación de consolas, desde nivel básico hasta avanzado. Incluyen certificación, material de práctica y acceso a nuestro laboratorio técnico.'
+  }, {
+    question: '¿Dónde están ubicados?',
+    answer: 'Estamos en Calle 36 Sur #41-36 Local 116, Envigado, Antioquia. Atendemos de lunes a sábado de 9:00 AM a 7:00 PM. También ofrecemos servicio de domicilio en el área metropolitana.'
+  }, {
+    question: '¿Cómo puedo solicitar un servicio?',
+    answer: 'Puedes contactarnos por WhatsApp al 350 513 85 57, llamarnos, visitarnos directamente o usar nuestro formulario web. El diagnóstico es gratuito y sin compromiso.'
+  }];
 
   // Generate structured data for services, products, and courses
   const structuredData = {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://aventuragamer.com/#organization",
-        "name": "Aventura Gamer",
-        "url": "https://aventuragamer.com",
-        "logo": "https://aventuragamer.com/logo.png",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": "+573505138557",
-          "contactType": "customer service",
-          "availableLanguage": "Spanish"
-        },
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Calle 36 Sur #41-36 Local 116",
-          "addressLocality": "Envigado",
-          "addressRegion": "Antioquia",
-          "addressCountry": "CO"
-        },
-        "sameAs": [
-          "https://www.instagram.com/aventuragamer777/",
-          "https://www.youtube.com/@aventuragamer777"
-        ]
+    "@graph": [{
+      "@type": "Organization",
+      "@id": "https://aventuragamer.com/#organization",
+      "name": "Aventura Gamer",
+      "url": "https://aventuragamer.com",
+      "logo": "https://aventuragamer.com/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+573505138557",
+        "contactType": "customer service",
+        "availableLanguage": "Spanish"
       },
-      {
-        "@type": "WebSite",
-        "@id": "https://aventuragamer.com/#website",
-        "url": "https://aventuragamer.com",
-        "name": "Aventura Gamer",
-        "description": "Centro especializado en reparación de consolas gaming y cursos técnicos en Envigado",
-        "publisher": {
-          "@id": "https://aventuragamer.com/#organization"
-        }
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle 36 Sur #41-36 Local 116",
+        "addressLocality": "Envigado",
+        "addressRegion": "Antioquia",
+        "addressCountry": "CO"
+      },
+      "sameAs": ["https://www.instagram.com/aventuragamer777/", "https://www.youtube.com/@aventuragamer777"]
+    }, {
+      "@type": "WebSite",
+      "@id": "https://aventuragamer.com/#website",
+      "url": "https://aventuragamer.com",
+      "name": "Aventura Gamer",
+      "description": "Centro especializado en reparación de consolas gaming y cursos técnicos en Envigado",
+      "publisher": {
+        "@id": "https://aventuragamer.com/#organization"
       }
-    ]
+    }]
   };
-  return (
-    <>
-      <SEOHead
-        title="Aventura Gamer - Reparación de Consolas y Cursos Gaming en Envigado"
-        description="Expertos en reparación de PlayStation, Xbox y Nintendo en Envigado. Cursos especializados en tecnología gaming, repuestos originales y servicio técnico certificado con garantía completa."
-        keywords="reparación consolas Envigado, PlayStation Xbox Nintendo, cursos gaming Colombia, repuestos originales Antioquia, servicio técnico gaming certificado"
-        image="/og-aventura-gamer.jpg"
-        structuredData={structuredData}
-      />
+  return <>
+      <SEOHead title="Aventura Gamer - Reparación de Consolas y Cursos Gaming en Envigado" description="Expertos en reparación de PlayStation, Xbox y Nintendo en Envigado. Cursos especializados en tecnología gaming, repuestos originales y servicio técnico certificado con garantía completa." keywords="reparación consolas Envigado, PlayStation Xbox Nintendo, cursos gaming Colombia, repuestos originales Antioquia, servicio técnico gaming certificado" image="/og-aventura-gamer.jpg" structuredData={structuredData} />
       
       <div className="min-h-screen bg-background">
         <Header />
@@ -213,20 +193,15 @@ const Index = () => {
       {/* Featured Services Section - Modular */}
       <section className="py-24 relative overflow-hidden">
         {/* Cyberpunk Background */}
-        <div 
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-80"
-          style={{
-            backgroundImage: `url('/lovable-uploads/3c2896db-3cf4-4e76-9ec3-47702dba466d.png')`
-          }}
-        />
+        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-80" style={{
+          backgroundImage: `url('/lovable-uploads/3c2896db-3cf4-4e76-9ec3-47702dba466d.png')`
+        }} />
         <div className="absolute inset-0 bg-background/80" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 animate-fade-in">
             
-            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
-              Experiencia Técnica de Elite
-            </h2>
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">servicio elite!</h2>
             
           </div>
       
@@ -288,21 +263,11 @@ const Index = () => {
           
           {/* Social Media Buttons */}
           <div className="flex justify-center gap-4 mt-12 mb-8">
-            <Button
-              variant="outline"
-              size="lg"
-              className="px-6 py-3 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-red-400"
-              onClick={() => window.open('https://www.youtube.com/@aventuragamer777', '_blank')}
-            >
+            <Button variant="outline" size="lg" className="px-6 py-3 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-red-400" onClick={() => window.open('https://www.youtube.com/@aventuragamer777', '_blank')}>
               <img src="/lovable-uploads/cc10dbd8-68ed-412d-9016-15dd833460b9.png" alt="YouTube" className="mr-2 h-5 w-5" />
               Canal YouTube
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="px-6 py-3 bg-pink-600/20 border-pink-500/30 hover:bg-pink-600/30 text-pink-400"
-              onClick={() => window.open('https://www.instagram.com/aventuragamer777/', '_blank')}
-            >
+            <Button variant="outline" size="lg" className="px-6 py-3 bg-pink-600/20 border-pink-500/30 hover:bg-pink-600/30 text-pink-400" onClick={() => window.open('https://www.instagram.com/aventuragamer777/', '_blank')}>
               <Instagram className="mr-2 h-5 w-5" />
               Instagram
             </Button>
@@ -324,25 +289,15 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 animate-fade-in">
-            <Badge variant="secondary" className="bg-secondary/20 text-secondary border-secondary/30 px-6 py-3 text-base mb-6">
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              Tienda Elite Gaming
-            </Badge>
             
-            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
-              Descubre la Élite en Aventura Gamer
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Productos premium y accesorios gaming de la más alta calidad para elevar tu experiencia
-            </p>
+            
+            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">TIENDA DE Gamer</h2>
+            
           </div>
       
-          {productsLoading ? (
-            <div className="flex justify-center items-center h-64">
+          {productsLoading ? <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow"></div>
-            </div>
-          ) : productsError ? (
-            <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
+            </div> : productsError ? <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
                   <ShoppingCart className="h-8 w-8 text-destructive" />
@@ -352,44 +307,26 @@ const Index = () => {
                   Reintentar Carga
                 </Button>
               </CardContent>
-            </Card>
-          ) : products.length === 0 ? (
-            <Card className="card-gaming max-w-md mx-auto">
+            </Card> : products.length === 0 ? <Card className="card-gaming max-w-md mx-auto">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
                   <ShoppingCart className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-muted-foreground">No hay productos disponibles en este momento.</p>
               </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
-              {products.slice(0, 1).map(product => (
-                <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {product.image ? (
-                    <div className="relative h-72 overflow-hidden">
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
+            </Card> : <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+              {products.slice(0, 1).map(product => <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
+                  {product.image ? <div className="relative h-72 overflow-hidden">
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                      {product.badge_text && (
-                        <div className="absolute top-4 right-4">
-                          <Badge 
-                            variant="secondary" 
-                            className="bg-secondary/90 text-secondary-foreground border-secondary/50"
-                          >
+                      {product.badge_text && <div className="absolute top-4 right-4">
+                          <Badge variant="secondary" className="bg-secondary/90 text-secondary-foreground border-secondary/50">
                             {product.badge_text}
                           </Badge>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="relative h-72 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
+                        </div>}
+                    </div> : <div className="relative h-72 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
                       <ShoppingCart className="h-20 w-20 text-secondary/40" />
-                    </div>
-                  )}
+                    </div>}
                   
                   <CardHeader className="pb-2 px-4">
                     <CardTitle className="text-lg text-neon group-hover:text-secondary transition-colors line-clamp-1">
@@ -416,19 +353,12 @@ const Index = () => {
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+                </Card>)}
+            </div>}
           
           {/* View All Products CTA */}
           <div className="text-center mt-16">
-            <Button 
-              variant="gaming-secondary" 
-              size="lg" 
-              className="px-8 py-4 text-lg" 
-              onClick={() => navigate('/tienda')}
-            >
+            <Button variant="gaming-secondary" size="lg" className="px-8 py-4 text-lg" onClick={() => navigate('/tienda')}>
               Ver Todos los Productos
               <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
@@ -439,48 +369,28 @@ const Index = () => {
       {/* Featured Courses Section - Modular */}
       <section className="py-24 relative overflow-hidden">
         {/* Gaming Background */}
-        <div 
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-60"
-          style={{
-            backgroundImage: `url('/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png')`
-          }}
-        />
+        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-60" style={{
+          backgroundImage: `url('/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png')`
+        }} />
         <div className="absolute inset-0 bg-background/85" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 animate-fade-in">
-            <Badge variant="secondary" className="bg-gaming-blue/20 text-gaming-blue border-gaming-blue/30 px-6 py-3 text-base mb-6">
-              <GraduationCap className="mr-2 h-5 w-5" />
-              Academia Elite Gaming
-            </Badge>
+            
             
             <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">
               Sube de Nivel<br />
               <span className="text-gaming-blue">Aventura Gamer</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Domina las habilidades técnicas más avanzadas con nuestros cursos especializados y certificaciones profesionales
-            </p>
+            
             
             {/* Progress Bar */}
-            <div className="max-w-2xl mx-auto mt-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-muted-foreground">Progreso de la Comunidad</span>
-                <span className="text-sm font-bold text-gaming-blue">75% Completado</span>
-              </div>
-              <div className="w-full bg-muted/30 rounded-full h-3 overflow-hidden">
-                <div className="bg-gradient-to-r from-gaming-blue to-primary h-full rounded-full animate-pulse shadow-glow transition-all duration-1000" style={{width: '75%'}}></div>
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">+2,500 aventureros mejorando sus habilidades</p>
-            </div>
+            
           </div>
       
-          {coursesLoading ? (
-            <div className="flex justify-center items-center h-64">
+          {coursesLoading ? <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gaming-blue shadow-glow"></div>
-            </div>
-          ) : coursesError ? (
-            <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
+            </div> : coursesError ? <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
                   <GraduationCap className="h-8 w-8 text-destructive" />
@@ -490,42 +400,26 @@ const Index = () => {
                   Reintentar Carga
                 </Button>
               </CardContent>
-            </Card>
-          ) : courses.length === 0 ? (
-            <Card className="card-gaming max-w-md mx-auto">
+            </Card> : courses.length === 0 ? <Card className="card-gaming max-w-md mx-auto">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
                   <GraduationCap className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-muted-foreground">No hay cursos disponibles en este momento.</p>
               </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
-              {courses.slice(0, 1).map(course => (
-                <Card key={course.id} className="card-gaming border-gaming-blue/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {course.cover ? (
-                    <div className="relative h-72 overflow-hidden">
-                      <img 
-                        src={course.cover}
-                        alt={course.title} 
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
+            </Card> : <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+              {courses.slice(0, 1).map(course => <Card key={course.id} className="card-gaming border-gaming-blue/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
+                  {course.cover ? <div className="relative h-72 overflow-hidden">
+                      <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       <div className="absolute top-4 right-4">
-                        <Badge 
-                          variant="secondary" 
-                          className="bg-gaming-blue/90 text-white border-gaming-blue/50"
-                        >
+                        <Badge variant="secondary" className="bg-gaming-blue/90 text-white border-gaming-blue/50">
                           Curso Elite
                         </Badge>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="relative h-72 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
+                    </div> : <div className="relative h-72 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
                       <GraduationCap className="h-20 w-20 text-gaming-blue/40" />
-                    </div>
-                  )}
+                    </div>}
                   
                   <CardHeader className="pb-2 px-4">
                     <CardTitle className="text-lg text-neon group-hover:text-gaming-blue transition-colors line-clamp-1">
@@ -544,10 +438,9 @@ const Index = () => {
                         <span className="text-xs font-bold text-gaming-blue">Nivel {Math.floor(Math.random() * 5) + 1}</span>
                       </div>
                       <div className="w-full bg-muted/30 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-gaming-blue to-primary h-full rounded-full transition-all duration-500"
-                          style={{width: `${Math.floor(Math.random() * 80) + 20}%`}}
-                        ></div>
+                        <div className="bg-gradient-to-r from-gaming-blue to-primary h-full rounded-full transition-all duration-500" style={{
+                      width: `${Math.floor(Math.random() * 80) + 20}%`
+                    }}></div>
                       </div>
                     </div>
                     
@@ -566,19 +459,12 @@ const Index = () => {
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+                </Card>)}
+            </div>}
           
           {/* View All Courses CTA */}
           <div className="text-center mt-16">
-            <Button 
-              variant="gaming-secondary" 
-              size="lg" 
-              className="px-8 py-4 text-lg" 
-              onClick={() => navigate('/cursos')}
-            >
+            <Button variant="gaming-secondary" size="lg" className="px-8 py-4 text-lg" onClick={() => navigate('/cursos')}>
               Ver Todos los Cursos
               <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
@@ -617,16 +503,9 @@ const Index = () => {
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="relative">
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.9463822928747!2d-75.59047032501901!3d6.168064593822529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682f7b8b8b8b8%3A0x1234567890abcdef!2sCalle%2036%20Sur%20%2341-36%2C%20Envigado%2C%20Antioquia%2C%20Colombia!5e0!3m2!1ses!2sco!4v1735001234567!5m2!1ses!2sco"
-                      width="100%"
-                      height="300"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      className="w-full"
-                    />
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.9463822928747!2d-75.59047032501901!3d6.168064593822529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682f7b8b8b8b8%3A0x1234567890abcdef!2sCalle%2036%20Sur%20%2341-36%2C%20Envigado%2C%20Antioquia%2C%20Colombia!5e0!3m2!1ses!2sco!4v1735001234567!5m2!1ses!2sco" width="100%" height="300" style={{
+                      border: 0
+                    }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full" />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
                   </div>
                 </CardContent>
@@ -646,12 +525,7 @@ const Index = () => {
                     <p>Local 116, Envigado</p>
                     <p>Antioquia, Colombia</p>
                   </div>
-                  <Button 
-                    variant="gaming" 
-                    size="sm" 
-                    className="mt-4"
-                    onClick={() => window.open('https://maps.google.com/?q=Aventura+Gamer+Envigado', '_blank')}
-                  >
+                  <Button variant="gaming" size="sm" className="mt-4" onClick={() => window.open('https://maps.google.com/?q=Aventura+Gamer+Envigado', '_blank')}>
                     Ver en Google Maps
                   </Button>
                 </CardContent>
@@ -711,16 +585,10 @@ const Index = () => {
       </section>
 
       {/* FAQ Section */}
-      <FAQSection
-        title="Preguntas Frecuentes"
-        description="Encuentra respuestas a las dudas más comunes sobre nuestros servicios gaming"
-        faqs={homepageFAQs}
-        className="bg-muted/10"
-      />
+      <FAQSection title="Preguntas Frecuentes" description="Encuentra respuestas a las dudas más comunes sobre nuestros servicios gaming" faqs={homepageFAQs} className="bg-muted/10" />
 
       <Footer />
     </div>
-  </>
-  );
+  </>;
 };
 export default Index;
