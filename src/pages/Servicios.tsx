@@ -49,8 +49,6 @@ const Servicios = () => {
         </div>
       </section>
 
-      {/* Órdenes de Servicio del Cliente */}
-      <OrdenesCliente />
 
       {/* Misiones Disponibles */}
       {isLoggedIn && <section className="py-16 bg-muted/30">
@@ -491,6 +489,9 @@ const Servicios = () => {
           </div>
         </div>
       </section>
+
+      {/* Órdenes de Servicio del Cliente */}
+      <OrdenesCliente />
 
       <Footer />
     </div>;
