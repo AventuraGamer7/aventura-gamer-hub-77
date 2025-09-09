@@ -227,7 +227,7 @@ const Index = () => {
             </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {services.slice(0, 1).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
                   {service.image ? <div className="relative h-96 overflow-hidden">
-                      <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <img src={service.image} alt={service.name} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                     </div> : <div className="relative h-96 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
                       <Wrench className="h-20 w-20 text-primary/40" />
@@ -317,7 +317,7 @@ const Index = () => {
             </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {products.slice(0, 1).map(product => <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
                   {product.image ? <div className="relative h-96 overflow-hidden">
-                      <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <img src={product.image} alt={product.name} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       {product.badge_text && <div className="absolute top-4 right-4">
                           <Badge variant="secondary" className="bg-secondary/90 text-secondary-foreground border-secondary/50">
@@ -410,7 +410,7 @@ const Index = () => {
             </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {courses.slice(0, 1).map(course => <Card key={course.id} className="card-gaming border-gaming-blue/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
                   {course.cover ? <div className="relative h-96 overflow-hidden">
-                      <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <img src={course.cover} alt={course.title} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       <div className="absolute top-4 right-4">
                         <Badge variant="secondary" className="bg-gaming-blue/90 text-white border-gaming-blue/50">
