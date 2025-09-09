@@ -224,12 +224,12 @@ const Index = () => {
                 </div>
                 <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
               </CardContent>
-            </Card> : <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+            </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {services.slice(0, 1).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {service.image ? <div className="relative h-72 overflow-hidden">
+                  {service.image ? <div className="relative h-96 overflow-hidden">
                       <img src={service.image} alt={service.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                    </div> : <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                    </div> : <div className="relative h-96 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
                       <Wrench className="h-20 w-20 text-primary/40" />
                     </div>}
                   
@@ -314,9 +314,9 @@ const Index = () => {
                 </div>
                 <p className="text-muted-foreground">No hay productos disponibles en este momento.</p>
               </CardContent>
-            </Card> : <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+            </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {products.slice(0, 1).map(product => <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {product.image ? <div className="relative h-72 overflow-hidden">
+                  {product.image ? <div className="relative h-96 overflow-hidden">
                       <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       {product.badge_text && <div className="absolute top-4 right-4">
@@ -324,7 +324,7 @@ const Index = () => {
                             {product.badge_text}
                           </Badge>
                         </div>}
-                    </div> : <div className="relative h-72 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
+                    </div> : <div className="relative h-96 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
                       <ShoppingCart className="h-20 w-20 text-secondary/40" />
                     </div>}
                   
@@ -407,9 +407,9 @@ const Index = () => {
                 </div>
                 <p className="text-muted-foreground">No hay cursos disponibles en este momento.</p>
               </CardContent>
-            </Card> : <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+            </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {courses.slice(0, 1).map(course => <Card key={course.id} className="card-gaming border-gaming-blue/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {course.cover ? <div className="relative h-72 overflow-hidden">
+                  {course.cover ? <div className="relative h-96 overflow-hidden">
                       <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                       <div className="absolute top-4 right-4">
@@ -417,7 +417,7 @@ const Index = () => {
                           Curso Elite
                         </Badge>
                       </div>
-                    </div> : <div className="relative h-72 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
+                    </div> : <div className="relative h-96 bg-gradient-to-br from-gaming-blue/20 to-primary/20 flex items-center justify-center">
                       <GraduationCap className="h-20 w-20 text-gaming-blue/40" />
                     </div>}
                   
