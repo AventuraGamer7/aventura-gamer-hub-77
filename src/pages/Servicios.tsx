@@ -7,10 +7,12 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import OrdenesCliente from '@/components/OrdenesCliente';
+import SEOHead from '@/components/SEO/SEOHead';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import { generateServiceSchema, getSEOKeywords } from '@/utils/seoUtils';
 import { Wrench, Home, Cpu, Shield, Clock, CheckCircle, Star, Target, Gamepad2, Zap, Lock, Settings, Flame, Monitor, HardDrive, Battery, ShoppingCart } from 'lucide-react';
 const Servicios = () => {
   const navigate = useNavigate();
@@ -30,7 +32,60 @@ const Servicios = () => {
       }
     });
   };
+
+  // SEO data based on category
+  const getSEOData = () => {
+    const seoCategories = {
+      'controles': {
+        title: 'Reparación de Controles Gaming - PlayStation, Xbox, Nintendo | Aventura Gamer',
+        description: 'Servicio técnico especializado en controles: Joy-Con drift, botones, análogos y carga. Diagnóstico gratuito y garantía incluida en Envigado.',
+        keywords: getSEOKeywords('reparacion-controles')
+      },
+      'consolas': {
+        title: 'Reparación de Consolas Gaming - PS5, Xbox Series, Nintendo Switch | Aventura Gamer',
+        description: 'Reparación profesional de consolas: sobrecalentamiento, pantallas, fuentes y lectores. Técnicos certificados en Envigado con garantía.',
+        keywords: getSEOKeywords('reparacion-consolas')
+      },
+      'extras': {
+        title: 'Servicios Técnicos Gaming Adicionales | Aventura Gamer',
+        description: 'Servicios técnicos especializados: instalación de SSD, configuración, mantenimiento preventivo y más. Expertos gaming en Envigado.',
+        keywords: getSEOKeywords('servicios-extras')
+      },
+      'todos': {
+        title: 'Servicios Técnicos Gaming - Reparación PlayStation, Xbox, Nintendo | Aventura Gamer',
+        description: 'Centro especializado en reparación de consolas gaming en Envigado. PlayStation, Xbox, Nintendo Switch. Diagnóstico gratuito, garantía y servicio a domicilio.',
+        keywords: getSEOKeywords('servicios')
+      }
+    };
+
+    const currentCategory = categoria || 'todos';
+    return seoCategories[currentCategory as keyof typeof seoCategories] || seoCategories.todos;
+  };
+
+  const seoData = getSEOData();
+  const canonicalUrl = `https://aventuragamer.com/servicios${categoria ? `/${categoria}` : ''}`;
+
+  // Generate structured data for services
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Servicios de Reparación Gaming",
+    "description": seoData.description,
+    "itemListElement": services.slice(0, 5).map((service, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": generateServiceSchema(service)
+    }))
+  };
   return <div className="min-h-screen bg-background">
+      <SEOHead 
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        canonicalUrl={canonicalUrl}
+        type="website"
+        structuredData={structuredData}
+      />
       <Header />
       <WhatsAppFloat />
       

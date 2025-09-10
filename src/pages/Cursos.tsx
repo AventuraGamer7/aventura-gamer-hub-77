@@ -7,9 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+import SEOHead from '@/components/SEO/SEOHead';
 import { useCourses } from '@/hooks/useCourses';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import { generateCourseSchema, getSEOKeywords } from '@/utils/seoUtils';
 import { GraduationCap, Star, Clock, Users, Award, PlayCircle, CheckCircle, Target, ShoppingCart } from 'lucide-react';
 const Cursos = () => {
   const { categoria } = useParams();
@@ -68,7 +70,60 @@ const Cursos = () => {
       )
     );
   };
+
+  // SEO data based on category
+  const getSEOData = () => {
+    const seoCategories = {
+      'reparacion': {
+        title: 'Cursos de Reparación de Consolas Gaming | Academia Aventura Gamer',
+        description: 'Aprende reparación profesional de PlayStation, Xbox y Nintendo. Cursos presenciales con práctica real, certificación incluida en Envigado.',
+        keywords: getSEOKeywords('cursos')
+      },
+      'mantenimiento': {
+        title: 'Cursos de Mantenimiento Gaming - Consolas y Controles | Aventura Gamer',
+        description: 'Formación en mantenimiento preventivo gaming: limpieza, pasta térmica, ventiladores. Técnicas profesionales en Envigado.',
+        keywords: 'curso mantenimiento gaming, limpieza consolas, pasta térmica, ventiladores gaming Envigado'
+      },
+      'avanzado': {
+        title: 'Cursos Avanzados Reparación Gaming - Nivel Profesional | Aventura Gamer',
+        description: 'Cursos avanzados para técnicos: microsoldadura, reballing, reparación de placas. Nivel profesional con certificación en Envigado.',
+        keywords: 'cursos avanzados gaming, microsoldadura consolas, reballing PlayStation Xbox, técnico profesional Envigado'
+      },
+      'todos': {
+        title: 'Cursos de Reparación Gaming - Academia Técnica | Aventura Gamer',
+        description: 'Academia especializada en cursos de reparación de consolas gaming. PlayStation, Xbox, Nintendo. Certificación, práctica real y soporte continuo.',
+        keywords: getSEOKeywords('cursos')
+      }
+    };
+
+    const currentCategory = categoria || 'todos';
+    return seoCategories[currentCategory as keyof typeof seoCategories] || seoCategories.todos;
+  };
+
+  const seoData = getSEOData();
+  const canonicalUrl = `https://aventuragamer.com/cursos${categoria ? `/${categoria}` : ''}`;
+
+  // Generate structured data for courses
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Cursos de Reparación Gaming",
+    "description": seoData.description,
+    "itemListElement": courses.slice(0, 5).map((course, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": generateCourseSchema(course)
+    }))
+  };
   return <div className="min-h-screen bg-background">
+      <SEOHead 
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        canonicalUrl={canonicalUrl}
+        type="website"
+        structuredData={structuredData}
+      />
       <Header />
       <WhatsAppFloat />
       
