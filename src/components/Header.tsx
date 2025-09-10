@@ -101,7 +101,7 @@ const Header = () => {
         </div>
 
         {/* Mobile Quick Access Links */}
-        <div className="md:hidden bg-gradient-to-r from-primary/10 to-secondary/10 border-y border-primary/20">
+        <div className="md:hidden bg-gradient-to-r from-primary/5 to-secondary/5 border-y border-primary/10">
           <nav className="flex justify-center items-center py-3 px-4">
             <div className="flex gap-6">
               <Link
