@@ -244,8 +244,9 @@ const Tienda = () => {
       </CardContent>
     </Card>
   );
-  return <div className="min-h-screen bg-background">
-      <Helmet>
+  return <div className="min-h-screen bg-gaming-vibrant">
+      <div className="bg-gaming-overlay">
+        <Helmet>
         <title>{currentSeo.title}</title>
         <meta name="description" content={currentSeo.description} />
         <link rel="canonical" href={canonicalUrl} />
@@ -509,6 +510,7 @@ const Tienda = () => {
       </section>
 
       <Footer />
+      </div>
     </div>;
 };
 export default Tienda;

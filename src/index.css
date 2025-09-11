@@ -162,6 +162,32 @@ All colors MUST be HSL for consistency.
   }
 
   /* LED Gaming Components */
+  .bg-gaming-minimal {
+    background-image: url('/src/assets/gaming-bg-minimal.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .bg-gaming-vibrant {
+    background-image: url('/src/assets/gaming-bg-vibrant.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .bg-gaming-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(30, 30, 30, 0.6));
+  }
+
+  .bg-gaming-glass {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .card-gaming {
     background: var(--gradient-card);
     border: 1px solid hsl(var(--border));
