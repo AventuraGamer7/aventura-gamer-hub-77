@@ -2,61 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Gaming Design System - Aventura Gamer
+/* Gaming Design System - LED Gamer Style
+Modern gamer aesthetic with electric blue, dark grays, and violet accents
 All colors MUST be HSL for consistency.
 */
 
 @layer base {
   :root {
-    /* Gaming Dark Theme */
-    --background: 220 15% 8%;
-    --foreground: 0 0% 95%;
+    /* Gaming Dark Theme - LED Inspired */
+    --background: 0 0% 0%;                    /* Pure black */
+    --foreground: 0 0% 95%;                   /* Off-white text */
 
-    --card: 220 15% 10%;
+    --card: 0 0% 12%;                         /* Dark gray cards */
     --card-foreground: 0 0% 95%;
 
-    --popover: 220 15% 10%;
+    --popover: 0 0% 8%;                       /* Darker popover */
     --popover-foreground: 0 0% 95%;
 
-    /* Gaming Primary - PlayStation Violet */
-    --primary: 260 90% 65%;
-    --primary-foreground: 220 15% 8%;
-    --primary-glow: 260 90% 75%;
+    /* Gaming Primary - Electric Blue */
+    --primary: 211 100% 50%;                  /* #007BFF Electric Blue */
+    --primary-foreground: 0 0% 100%;          /* White text on blue */
+    --primary-glow: 211 100% 60%;             /* Brighter blue for glow */
 
-    /* Gaming Secondary - PlayStation Blue */
-    --secondary: 220 85% 60%;
-    --secondary-foreground: 220 15% 8%;
-    --secondary-glow: 220 85% 70%;
+    /* Gaming Secondary - Dark Gray */
+    --secondary: 0 0% 12%;                    /* #1E1E1E Dark gray */
+    --secondary-foreground: 0 0% 95%;
+    --secondary-glow: 0 0% 20%;               /* Lighter gray for glow */
 
-    --muted: 220 15% 15%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 0 0% 8%;                         /* Very dark muted */
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 260 90% 65%;
-    --accent-foreground: 220 15% 8%;
+    --accent: 274 93% 36%;                    /* #6A0DAD Violet accent */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 15%;
-    --ring: 260 90% 65%;
+    --border: 0 0% 20%;                       /* Dark gray borders */
+    --input: 0 0% 8%;                         /* Dark inputs */
+    --ring: 211 100% 50%;                     /* Electric blue ring */
 
-    /* Gaming-specific colors - PlayStation inspired */
-    --gaming-orange: 25 100% 60%;
-    --gaming-blue: 220 85% 60%;
-    --gaming-pink: 280 80% 70%;
+    /* Gaming LED Colors */
+    --led-blue: 211 100% 50%;                 /* Electric blue LED */
+    --led-violet: 274 93% 36%;                /* Violet LED accent */
+    --led-cyan: 180 100% 50%;                 /* Cyan LED for variety */
+    --dark-gray: 0 0% 12%;                    /* Primary dark gray */
+    --medium-gray: 0 0% 20%;                  /* Medium gray for borders */
 
-    /* Gradients */
-    --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--secondary) / 0.9));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(220 15% 12%));
-    --gradient-neon: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gaming-pink)), hsl(var(--secondary)));
+    /* LED Gaming Gradients */
+    --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--accent) / 0.7));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--medium-gray)));
+    --gradient-neon: linear-gradient(90deg, hsl(var(--led-blue)), hsl(var(--led-violet)), hsl(var(--led-cyan)));
+    --gradient-dark: linear-gradient(180deg, hsl(var(--background)), hsl(var(--dark-gray)));
 
-    /* Shadows & Glows */
-    --shadow-gaming: 0 10px 30px -10px hsl(var(--primary) / 0.3);
-    --shadow-neon: 0 0 20px hsl(var(--primary) / 0.5);
-    --shadow-secondary: 0 0 20px hsl(var(--secondary) / 0.5);
-    --glow-pulse: 0 0 30px hsl(var(--primary) / 0.6);
+    /* LED Shadows & Glows */
+    --shadow-gaming: 0 10px 30px -10px hsl(var(--primary) / 0.4);
+    --shadow-neon: 0 0 20px hsl(var(--primary) / 0.6);
+    --shadow-violet: 0 0 20px hsl(var(--accent) / 0.5);
+    --shadow-cyan: 0 0 15px hsl(var(--led-cyan) / 0.4);
+    --glow-pulse: 0 0 30px hsl(var(--primary) / 0.7);
+    --glow-led: 0 0 40px hsl(var(--primary) / 0.8), 0 0 80px hsl(var(--accent) / 0.3);
 
     --radius: 0.75rem;
 
@@ -155,19 +161,28 @@ All colors MUST be HSL for consistency.
     transform: translateY(-2px);
   }
 
+  /* LED Gaming Components */
   .card-gaming {
     background: var(--gradient-card);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
     box-shadow: var(--shadow-gaming);
+    transition: all 0.3s ease;
+  }
+
+  .card-gaming:hover {
+    box-shadow: var(--shadow-neon);
+    border-color: hsl(var(--primary) / 0.5);
   }
 
   .btn-gaming {
     background: var(--gradient-gaming);
-    border: none;
+    border: 1px solid hsl(var(--primary));
     color: hsl(var(--primary-foreground));
     font-weight: 600;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
 
   .btn-gaming:hover {
@@ -175,31 +190,68 @@ All colors MUST be HSL for consistency.
     transform: translateY(-2px);
   }
 
+  .btn-gaming::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-gaming:hover::before {
+    left: 100%;
+  }
+
   .btn-secondary-gaming {
     background: transparent;
-    border: 2px solid hsl(var(--secondary));
-    color: hsl(var(--secondary));
+    border: 2px solid hsl(var(--primary));
+    color: hsl(var(--primary));
     font-weight: 600;
     transition: all 0.3s ease;
   }
 
   .btn-secondary-gaming:hover {
-    background: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    box-shadow: var(--shadow-secondary);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-neon);
   }
 
-  /* Missing shadow classes */
+  .btn-violet-gaming {
+    background: transparent;
+    border: 2px solid hsl(var(--accent));
+    color: hsl(var(--accent));
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-violet-gaming:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    box-shadow: var(--shadow-violet);
+  }
+
+  /* LED Gaming Shadows */
   .shadow-glow {
-    box-shadow: 0 0 40px hsl(var(--primary) / 0.6), 0 0 80px hsl(var(--secondary) / 0.3);
+    box-shadow: var(--glow-led);
   }
 
   .hover\:shadow-glow:hover {
-    box-shadow: 0 0 40px hsl(var(--primary) / 0.6), 0 0 80px hsl(var(--secondary) / 0.3);
+    box-shadow: var(--glow-led);
   }
 
   .hover\:shadow-neon:hover {
     box-shadow: var(--shadow-neon);
+  }
+
+  .hover\:shadow-violet:hover {
+    box-shadow: var(--shadow-violet);
+  }
+
+  .hover\:shadow-cyan:hover {
+    box-shadow: var(--shadow-cyan);
   }
 
   /* Experience Bar */

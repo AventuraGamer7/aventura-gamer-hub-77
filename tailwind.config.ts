@@ -61,7 +61,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// LED Gaming Colors
+				'led-blue': 'hsl(var(--led-blue))',
+				'led-violet': 'hsl(var(--led-violet))',
+				'led-cyan': 'hsl(var(--led-cyan))',
+				'dark-gray': 'hsl(var(--dark-gray))',
+				'medium-gray': 'hsl(var(--medium-gray))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -127,8 +133,10 @@ export default {
 				'glow': 'glow 2s ease-in-out infinite alternate'
 			},
 			fontFamily: {
-				'gaming': ['Inter', 'system-ui', 'sans-serif'],
-				'bungee': ['Bungee', 'cursive']
+				'gaming': ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
+				'bungee': ['Bungee', 'cursive'],
+				'orbitron': ['Orbitron', 'monospace'],
+				'rajdhani': ['Rajdhani', 'sans-serif']
 			}
 		}
 	},

@@ -20,8 +20,11 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         gaming: "btn-gaming shadow-lg hover:shadow-neon transform hover:-translate-y-1",
         "gaming-secondary": "btn-secondary-gaming transform hover:-translate-y-1",
-        hero: "bg-gradient-to-r from-primary via-gaming-pink to-secondary text-white font-bold shadow-lg hover:shadow-glow transform hover:-translate-y-2 animate-glow",
+        "gaming-violet": "btn-violet-gaming transform hover:-translate-y-1 hover:shadow-violet",
+        hero: "bg-gradient-to-r from-primary via-accent to-led-cyan text-white font-bold shadow-lg hover:shadow-glow transform hover:-translate-y-2 animate-glow",
         neon: "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground hover:shadow-neon",
+        "led-blue": "bg-primary text-primary-foreground hover:shadow-neon transform hover:-translate-y-1 hover:scale-105",
+        "led-dark": "bg-dark-gray border border-primary/30 text-foreground hover:border-primary hover:shadow-neon transform hover:-translate-y-1",
       },
       size: {
         default: "h-10 px-4 py-2",
