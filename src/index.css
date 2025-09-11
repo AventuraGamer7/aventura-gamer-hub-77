@@ -18,20 +18,20 @@ All colors MUST be HSL for consistency.
     --popover: 220 15% 10%;
     --popover-foreground: 0 0% 95%;
 
-    /* Gaming Primary - Neon Purple */
-    --primary: 270 100% 70%;
+    /* Gaming Primary - PlayStation Violet */
+    --primary: 260 90% 65%;
     --primary-foreground: 220 15% 8%;
-    --primary-glow: 270 100% 80%;
+    --primary-glow: 260 90% 75%;
 
-    /* Gaming Secondary - Neon Green */
-    --secondary: 120 100% 60%;
+    /* Gaming Secondary - PlayStation Blue */
+    --secondary: 220 85% 60%;
     --secondary-foreground: 220 15% 8%;
-    --secondary-glow: 120 100% 70%;
+    --secondary-glow: 220 85% 70%;
 
     --muted: 220 15% 15%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 270 100% 70%;
+    --accent: 260 90% 65%;
     --accent-foreground: 220 15% 8%;
 
     --destructive: 0 84% 60%;
@@ -39,12 +39,12 @@ All colors MUST be HSL for consistency.
 
     --border: 220 15% 20%;
     --input: 220 15% 15%;
-    --ring: 270 100% 70%;
+    --ring: 260 90% 65%;
 
-    /* Gaming-specific colors */
+    /* Gaming-specific colors - PlayStation inspired */
     --gaming-orange: 25 100% 60%;
-    --gaming-blue: 200 100% 60%;
-    --gaming-pink: 320 100% 70%;
+    --gaming-blue: 220 85% 60%;
+    --gaming-pink: 280 80% 70%;
 
     /* Gradients */
     --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
