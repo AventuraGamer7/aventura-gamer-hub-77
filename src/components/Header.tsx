@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Phone, MapPin } from 'lucide-react';
+import { Menu, X, Phone, MapPin, User, Settings, LogOut, ShoppingBag, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { CartIcon } from './CartIcon';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const { profile } = useProfile();
 
   const getNavItems = () => {
@@ -16,12 +21,7 @@ const Header = () => {
       { name: 'Inicio', path: '/' },
     ];
     
-    if (user) {
-      baseItems.push({ 
-        name: profile?.username || user.email?.split('@')[0] || 'Usuario', 
-        path: '/dashboard' 
-      });
-    } else {
+    if (!user) {
       baseItems.push({ name: 'Iniciar Sesión', path: '/dashboard' });
     }
     
@@ -35,6 +35,114 @@ const Header = () => {
     
     return baseItems;
   };
+
+  const handleLogout = async () => {
+    await signOut();
+    setIsUserMenuOpen(false);
+  };
+
+  const UserDropdown = () => (
+    <Popover open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
+      <PopoverTrigger asChild>
+        <Button 
+          variant="ghost" 
+          className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <User className="h-4 w-4" />
+          {profile?.username || user?.email?.split('@')[0] || 'Usuario'}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-80 max-w-[90vw] sm:w-80 p-0 bg-card/95 backdrop-blur-lg border border-border/50" 
+        align="end"
+        sideOffset={8}
+      >
+        <Card className="border-0 shadow-none bg-transparent">
+          <CardContent className="p-4 space-y-4">
+            {/* User Info */}
+            <div className="flex items-center gap-3 pb-2">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-foreground truncate">
+                  {profile?.username || user?.email?.split('@')[0] || 'Usuario'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
+                {profile?.role && (
+                  <Badge variant="secondary" className="text-xs mt-1">
+                    {profile.role}
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Quick Stats */}
+            {profile && (
+              <div className="grid grid-cols-2 gap-3 py-2">
+                <div className="text-center">
+                  <p className="text-lg font-bold text-primary">{profile.points || 0}</p>
+                  <p className="text-xs text-muted-foreground">Puntos</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-lg font-bold text-secondary">{profile.level || 1}</p>
+                  <p className="text-xs text-muted-foreground">Nivel</p>
+                </div>
+              </div>
+            )}
+
+            <Separator />
+
+            {/* Navigation Links */}
+            <div className="space-y-1">
+              <Link 
+                to="/dashboard" 
+                className="flex items-center gap-3 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                onClick={() => setIsUserMenuOpen(false)}
+              >
+                <Settings className="h-4 w-4" />
+                Panel de Control
+              </Link>
+              
+              <Link 
+                to="/tienda" 
+                className="flex items-center gap-3 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                onClick={() => setIsUserMenuOpen(false)}
+              >
+                <ShoppingBag className="h-4 w-4" />
+                Mis Compras
+              </Link>
+              
+              <Link 
+                to="/cursos" 
+                className="flex items-center gap-3 px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                onClick={() => setIsUserMenuOpen(false)}
+              >
+                <BookOpen className="h-4 w-4" />
+                Mis Cursos
+              </Link>
+            </div>
+
+            <Separator />
+
+            {/* Logout */}
+            <Button 
+              variant="outline" 
+              onClick={handleLogout}
+              className="w-full justify-start gap-3 text-sm border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar Sesión
+            </Button>
+          </CardContent>
+        </Card>
+      </PopoverContent>
+    </Popover>
+  );
 
   const navItems = getNavItems();
 
@@ -63,6 +171,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            {user && <UserDropdown />}
           </nav>
 
           {/* Contact Info & CTA */}
@@ -140,6 +249,50 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              {/* User menu for mobile */}
+              {user && (
+                <div className="pt-2 border-t border-border">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                      <User className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground text-sm truncate">
+                        {profile?.username || user?.email?.split('@')[0] || 'Usuario'}
+                      </p>
+                      {profile?.role && (
+                        <Badge variant="secondary" className="text-xs">
+                          {profile.role}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <Link 
+                      to="/dashboard" 
+                      className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Settings className="h-4 w-4" />
+                      Panel de Control
+                    </Link>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-start gap-3 text-sm border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Cerrar Sesión
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
               <div className="pt-4 border-t border-border">
                 <div className="flex flex-col gap-2 text-xs text-muted-foreground mb-4">
                   <div className="flex items-center gap-2">
