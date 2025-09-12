@@ -184,7 +184,7 @@ const Index = () => {
   return <>
       <SEOHead title="Aventura Gamer - Reparación de Consolas y Cursos Gaming en Envigado" description="Expertos en reparación de PlayStation, Xbox y Nintendo en Envigado. Cursos especializados en tecnología gaming, repuestos originales y servicio técnico certificado con garantía completa." keywords="reparación consolas Envigado, PlayStation Xbox Nintendo, cursos gaming Colombia, repuestos originales Antioquia, servicio técnico gaming certificado" image="/og-aventura-gamer.jpg" structuredData={structuredData} />
       
-      <div className="min-h-screen bg-gaming-minimal">
+      <div className="min-h-screen bg-gaming-vibrant">
         <div className="bg-gaming-overlay min-h-screen">
           <Header />
           <WhatsAppFloat />
