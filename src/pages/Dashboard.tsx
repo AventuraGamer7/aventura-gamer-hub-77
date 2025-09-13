@@ -716,35 +716,35 @@ const Dashboard = () => {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 p-6 overflow-auto">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
               {/* Main Content */}
-              <div className="xl:col-span-3">
+              <div className="lg:col-span-2">
                 {renderMainContent()}
               </div>
 
               {/* Sidebar Content */}
-              <div className="space-y-6">
+              <div className="space-y-4 lg:space-y-6">
                 <GamificationPanel />
                 
                 {/* Quick Stats */}
                 <Card className="card-gaming border-secondary/20">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Resumen</CardTitle>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base lg:text-lg">Resumen</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-3 pt-0">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Productos activos</span>
-                      <span className="font-bold">{products.length}</span>
+                      <span className="font-bold text-sm">{products.length}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Cursos disponibles</span>
-                      <span className="font-bold">{courses.length}</span>
+                      <span className="font-bold text-sm">{courses.length}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
-                      <span className="font-bold">{services.length}</span>
+                      <span className="font-bold text-sm">{services.length}</span>
                     </div>
                   </CardContent>
                 </Card>
