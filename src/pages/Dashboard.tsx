@@ -407,20 +407,19 @@ const Dashboard = () => {
               </Card>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (
                   <Card key={index} className="card-gaming border-primary/20">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                          <p className="text-3xl font-bold">{stat.value}</p>
-                          <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
-                        </div>
-                        <div className={`p-3 rounded-full ${stat.bgColor}`}>
+                    <CardContent className="p-4">
+                      <div className="text-center space-y-2">
+                        <div className={`p-2 rounded-full ${stat.bgColor} mx-auto w-fit`}>
                           <div className={stat.color}>
                             {stat.icon}
                           </div>
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold">{stat.value}</p>
+                          <p className="text-xs text-muted-foreground">{stat.title}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -431,34 +430,40 @@ const Dashboard = () => {
               {/* Recent Orders Preview */}
               {orders.length > 0 && (
                 <Card className="card-gaming border-primary/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-lg">
                       <Package className="h-5 w-5 text-secondary" />
                       Pedidos Recientes
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="space-y-3">
-                      {orders.slice(0, 3).map((order) => (
-                        <div key={order.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                          <div>
-                            <p className="text-sm font-medium">Pedido #{order.id.slice(0, 8)}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {format(new Date(order.created_at), 'dd MMM yyyy', { locale: es })}
-                            </p>
-                          </div>
-                          <Badge className={getStatusColor(order.shipping_status)}>
-                            {getStatusText(order.shipping_status)}
-                          </Badge>
-                        </div>
+                      {orders.slice(0, 2).map((order) => (
+                        <Card key={order.id} className="bg-muted/30 border-0">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="font-medium">#{order.id.slice(0, 8)}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {format(new Date(order.created_at), 'dd MMM yyyy', { locale: es })}
+                                </p>
+                              </div>
+                              <Badge className={getStatusColor(order.shipping_status)}>
+                                {getStatusText(order.shipping_status)}
+                              </Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
                       ))}
-                      {orders.length > 3 && (
-                        <button 
+                      {orders.length > 2 && (
+                        <Button 
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setActiveSection('orders')}
-                          className="w-full text-center text-sm text-primary hover:text-primary/80 transition-colors"
+                          className="w-full mt-3 text-primary hover:text-primary/80"
                         >
-                          Ver todos los pedidos ({orders.length})
-                        </button>
+                          Ver todos ({orders.length})
+                        </Button>
                       )}
                     </div>
                   </CardContent>
@@ -671,43 +676,37 @@ const Dashboard = () => {
       
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-card/30 border-b border-border/50 p-6 flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="h-10 w-10 bg-purple-600 hover:bg-purple-700 border-purple-500 text-white shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+        <header className="bg-card/30 border-b border-border/50 p-4 lg:p-6">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="h-10 w-10 bg-primary hover:bg-primary/90 border-primary/50 text-primary-foreground shadow-lg transition-all duration-300"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </Button>
-          <div className="flex items-center justify-between w-full">
-            <div>
-              <h1 className="text-2xl font-bold text-glow">Panel de Control</h1>
-              <p className="text-muted-foreground">Gestiona todos los aspectos de Aventura Gamer desde aquí</p>
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </Button>
+            
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl lg:text-2xl font-bold text-glow truncate">Panel de Control</h1>
+              <p className="text-sm text-muted-foreground hidden sm:block">
+                {profile?.role === 'cliente' ? 'Tu espacio personal de Aventura Gamer' : 'Gestiona todos los aspectos de Aventura Gamer'}
+              </p>
             </div>
-            <div className="flex items-center gap-4">
+            
+            <div className="flex items-center gap-2 lg:gap-4">
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => navigate('/')}
-                className="border-border/50"
+                className="border-border/50 hidden sm:flex"
               >
                 <Home className="mr-2 h-4 w-4" />
-                Volver al Sitio
+                Inicio
               </Button>
-              <Badge variant="secondary" className="bg-secondary/20 text-secondary">
+              <Badge variant="secondary" className="bg-secondary/20 text-secondary hidden lg:flex">
                 <Clock className="mr-1 h-3 w-3" />
                 {new Date().toLocaleDateString()}
               </Badge>
@@ -716,35 +715,37 @@ const Dashboard = () => {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+        <main className="flex-1 p-3 lg:p-6 overflow-auto">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-6">
               {/* Main Content */}
-              <div className="lg:col-span-2">
+              <div className="flex-1 min-w-0">
                 {renderMainContent()}
               </div>
 
-              {/* Sidebar Content */}
-              <div className="space-y-4 lg:space-y-6">
+              {/* Sidebar Content - Hidden on mobile, visible on desktop */}
+              <div className="hidden lg:block w-80 space-y-6 flex-shrink-0">
                 <GamificationPanel />
                 
                 {/* Quick Stats */}
                 <Card className="card-gaming border-secondary/20">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base lg:text-lg">Resumen</CardTitle>
+                    <CardTitle className="text-lg">Resumen Rápido</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 pt-0">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Productos activos</span>
-                      <span className="font-bold text-sm">{products.length}</span>
+                  <CardContent className="space-y-4 pt-0">
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-sm text-muted-foreground">Productos</span>
+                      <span className="font-bold text-lg">{products.length}</span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Cursos disponibles</span>
-                      <span className="font-bold text-sm">{courses.length}</span>
+                    <Separator />
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-sm text-muted-foreground">Cursos</span>
+                      <span className="font-bold text-lg">{courses.length}</span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Servicios ofrecidos</span>
-                      <span className="font-bold text-sm">{services.length}</span>
+                    <Separator />
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-sm text-muted-foreground">Servicios</span>
+                      <span className="font-bold text-lg">{services.length}</span>
                     </div>
                   </CardContent>
                 </Card>
