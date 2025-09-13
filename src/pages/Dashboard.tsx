@@ -215,42 +215,26 @@ const Dashboard = () => {
   // Different stats based on user role
   const stats = profile?.role === 'cliente' ? [
     {
-      title: 'Mis Pedidos',
-      value: orders.length,
-      subtitle: 'Total de pedidos',
-      icon: <Package className="h-6 w-6" />,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-500/10'
-    },
-    {
-      title: 'Enviados',
-      value: orders.filter(o => ['shipped', 'in_transit', 'out_for_delivery'].includes(o.shipping_status)).length,
-      subtitle: 'En camino',
-      icon: <Truck className="h-6 w-6" />,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-500/10'
-    },
-    {
-      title: 'Entregados',
-      value: orders.filter(o => o.shipping_status === 'delivered').length,
-      subtitle: 'Completados',
-      icon: <CheckCircle className="h-6 w-6" />,
-      color: 'text-green-500',
-      bgColor: 'bg-green-500/10'
-    },
-    {
       title: 'Puntos',
       value: profile?.points || 0,
       subtitle: `Nivel ${profile?.level || 1}`,
       icon: <Trophy className="h-6 w-6" />,
       color: 'text-orange-500',
       bgColor: 'bg-orange-500/10'
+    },
+    {
+      title: 'Mis Pedidos',
+      value: orders.length,
+      subtitle: 'Total de pedidos',
+      icon: <Package className="h-6 w-6" />,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10'
     }
   ] : [
     {
-      title: 'Total Cursos',
+      title: 'Cursos',
       value: courses.length,
-      subtitle: 'Cursos activos',
+      subtitle: 'Disponibles',
       icon: <GraduationCap className="h-6 w-6" />,
       color: 'text-green-500',
       bgColor: 'bg-green-500/10'
@@ -266,65 +250,40 @@ const Dashboard = () => {
     {
       title: 'Servicios',
       value: services.length,
-      subtitle: 'Servicios ofrecidos',
+      subtitle: 'Ofrecidos',
       icon: <Wrench className="h-6 w-6" />,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10'
-    },
-    {
-      title: 'Usuarios',
-      value: 324,
-      subtitle: 'Usuarios registrados',
-      icon: <Users className="h-6 w-6" />,
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-500/10'
     }
   ];
 
   const quickActions = [
     {
-      title: 'Gestionar Cursos',
-      description: 'Agregar, editar o eliminar cursos',
-      icon: <GraduationCap className="h-8 w-8" />,
+      title: 'Cursos',
+      description: 'Gestionar cursos',
+      icon: <GraduationCap className="h-6 w-6" />,
       color: 'text-green-500',
       bgColor: 'bg-green-500/10',
       action: () => setActiveSection('courses')
     },
     {
-      title: 'Gestionar Productos',
-      description: 'Administrar inventario y precios',
-      icon: <Package className="h-8 w-8" />,
+      title: 'Productos',
+      description: 'Gestionar inventario',
+      icon: <Package className="h-6 w-6" />,
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10',
       action: () => setActiveSection('products')
     },
     {
-      title: 'Gestionar Servicios',
-      description: 'Configurar servicios técnicos',
-      icon: <Wrench className="h-8 w-8" />,
+      title: 'Servicios',
+      description: 'Configurar servicios',
+      icon: <Wrench className="h-6 w-6" />,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
       action: () => setActiveSection('services')
     }
   ];
 
-  const recentActivity = [
-    {
-      action: 'Nuevo curso "Valorant Pro" agregado',
-      time: 'Hace 2 horas',
-      icon: <Plus className="h-4 w-4" />
-    },
-    {
-      action: 'Producto "Teclado Gaming RGB" actualizado',
-      time: 'Hace 5 horas',
-      icon: <Edit className="h-4 w-4" />
-    },
-    {
-      action: 'Servicio de reparación completado',
-      time: 'Hace 1 día',
-      icon: <Wrench className="h-4 w-4" />
-    }
-  ];
 
   const renderMainContent = () => {
     // Customer view
@@ -407,19 +366,19 @@ const Dashboard = () => {
               </Card>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {stats.map((stat, index) => (
                   <Card key={index} className="card-gaming border-primary/20">
-                    <CardContent className="p-4">
-                      <div className="text-center space-y-2">
-                        <div className={`p-2 rounded-full ${stat.bgColor} mx-auto w-fit`}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <div className={`p-3 rounded-full ${stat.bgColor}`}>
                           <div className={stat.color}>
                             {stat.icon}
                           </div>
                         </div>
                         <div>
                           <p className="text-2xl font-bold">{stat.value}</p>
-                          <p className="text-xs text-muted-foreground">{stat.title}</p>
+                          <p className="text-sm text-muted-foreground">{stat.subtitle}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -634,30 +593,30 @@ const Dashboard = () => {
               </div>
             )}
 
-            {/* Recent Activity */}
-            <Card className="card-gaming border-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-secondary" />
-                  Actividad Reciente
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentActivity.map((activity, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                      <div className="text-primary">
-                        {activity.icon}
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {quickActions.map((action, index) => (
+                <Card 
+                  key={index} 
+                  className="card-gaming border-primary/20 cursor-pointer hover:border-primary/40 transition-colors"
+                  onClick={action.action}
+                >
+                  <CardContent className="p-6">
+                    <div className="text-center space-y-3">
+                      <div className={`p-3 rounded-full ${action.bgColor} mx-auto w-fit`}>
+                        <div className={action.color}>
+                          {action.icon}
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-sm">{activity.action}</p>
-                        <p className="text-xs text-muted-foreground">{activity.time}</p>
+                      <div>
+                        <p className="font-medium">{action.title}</p>
+                        <p className="text-sm text-muted-foreground">{action.description}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         );
     }
@@ -723,33 +682,12 @@ const Dashboard = () => {
                 {renderMainContent()}
               </div>
 
-              {/* Sidebar Content - Hidden on mobile, visible on desktop */}
-              <div className="hidden lg:block w-80 space-y-6 flex-shrink-0">
-                <GamificationPanel />
-                
-                {/* Quick Stats */}
-                <Card className="card-gaming border-secondary/20">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg">Resumen Rápido</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 pt-0">
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm text-muted-foreground">Productos</span>
-                      <span className="font-bold text-lg">{products.length}</span>
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm text-muted-foreground">Cursos</span>
-                      <span className="font-bold text-lg">{courses.length}</span>
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm text-muted-foreground">Servicios</span>
-                      <span className="font-bold text-lg">{services.length}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              {/* Sidebar Content - Only for admin users */}
+              {profile?.role !== 'cliente' && (
+                <div className="hidden lg:block w-72 space-y-6 flex-shrink-0">
+                  <GamificationPanel />
+                </div>
+              )}
             </div>
           </div>
         </main>
