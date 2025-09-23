@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -20,6 +21,7 @@ const Tienda = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const { categoria } = useParams();
   const navigate = useNavigate();
   
@@ -145,6 +147,19 @@ const Tienda = () => {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     }
   });
+
+  // Pagination logic
+  const PRODUCTS_PER_PAGE = 18;
+  const totalProducts = filteredProducts.length;
+  const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, sortBy, priceRange]);
   const wholesaleFeatures = ['Precios especiales mayoristas', 'Envíos gratuitos en pedidos >$200.000', 'Acceso prioritario a nuevos productos', 'Soporte técnico especializado', 'Descuentos progresivos por volumen', 'Facturación empresarial'];
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -361,7 +376,7 @@ const Tienda = () => {
 
               {/* Results Count */}
               <div className="text-sm text-muted-foreground">
-                {filteredProducts.length} productos encontrados
+                {totalProducts} productos encontrados - Página {currentPage} de {totalPages}
               </div>
             </div>
             
@@ -403,13 +418,64 @@ const Tienda = () => {
                 </Card>)}
             </div> : error ? <div className="text-center py-12">
               <p className="text-muted-foreground">Error al cargar productos: {error}</p>
-            </div> : filteredProducts.length === 0 ? <div className="text-center py-12">
+            </div> : totalProducts === 0 ? <div className="text-center py-12">
               <p className="text-muted-foreground">
                 {products.length === 0 ? 'No hay productos disponibles en este momento.' : `No se encontraron productos en la categoría "${selectedCategory}".`}
               </p>
             </div> : <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-              {filteredProducts.map(product => <ProductCard key={product.id} product={product} />)}
+              {currentProducts.map(product => <ProductCard key={product.id} product={product} />)}
             </div>}
+            
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-12 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  {currentPage > 1 && (
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(currentPage - 1);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                      />
+                    </PaginationItem>
+                  )}
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === page}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(page);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  
+                  {currentPage < totalPages && (
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(currentPage + 1);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                      />
+                    </PaginationItem>
+                  )}
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
       </section>
 
