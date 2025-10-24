@@ -25,6 +25,7 @@ const ProductManagementPanel = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -126,13 +127,23 @@ const ProductManagementPanel = () => {
     return product.image || '/api/placeholder/100/100';
   };
 
+  // Obtener categorías únicas
+  const categories = Array.from(
+    new Set(products?.map(p => p.category).filter(Boolean))
+  ).sort();
+
   const filteredProducts = products?.filter(product => {
     const searchLower = searchTerm.toLowerCase();
-    return (
+    const matchesSearch = 
       product.name.toLowerCase().includes(searchLower) ||
       product.category?.toLowerCase().includes(searchLower) ||
-      product.description?.toLowerCase().includes(searchLower)
-    );
+      product.description?.toLowerCase().includes(searchLower);
+    
+    const matchesCategory = 
+      selectedCategory === 'all' || 
+      product.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -148,15 +159,30 @@ const ProductManagementPanel = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Buscar producto por nombre, categoría o descripción..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Buscar producto..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+            >
+              <option value="all">Todas las categorías</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
           </div>
 
           {products?.length === 0 ? (
