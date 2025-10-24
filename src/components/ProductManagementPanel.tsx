@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
-import { Edit, Trash2, Package, Eye } from 'lucide-react';
+import { Edit, Trash2, Package, Eye, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductManagementPanel = () => {
@@ -24,6 +24,7 @@ const ProductManagementPanel = () => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -125,6 +126,15 @@ const ProductManagementPanel = () => {
     return product.image || '/api/placeholder/100/100';
   };
 
+  const filteredProducts = products?.filter(product => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.category?.toLowerCase().includes(searchLower) ||
+      product.description?.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <Card className="card-gaming border-primary/20">
       <CardHeader>
@@ -138,13 +148,28 @@ const ProductManagementPanel = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Buscar producto por nombre, categoría o descripción..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
           {products?.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">
               No hay productos registrados aún.
             </p>
+          ) : filteredProducts?.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">
+              No se encontraron productos que coincidan con la búsqueda.
+            </p>
           ) : (
             <div className="grid gap-4">
-              {products?.map((product: any) => (
+              {filteredProducts?.map((product: any) => (
                 <div key={product.id} className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
                   <img
                     src={getMainImage(product)}
