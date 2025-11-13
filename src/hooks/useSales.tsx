@@ -28,7 +28,7 @@ export const useSales = () => {
       setError(null);
 
       const { data, error } = await supabase
-        .from('sales')
+        .from('sales' as any)
         .select(`
           *,
           products:product_id (name, price)
@@ -38,16 +38,16 @@ export const useSales = () => {
       if (error) throw error;
 
       // Obtener información de usuarios por separado
-      const userIds = [...new Set(data?.map(s => s.sold_by))];
+      const userIds = [...new Set((data as any[])?.map((s: any) => s.sold_by))];
       const { data: profilesData } = await supabase
         .from('profiles')
         .select('id, username')
         .in('id', userIds);
 
       // Combinar datos
-      const salesWithProfiles = data?.map(sale => ({
+      const salesWithProfiles = (data as any[])?.map((sale: any) => ({
         ...sale,
-        profiles: profilesData?.find(p => p.id === sale.sold_by)
+        profiles: profilesData?.find((p: any) => p.id === sale.sold_by)
       }));
 
       setSales(salesWithProfiles || []);
@@ -65,7 +65,7 @@ export const useSales = () => {
     const subscription = supabase
       .channel('sales_changes')
       .on(
-        'postgres_changes',
+        'postgres_changes' as any,
         {
           event: '*',
           schema: 'public',
