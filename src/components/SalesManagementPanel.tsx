@@ -73,7 +73,7 @@ const SalesManagementPanel = () => {
     try {
       // 1. Registrar la venta
       const { error: saleError } = await supabase
-        .from('sales')
+        .from('sales' as any)
         .insert({
           product_id: selectedProduct,
           quantity: quantity,
