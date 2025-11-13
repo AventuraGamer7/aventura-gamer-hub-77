@@ -38,6 +38,7 @@ import GestionUsuarios from '@/components/GestionUsuarios';
 import { AppSidebar } from '@/components/AppSidebar';
 import { CustomerOrders } from '@/components/CustomerOrders';
 import OrdenesCliente from '@/components/OrdenesCliente';
+import SalesManagementPanel from '@/components/SalesManagementPanel';
 // Import customer orders hook
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
@@ -65,7 +66,8 @@ import {
   Monitor,
   Loader2,
   CheckCircle,
-  Truck
+  Truck,
+  DollarSign
 } from 'lucide-react';
 
 // Helper functions for status handling
@@ -197,6 +199,13 @@ const Dashboard = () => {
       icon: <Wrench className="h-5 w-5" />,
       section: 'Gestión Principal'
     },
+    // Solo mostrar ventas para roles administrativos
+    ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
+      id: 'sales',
+      title: 'Ventas',
+      icon: <DollarSign className="h-5 w-5" />,
+      section: 'Gestión Principal'
+    }] : []),
     // Solo mostrar usuarios para roles administrativos
     ...(profile && ['admin', 'superadmin', 'employee'].includes(profile.role) ? [{
       id: 'users',
@@ -484,6 +493,16 @@ const Dashboard = () => {
               {canCreateContent() && <AddServiceForm />}
             </div>
             <ManagementPanel type="services" />
+          </div>
+        );
+      case 'sales':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-glow">Gestión de Ventas</h2>
+              <p className="text-muted-foreground">Registra y visualiza el historial de ventas</p>
+            </div>
+            <SalesManagementPanel />
           </div>
         );
       case 'users':
