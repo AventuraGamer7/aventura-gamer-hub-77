@@ -71,9 +71,9 @@ const SalesManagementPanel = () => {
     setSubmitting(true);
 
     try {
-      // 1. Registrar la venta
-      const { error: saleError } = await supabase
-        .from('sales' as any)
+      // Tipos se regenerarán automáticamente después de la migración
+      const { error: saleError } = await (supabase as any)
+        .from('sales')
         .insert({
           product_id: selectedProduct,
           quantity: quantity,

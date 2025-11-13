@@ -27,8 +27,9 @@ export const useSales = () => {
       setLoading(true);
       setError(null);
 
-      const { data, error } = await supabase
-        .from('sales' as any)
+      // Tipos se regenerarán automáticamente después de la migración
+      const { data, error } = await (supabase as any)
+        .from('sales')
         .select(`
           *,
           products:product_id (name, price)
@@ -62,10 +63,11 @@ export const useSales = () => {
   useEffect(() => {
     fetchSales();
 
-    const subscription = supabase
+    // Tipos se regenerarán automáticamente después de la migración
+    const subscription = (supabase as any)
       .channel('sales_changes')
       .on(
-        'postgres_changes' as any,
+        'postgres_changes',
         {
           event: '*',
           schema: 'public',
