@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, ShoppingCart, Calendar, User, Filter } from 'lucide-react';
+import { Loader2, ShoppingCart, Calendar, User, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -22,6 +22,7 @@ const SalesManagementPanel = () => {
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [submitting, setSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   
   // Filtros
   const [filterDate, setFilterDate] = useState<string>('');
@@ -123,6 +124,12 @@ const SalesManagementPanel = () => {
     return matchesDate && matchesUser;
   });
 
+  // Filtrar productos por búsqueda
+  const filteredProducts = products?.filter(p => 
+    p.stock > 0 && 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // Obtener usuarios únicos de las ventas
   const uniqueUsers = Array.from(
     new Set(sales?.map(s => ({ id: s.sold_by, username: s.profiles?.username || 'Usuario' }))
@@ -143,7 +150,18 @@ const SalesManagementPanel = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="search">Buscar Producto</Label>
+              <Input
+                id="search"
+                type="text"
+                placeholder="Escribe el nombre del producto..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="product">Producto</Label>
               <Select value={selectedProduct} onValueChange={setSelectedProduct}>
@@ -151,7 +169,7 @@ const SalesManagementPanel = () => {
                   <SelectValue placeholder="Selecciona un producto" />
                 </SelectTrigger>
                 <SelectContent>
-                  {products?.filter(p => p.stock > 0).map((product) => (
+                  {filteredProducts?.map((product) => (
                     <SelectItem key={product.id} value={product.id}>
                       {product.name} (Stock: {product.stock})
                     </SelectItem>
@@ -159,6 +177,9 @@ const SalesManagementPanel = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
             <div className="space-y-2">
               <Label htmlFor="quantity">Cantidad</Label>
