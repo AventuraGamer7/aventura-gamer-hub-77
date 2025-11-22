@@ -107,8 +107,9 @@ const Tienda = () => {
     }
   };
 
-  // Filter and sort products
-  let filteredProducts = selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory);
+  // Filter and sort products - only show active products
+  let filteredProducts = (selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory))
+    .filter(p => p.active);
   
   // Apply search filter
   if (searchTerm) {

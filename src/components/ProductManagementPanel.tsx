@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -12,7 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
-import { Edit, Trash2, Package, Eye, Search } from 'lucide-react';
+import { Edit, Trash2, Package, Eye, Search, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductManagementPanel = () => {
@@ -38,6 +39,31 @@ const ProductManagementPanel = () => {
   const handleEdit = (product: any) => {
     setEditingProduct(product);
     setIsEditOpen(true);
+  };
+
+  const handleToggleActive = async (id: string, currentActive: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ active: !currentActive })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: currentActive ? "Producto oculto" : "Producto activado",
+        description: currentActive 
+          ? "El producto ya no será visible en la tienda." 
+          : "El producto ahora es visible en la tienda.",
+      });
+    } catch (error: any) {
+      console.error('Error toggling product visibility:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo cambiar la visibilidad del producto.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -206,7 +232,14 @@ const ProductManagementPanel = () => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-medium">{product.name}</h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">{product.name}</h4>
+                          {!product.active && (
+                            <Badge variant="outline" className="text-xs">
+                              Oculto
+                            </Badge>
+                          )}
+                        </div>
                         <p className="text-sm text-muted-foreground">
                           {product.category || 'Sin categoría'} • Stock: {product.stock}
                         </p>
@@ -233,14 +266,25 @@ const ProductManagementPanel = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => navigate(`/producto/${product.id}`)}
+                      title="Ver producto"
                     >
                       <Eye className="h-4 w-4" />
+                    </Button>
+
+                    <Button
+                      variant={product.active ? "outline" : "secondary"}
+                      size="sm"
+                      onClick={() => handleToggleActive(product.id, product.active)}
+                      title={product.active ? "Ocultar producto" : "Mostrar producto"}
+                    >
+                      {product.active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                     </Button>
                     
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleEdit(product)}
+                      title="Editar producto"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -248,7 +292,7 @@ const ProductManagementPanel = () => {
                     {isSuperadmin() && (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="sm">
+                          <Button variant="destructive" size="sm" title="Eliminar producto">
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>
