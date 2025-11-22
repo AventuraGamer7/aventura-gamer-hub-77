@@ -12,6 +12,7 @@ interface Product {
   images: string[] | null;
   badge_text: string | null;
   badge_color: string | null;
+  active: boolean;
   created_at: string;
   updated_at: string;
 }
