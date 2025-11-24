@@ -527,20 +527,20 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="card-gaming border-secondary/30 text-center group animate-fade-in [animation-delay:0.1s] hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors duration-500"></div>
+              <Card className="card-gaming border-led-cyan/40 text-center group animate-fade-in [animation-delay:0.1s] hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.5)] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-led-cyan/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-led-cyan/15 rounded-full blur-3xl group-hover:bg-led-cyan/25 transition-colors duration-500"></div>
                 <CardContent className="p-8 relative z-10">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center group-hover:from-secondary/40 group-hover:to-secondary/30 transition-all group-hover:-rotate-12 group-hover:scale-110 duration-300 shadow-lg group-hover:shadow-secondary/50">
-                    <Phone className="h-8 w-8 text-secondary group-hover:animate-[pulse_1s_ease-in-out_infinite]" />
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-led-cyan/30 to-led-cyan/10 flex items-center justify-center group-hover:from-led-cyan/50 group-hover:to-led-cyan/30 transition-all group-hover:-rotate-12 group-hover:scale-110 duration-300 shadow-lg group-hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]">
+                    <Phone className="h-8 w-8 text-led-cyan group-hover:animate-[pulse_1s_ease-in-out_infinite]" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 text-neon group-hover:text-secondary transition-colors">Contacto Directo</h3>
+                  <h3 className="text-xl font-bold mb-4 text-neon group-hover:text-led-cyan transition-colors font-orbitron">Contacto Directo</h3>
                   <div className="space-y-2 text-muted-foreground">
-                    <p className="text-2xl font-bold text-secondary group-hover:scale-110 transition-transform">350 513 85 57</p>
-                    <p>WhatsApp & Llamadas</p>
-                    <p>Respuesta inmediata</p>
+                    <p className="text-2xl font-bold text-led-cyan group-hover:scale-110 transition-transform font-rajdhani tracking-wider">350 513 85 57</p>
+                    <p className="text-foreground/80">WhatsApp & Llamadas</p>
+                    <p className="text-foreground/70">Respuesta inmediata</p>
                   </div>
-                  <Badge variant="secondary" className="mt-4 bg-secondary/10 text-secondary border-secondary/20 group-hover:bg-secondary/20 group-hover:shadow-lg group-hover:shadow-secondary/30 transition-all">
+                  <Badge variant="secondary" className="mt-4 bg-led-cyan/15 text-led-cyan border-led-cyan/30 group-hover:bg-led-cyan/25 group-hover:shadow-lg group-hover:shadow-led-cyan/40 transition-all font-semibold">
                     24/7 WhatsApp
                   </Badge>
                 </CardContent>
