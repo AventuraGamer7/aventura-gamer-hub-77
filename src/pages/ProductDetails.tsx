@@ -602,12 +602,13 @@ const ProductDetails = () => {
                 <Button
                   onClick={handleWhatsAppRequest}
                   disabled={product.stock === 0}
-                  className="w-full"
+                  className="w-full relative overflow-hidden group animate-fade-in hover:scale-105 transition-all duration-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:border-green-500"
                   variant="outline"
                   size="lg"
                 >
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  Solicitar este producto ahora
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-green-500/0 via-green-500/30 to-green-500/0 group-hover:animate-[slide-in-right_0.6s_ease-in-out_infinite]"></span>
+                  <MessageCircle className="mr-2 h-5 w-5 group-hover:animate-pulse relative z-10" />
+                  <span className="relative z-10 font-semibold">Solicitar este producto ahora</span>
                 </Button>
               </div>
             </div>
