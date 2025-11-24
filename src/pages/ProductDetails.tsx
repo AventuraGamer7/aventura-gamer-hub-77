@@ -14,7 +14,7 @@ import SEOHead from '@/components/SEO/SEOHead';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard, MessageCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -318,73 +318,138 @@ const ProductDetails = () => {
                       )}
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="max-w-4xl w-[90vw] h-auto p-4">
-                    <div className="relative">
-                      {/* Zoom Controls */}
-                      <div className="absolute top-2 right-2 z-10 flex gap-2 bg-background/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={handleZoomIn}
-                          disabled={zoomLevel >= 4}
-                          title="Acercar"
+                  <DialogContent className="max-w-5xl w-[95vw] h-auto p-4 md:p-6">
+                    <div className="space-y-4">
+                      <div className="relative">
+                        {/* Zoom Controls */}
+                        <div className="absolute top-2 right-2 z-10 flex gap-2 bg-background/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleZoomIn}
+                            disabled={zoomLevel >= 4}
+                            title="Acercar"
+                          >
+                            <ZoomIn className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleZoomOut}
+                            disabled={zoomLevel <= 1}
+                            title="Alejar"
+                          >
+                            <ZoomOut className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleResetZoom}
+                            disabled={zoomLevel === 1}
+                            title="Restablecer"
+                          >
+                            <RotateCcw className="h-4 w-4" />
+                          </Button>
+                        </div>
+
+                        {/* Zoom Level Indicator */}
+                        {zoomLevel > 1 && (
+                          <div className="absolute top-2 left-2 z-10 bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1 shadow-lg">
+                            <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
+                          </div>
+                        )}
+
+                        {/* Navigation Arrows */}
+                        {images.length > 1 && (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background"
+                              onClick={() => {
+                                setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                                handleResetZoom();
+                              }}
+                            >
+                              <ChevronLeft className="h-6 w-6" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background"
+                              onClick={() => {
+                                setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                                handleResetZoom();
+                              }}
+                            >
+                              <ChevronRight className="h-6 w-6" />
+                            </Button>
+                          </>
+                        )}
+
+                        {/* Image Container */}
+                        <div 
+                          className="relative w-full h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden rounded-lg bg-muted/20"
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                          onWheel={handleWheel}
+                          style={{ cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
                         >
-                          <ZoomIn className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={handleZoomOut}
-                          disabled={zoomLevel <= 1}
-                          title="Alejar"
-                        >
-                          <ZoomOut className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={handleResetZoom}
-                          disabled={zoomLevel === 1}
-                          title="Restablecer"
-                        >
-                          <RotateCcw className="h-4 w-4" />
-                        </Button>
+                          <img
+                            src={images[selectedImageIndex]}
+                            alt={`${product.name} - Imagen ${selectedImageIndex + 1}`}
+                            className="max-w-full max-h-full object-contain select-none transition-transform"
+                            style={{
+                              transform: `scale(${zoomLevel}) translate(${imagePosition.x / zoomLevel}px, ${imagePosition.y / zoomLevel}px)`,
+                              transformOrigin: 'center center'
+                            }}
+                            draggable={false}
+                          />
+                        </div>
+
+                        {/* Instructions */}
+                        {zoomLevel === 1 && (
+                          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-background/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
+                            <p className="text-xs text-muted-foreground text-center">
+                              Usa la rueda del mouse o los botones + y - para acercar
+                            </p>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Zoom Level Indicator */}
-                      {zoomLevel > 1 && (
-                        <div className="absolute top-2 left-2 z-10 bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1 shadow-lg">
-                          <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
+                      {/* Thumbnails */}
+                      {images.length > 1 && (
+                        <div className="flex gap-2 overflow-x-auto pb-2 px-1 justify-center">
+                          {images.map((image, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                setSelectedImageIndex(index);
+                                handleResetZoom();
+                              }}
+                              className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                                index === selectedImageIndex 
+                                  ? 'border-primary ring-2 ring-primary/50 scale-105' 
+                                  : 'border-border hover:border-primary/50 hover:scale-105'
+                              }`}
+                            >
+                              <img
+                                src={image}
+                                alt={`${product.name} - Miniatura ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </button>
+                          ))}
                         </div>
                       )}
 
-                      {/* Image Container */}
-                      <div 
-                        className="relative w-full max-h-[70vh] flex items-center justify-center overflow-hidden rounded-lg bg-muted/20"
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                        onWheel={handleWheel}
-                        style={{ cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
-                      >
-                        <img
-                          src={images[selectedImageIndex]}
-                          alt={product.name}
-                          className="max-w-full max-h-[70vh] object-contain select-none transition-transform"
-                          style={{
-                            transform: `scale(${zoomLevel}) translate(${imagePosition.x / zoomLevel}px, ${imagePosition.y / zoomLevel}px)`,
-                            transformOrigin: 'center center'
-                          }}
-                          draggable={false}
-                        />
-                      </div>
-
-                      {/* Instructions */}
-                      {zoomLevel === 1 && (
-                        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-background/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
-                          <p className="text-xs text-muted-foreground text-center">
-                            Usa la rueda del mouse o los botones + y - para acercar
+                      {/* Image Counter */}
+                      {images.length > 1 && (
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground">
+                            Imagen {selectedImageIndex + 1} de {images.length}
                           </p>
                         </div>
                       )}
