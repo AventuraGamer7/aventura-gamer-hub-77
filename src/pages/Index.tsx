@@ -507,52 +507,59 @@ const Index = () => {
 
             {/* Contact Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              <Card className="card-gaming border-primary/30 text-center group">
-                <CardContent className="p-8">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:from-primary/30 group-hover:to-primary/20 transition-all">
-                    <MapPin className="h-8 w-8 text-primary" />
+              <Card className="card-gaming border-primary/30 text-center group animate-fade-in hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.4)] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors duration-500"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:from-primary/40 group-hover:to-primary/30 transition-all group-hover:rotate-12 group-hover:scale-110 duration-300 shadow-lg group-hover:shadow-primary/50">
+                    <MapPin className="h-8 w-8 text-primary group-hover:animate-pulse" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 text-neon">Ubicación Central</h3>
+                  <h3 className="text-xl font-bold mb-4 text-neon group-hover:text-primary transition-colors">Ubicación Central</h3>
                   <div className="space-y-2 text-muted-foreground">
                     <p className="font-medium">Calle 36 Sur #41-36</p>
                     <p>Local 116, Envigado</p>
                     <p>Antioquia, Colombia</p>
                   </div>
-                  <Button variant="gaming" size="sm" className="mt-4" onClick={() => window.open('https://maps.google.com/?q=Aventura+Gamer+Envigado', '_blank')}>
-                    Ver en Google Maps
+                  <Button variant="gaming" size="sm" className="mt-4 relative overflow-hidden group/btn" onClick={() => window.open('https://maps.google.com/?q=Aventura+Gamer+Envigado', '_blank')}>
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0 group-hover/btn:animate-[slide-in-right_0.6s_ease-in-out_infinite]"></span>
+                    <span className="relative z-10">Ver en Google Maps</span>
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="card-gaming border-secondary/30 text-center group">
-                <CardContent className="p-8">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center group-hover:from-secondary/30 group-hover:to-secondary/20 transition-all">
-                    <Phone className="h-8 w-8 text-secondary" />
+              <Card className="card-gaming border-secondary/30 text-center group animate-fade-in [animation-delay:0.1s] hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-colors duration-500"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center group-hover:from-secondary/40 group-hover:to-secondary/30 transition-all group-hover:-rotate-12 group-hover:scale-110 duration-300 shadow-lg group-hover:shadow-secondary/50">
+                    <Phone className="h-8 w-8 text-secondary group-hover:animate-[pulse_1s_ease-in-out_infinite]" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 text-neon">Contacto Directo</h3>
+                  <h3 className="text-xl font-bold mb-4 text-neon group-hover:text-secondary transition-colors">Contacto Directo</h3>
                   <div className="space-y-2 text-muted-foreground">
-                    <p className="text-2xl font-bold text-secondary">350 513 85 57</p>
+                    <p className="text-2xl font-bold text-secondary group-hover:scale-110 transition-transform">350 513 85 57</p>
                     <p>WhatsApp & Llamadas</p>
                     <p>Respuesta inmediata</p>
                   </div>
-                  <Badge variant="secondary" className="mt-4 bg-secondary/10 text-secondary border-secondary/20">
+                  <Badge variant="secondary" className="mt-4 bg-secondary/10 text-secondary border-secondary/20 group-hover:bg-secondary/20 group-hover:shadow-lg group-hover:shadow-secondary/30 transition-all">
                     24/7 WhatsApp
                   </Badge>
                 </CardContent>
               </Card>
 
-              <Card className="card-gaming border-gaming-orange/30 text-center group">
-                <CardContent className="p-8">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-gaming-orange/20 to-gaming-orange/10 flex items-center justify-center group-hover:from-gaming-orange/30 group-hover:to-gaming-orange/20 transition-all">
+              <Card className="card-gaming border-gaming-orange/30 text-center group animate-fade-in [animation-delay:0.2s] hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(249,115,22,0.4)] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-gaming-orange/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute top-0 left-0 w-32 h-32 bg-gaming-orange/10 rounded-full blur-3xl group-hover:bg-gaming-orange/20 transition-colors duration-500"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-gaming-orange/20 to-gaming-orange/10 flex items-center justify-center group-hover:from-gaming-orange/40 group-hover:to-gaming-orange/30 transition-all group-hover:rotate-[360deg] group-hover:scale-110 duration-500 shadow-lg group-hover:shadow-gaming-orange/50">
                     <Clock className="h-8 w-8 text-gaming-orange" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 text-neon">Horarios Pro</h3>
+                  <h3 className="text-xl font-bold mb-4 text-neon group-hover:text-gaming-orange transition-colors">Horarios Pro</h3>
                   <div className="space-y-2 text-muted-foreground">
                     <p className="font-medium">Lunes - Sábado</p>
-                    <p className="text-xl font-bold text-gaming-orange">9:00 AM - 7:00 PM</p>
+                    <p className="text-xl font-bold text-gaming-orange group-hover:scale-110 transition-transform">9:00 AM - 7:00 PM</p>
                     <p>Domingos: Cerrado</p>
                   </div>
-                  <Badge variant="secondary" className="mt-4 bg-gaming-orange/10 text-gaming-orange border-gaming-orange/20">
+                  <Badge variant="secondary" className="mt-4 bg-gaming-orange/10 text-gaming-orange border-gaming-orange/20 group-hover:bg-gaming-orange/20 group-hover:shadow-lg group-hover:shadow-gaming-orange/30 transition-all animate-pulse">
                     Citas Disponibles
                   </Badge>
                 </CardContent>
