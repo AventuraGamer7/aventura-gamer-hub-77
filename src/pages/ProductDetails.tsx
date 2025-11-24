@@ -14,7 +14,7 @@ import SEOHead from '@/components/SEO/SEOHead';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard } from 'lucide-react';
+import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard, MessageCircle } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -142,6 +142,14 @@ const ProductDetails = () => {
         console.error('Error copying to clipboard:', err);
       }
     }
+  };
+
+  const handleWhatsAppRequest = () => {
+    if (!product) return;
+    
+    const message = `Hola, estoy interesado en solicitar el producto: ${product.name}. Precio: ${formatPrice(product.price)}. Me gustaría más información para comprarlo ahora.`;
+    const whatsappUrl = `https://wa.me/573505138557?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   if (loading) {
@@ -366,19 +374,32 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <div className="flex gap-3">
+              <div className="space-y-3">
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0}
+                    className="flex-1"
+                    variant="gaming"
+                    size="lg"
+                  >
+                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
+                  </Button>
+                  <Button variant="outline" size="lg">
+                    <Heart className="h-5 w-5" />
+                  </Button>
+                </div>
+                
                 <Button
-                  onClick={handleAddToCart}
+                  onClick={handleWhatsAppRequest}
                   disabled={product.stock === 0}
-                  className="flex-1"
-                  variant="gaming"
+                  className="w-full"
+                  variant="outline"
                   size="lg"
                 >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
-                </Button>
-                <Button variant="outline" size="lg">
-                  <Heart className="h-5 w-5" />
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  Solicitar este producto ahora
                 </Button>
               </div>
             </div>
