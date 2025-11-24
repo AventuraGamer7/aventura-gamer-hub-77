@@ -18,6 +18,7 @@ import { useHeroSlides } from '@/hooks/useHeroSlides';
 import { generateServiceSchema, generateProductSchema, generateCourseSchema } from '@/utils/seoUtils';
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon, Instagram } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
+import LEDParticles from '@/components/LEDParticles';
 
 // Import images
 import heroImage from '@/assets/gaming-hero.jpg';
@@ -189,6 +190,123 @@ const Index = () => {
           <Header />
           <WhatsAppFloat />
 
+      {/* Hero Section with Parallax & LED Particles */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,100%,50%)]/20 via-background to-[hsl(270,100%,60%)]/20 animate-gradient" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-accent/10 animate-gradient-reverse" />
+        </div>
+
+        {/* LED Particles */}
+        <LEDParticles />
+
+        {/* Hero Carousel */}
+        <div className="relative h-screen">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 5000,
+              }),
+            ]}
+            className="w-full h-full"
+          >
+            <CarouselContent className="h-full">
+              {activeHeroSlides.map((slide, index) => (
+                <CarouselItem key={slide.id} className="h-full">
+                  <div className="relative h-full w-full">
+                    {/* Parallax Background Image */}
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
+                      style={{
+                        backgroundImage: `url(${slide.image_url})`,
+                        transform: 'scale(1.1)',
+                      }}
+                    />
+                    
+                    {/* Gradient Overlays */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+
+                    {/* Animated gradient accent */}
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[hsl(180,100%,50%)]/10 via-transparent to-transparent animate-pulse" />
+                    <div className="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-r from-[hsl(270,100%,60%)]/10 via-transparent to-transparent animate-pulse [animation-delay:0.5s]" />
+
+                    {/* Content */}
+                    <div className="relative h-full flex items-center">
+                      <div className="container mx-auto px-4 md:px-8">
+                        <div className="max-w-3xl space-y-6 animate-fade-in">
+                          {/* Subtitle */}
+                          <div className="inline-block">
+                            <Badge 
+                              variant="outline" 
+                              className="text-sm md:text-base px-4 py-2 bg-primary/20 border-primary/50 text-primary backdrop-blur-sm animate-scale-in"
+                            >
+                              {slide.subtitle}
+                            </Badge>
+                          </div>
+
+                          {/* Title */}
+                          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bungee text-glow leading-tight [animation-delay:0.1s] animate-fade-in">
+                            {slide.title}
+                          </h1>
+
+                          {/* Description */}
+                          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl [animation-delay:0.2s] animate-fade-in">
+                            {slide.description}
+                          </p>
+
+                          {/* CTA Button */}
+                          <div className="[animation-delay:0.3s] animate-fade-in">
+                            <Button
+                              variant="gaming"
+                              size="lg"
+                              className="text-lg px-8 py-6 group relative overflow-hidden"
+                              onClick={() => handleSlideNavigation(slide.button_url)}
+                            >
+                              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                              <span className="relative z-10 flex items-center gap-2">
+                                {slide.button_text}
+                                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                              </span>
+                            </Button>
+                          </div>
+
+                          {/* Stats Row */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 [animation-delay:0.4s] animate-fade-in">
+                            {stats.map((stat, idx) => (
+                              <div 
+                                key={idx}
+                                className="backdrop-blur-sm bg-card/30 border border-primary/20 rounded-lg p-4 hover:bg-card/50 hover:border-primary/40 transition-all group"
+                              >
+                                <div className="flex items-center gap-2 mb-2 text-primary group-hover:scale-110 transition-transform">
+                                  {stat.icon}
+                                </div>
+                                <div className="text-2xl font-bold text-neon">{stat.value}</div>
+                                <div className="text-xs text-muted-foreground">{stat.label}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            
+            {/* Carousel Controls */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+              <CarouselPrevious className="relative left-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
+              <CarouselNext className="relative right-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
+            </div>
+          </Carousel>
+        </div>
+      </section>
       
       {/* Featured Services Section - Modular */}
       <section className="py-24 relative overflow-hidden">        

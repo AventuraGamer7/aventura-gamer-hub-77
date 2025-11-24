@@ -334,6 +334,30 @@ All colors MUST be HSL for consistency.
   }
 }
 
+@keyframes gradient {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes gradient-reverse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
 /* Missing animations used in components */
 @keyframes glow {
   0%, 100% {
@@ -350,4 +374,12 @@ All colors MUST be HSL for consistency.
 
 .animate-glow {
   animation: glow 2s ease-in-out infinite alternate;
+}
+
+.animate-gradient {
+  animation: gradient 10s ease-in-out infinite;
+}
+
+.animate-gradient-reverse {
+  animation: gradient-reverse 8s ease-in-out infinite;
 }
