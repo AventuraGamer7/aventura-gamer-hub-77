@@ -14,7 +14,7 @@ import SEOHead from '@/components/SEO/SEOHead';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -43,6 +43,10 @@ const ProductDetails = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (id) {
@@ -151,6 +155,58 @@ const ProductDetails = () => {
     const whatsappUrl = `https://wa.me/573505138557?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 0.5, 4));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 0.5, 1));
+  };
+
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+    setImagePosition({ x: 0, y: 0 });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.clientX - imagePosition.x,
+        y: e.clientY - imagePosition.y
+      });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setImagePosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
+    }
+  };
+
+  useEffect(() => {
+    if (!isImageModalOpen) {
+      setZoomLevel(1);
+      setImagePosition({ x: 0, y: 0 });
+    }
+  }, [isImageModalOpen]);
 
   if (loading) {
     return (
@@ -262,13 +318,76 @@ const ProductDetails = () => {
                       )}
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="max-w-3xl w-[90vw] h-auto p-4">
-                    <div className="relative w-full max-h-[70vh] flex items-center justify-center">
-                      <img
-                        src={images[selectedImageIndex]}
-                        alt={product.name}
-                        className="w-full h-full object-contain rounded-lg"
-                      />
+                  <DialogContent className="max-w-4xl w-[90vw] h-auto p-4">
+                    <div className="relative">
+                      {/* Zoom Controls */}
+                      <div className="absolute top-2 right-2 z-10 flex gap-2 bg-background/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleZoomIn}
+                          disabled={zoomLevel >= 4}
+                          title="Acercar"
+                        >
+                          <ZoomIn className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleZoomOut}
+                          disabled={zoomLevel <= 1}
+                          title="Alejar"
+                        >
+                          <ZoomOut className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleResetZoom}
+                          disabled={zoomLevel === 1}
+                          title="Restablecer"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      {/* Zoom Level Indicator */}
+                      {zoomLevel > 1 && (
+                        <div className="absolute top-2 left-2 z-10 bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1 shadow-lg">
+                          <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
+                        </div>
+                      )}
+
+                      {/* Image Container */}
+                      <div 
+                        className="relative w-full max-h-[70vh] flex items-center justify-center overflow-hidden rounded-lg bg-muted/20"
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        onWheel={handleWheel}
+                        style={{ cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+                      >
+                        <img
+                          src={images[selectedImageIndex]}
+                          alt={product.name}
+                          className="max-w-full max-h-[70vh] object-contain select-none transition-transform"
+                          style={{
+                            transform: `scale(${zoomLevel}) translate(${imagePosition.x / zoomLevel}px, ${imagePosition.y / zoomLevel}px)`,
+                            transformOrigin: 'center center'
+                          }}
+                          draggable={false}
+                        />
+                      </div>
+
+                      {/* Instructions */}
+                      {zoomLevel === 1 && (
+                        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-background/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
+                          <p className="text-xs text-muted-foreground text-center">
+                            Usa la rueda del mouse o los botones + y - para acercar
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </DialogContent>
                 </Dialog>
