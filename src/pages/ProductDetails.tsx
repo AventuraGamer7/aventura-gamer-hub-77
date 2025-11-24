@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -41,6 +42,7 @@ const ProductDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -227,28 +229,41 @@ const ProductDetails = () => {
           <div className="space-y-4">
             <Card className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center">
-                  <img
-                    src={images[selectedImageIndex]}
-                    alt={product.name}
-                    className="max-w-full max-h-full object-scale-down"
-                  />
-                  {product.stock === 0 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <Badge variant="destructive" className="text-lg px-6 py-2">
-                        Agotado
-                      </Badge>
+                <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+                  <DialogTrigger asChild>
+                    <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors">
+                      <img
+                        src={images[selectedImageIndex]}
+                        alt={product.name}
+                        className="max-w-full max-h-full object-scale-down"
+                      />
+                      {product.stock === 0 && (
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                          <Badge variant="destructive" className="text-lg px-6 py-2">
+                            Agotado
+                          </Badge>
+                        </div>
+                      )}
+                      {product.badge_text && (
+                        <Badge 
+                          variant={product.badge_color as any} 
+                          className="absolute top-4 left-4"
+                        >
+                          {product.badge_text}
+                        </Badge>
+                      )}
                     </div>
-                  )}
-                  {product.badge_text && (
-                    <Badge 
-                      variant={product.badge_color as any} 
-                      className="absolute top-4 left-4"
-                    >
-                      {product.badge_text}
-                    </Badge>
-                  )}
-                </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-7xl w-full h-[90vh] p-0">
+                    <div className="relative w-full h-full flex items-center justify-center bg-background">
+                      <img
+                        src={images[selectedImageIndex]}
+                        alt={product.name}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
 
