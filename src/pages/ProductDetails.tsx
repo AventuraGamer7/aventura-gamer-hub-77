@@ -208,6 +208,30 @@ const ProductDetails = () => {
     }
   }, [isImageModalOpen]);
 
+  // Keyboard navigation for carousel
+  useEffect(() => {
+    if (!isImageModalOpen || !product) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const currentImages = getProductImages();
+      
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setSelectedImageIndex((prev) => (prev === 0 ? currentImages.length - 1 : prev - 1));
+        handleResetZoom();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setSelectedImageIndex((prev) => (prev === currentImages.length - 1 ? 0 : prev + 1));
+        handleResetZoom();
+      } else if (e.key === 'Escape') {
+        handleResetZoom();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isImageModalOpen, product]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
