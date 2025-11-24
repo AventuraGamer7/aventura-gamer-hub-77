@@ -319,12 +319,41 @@ const ProductDetails = () => {
               <CardContent className="p-0">
                 <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
                   <DialogTrigger asChild>
-                    <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors">
+                    <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors group">
                       <img
                         src={images[selectedImageIndex]}
                         alt={product.name}
                         className="max-w-full max-h-full object-scale-down"
                       />
+                      
+                      {/* Navigation Arrows for Main Image */}
+                      {images.length > 1 && (
+                        <>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                            }}
+                          >
+                            <ChevronLeft className="h-6 w-6" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                            }}
+                          >
+                            <ChevronRight className="h-6 w-6" />
+                          </Button>
+                        </>
+                      )}
+                      
                       {product.stock === 0 && (
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                           <Badge variant="destructive" className="text-lg px-6 py-2">
