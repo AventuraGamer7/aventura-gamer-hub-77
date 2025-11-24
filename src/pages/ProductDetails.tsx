@@ -254,12 +254,12 @@ const ProductDetails = () => {
                       )}
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="max-w-7xl w-full h-[90vh] p-0">
-                    <div className="relative w-full h-full flex items-center justify-center bg-background">
+                  <DialogContent className="max-w-4xl w-[95vw] max-h-[85vh] p-2">
+                    <div className="relative w-full h-full flex items-center justify-center">
                       <img
                         src={images[selectedImageIndex]}
                         alt={product.name}
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-contain rounded-lg"
                       />
                     </div>
                   </DialogContent>
