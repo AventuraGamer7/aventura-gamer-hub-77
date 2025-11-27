@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
+import { ProductVariantsManager } from './ProductVariantsManager';
 import { Edit, Trash2, Package, Eye, Search, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -331,9 +332,10 @@ const ProductManagementPanel = () => {
 
             {editingProduct && (
               <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="general">Información General</TabsTrigger>
                   <TabsTrigger value="images">Imágenes</TabsTrigger>
+                  <TabsTrigger value="variants">Variantes</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="general">
@@ -461,6 +463,10 @@ const ProductManagementPanel = () => {
                       setEditingProduct((prev: any) => ({ ...prev, images }));
                     }}
                   />
+                </TabsContent>
+
+                <TabsContent value="variants">
+                  <ProductVariantsManager productId={editingProduct.id} />
                 </TabsContent>
               </Tabs>
             )}
