@@ -13,6 +13,7 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import SEOHead from '@/components/SEO/SEOHead';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import { useProductVariants } from '@/hooks/useProductVariants';
 import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, Star, ArrowLeft, Share2, Heart, Package, Truck, Shield, CreditCard, MessageCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -36,11 +37,13 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { toast } = useToast();
+  const { variants, loading: variantsLoading } = useProductVariants(id);
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -111,6 +114,14 @@ const ProductDetails = () => {
   const getProductImages = () => {
     if (!product) return ['/api/placeholder/400/400'];
     
+    // Si hay una variante seleccionada, usar su imagen
+    if (selectedVariant) {
+      const variant = variants.find(v => v.id === selectedVariant);
+      if (variant?.image_url) {
+        return [variant.image_url];
+      }
+    }
+    
     // Usar el array de imágenes si existe, sino usar la imagen singular, sino placeholder
     if (product.images && product.images.length > 0) {
       return product.images;
@@ -120,6 +131,34 @@ const ProductDetails = () => {
       return ['/api/placeholder/400/400'];
     }
   };
+
+  const getCurrentPrice = () => {
+    if (!product) return 0;
+    
+    if (selectedVariant) {
+      const variant = variants.find(v => v.id === selectedVariant);
+      if (variant) {
+        return product.price + (variant.price_adjustment || 0);
+      }
+    }
+    
+    return product.price;
+  };
+
+  const getCurrentStock = () => {
+    if (!product) return 0;
+    
+    if (selectedVariant) {
+      const variant = variants.find(v => v.id === selectedVariant);
+      if (variant) {
+        return variant.stock;
+      }
+    }
+    
+    return product.stock;
+  };
+
+  const activeVariants = variants.filter(v => v.is_active).sort((a, b) => a.display_order - b.display_order);
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -565,12 +604,12 @@ const ProductDetails = () => {
               </div>
 
               <div className="text-3xl font-bold text-primary mb-4">
-                {formatPrice(product.price)}
+                {formatPrice(getCurrentPrice())}
               </div>
 
-              {product.stock > 0 && (
+              {getCurrentStock() > 0 && (
                 <p className="text-sm text-muted-foreground mb-4">
-                  {product.stock} unidades disponibles
+                  {getCurrentStock()} unidades disponibles
                 </p>
               )}
             </div>
@@ -584,9 +623,69 @@ const ProductDetails = () => {
               </div>
             )}
 
+            {/* Product Variants */}
+            {!variantsLoading && activeVariants.length > 0 && (
+              <div>
+                <h3 className="font-semibold mb-3">Colores y Diseños Disponibles</h3>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                  {activeVariants.map((variant) => (
+                    <button
+                      key={variant.id}
+                      onClick={() => {
+                        setSelectedVariant(variant.id);
+                        setSelectedImageIndex(0);
+                      }}
+                      className={`relative group rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
+                        selectedVariant === variant.id
+                          ? 'border-primary shadow-lg shadow-primary/20'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="aspect-square bg-muted/20 flex items-center justify-center p-2">
+                        <img
+                          src={variant.image_url}
+                          alt={variant.name}
+                          className="w-full h-full object-cover rounded"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                        <span className="text-xs text-white font-medium px-2 text-center">
+                          {variant.name}
+                        </span>
+                      </div>
+                      {selectedVariant === variant.id && (
+                        <div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-1">
+                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                      {variant.color_code && (
+                        <div 
+                          className="absolute bottom-1 left-1 w-4 h-4 rounded-full border-2 border-white shadow-md"
+                          style={{ backgroundColor: variant.color_code }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                {selectedVariant && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {activeVariants.find(v => v.id === selectedVariant)?.name}
+                    {activeVariants.find(v => v.id === selectedVariant)?.price_adjustment !== 0 && (
+                      <span className="ml-2 text-primary font-medium">
+                        ({activeVariants.find(v => v.id === selectedVariant)!.price_adjustment! > 0 ? '+' : ''}
+                        {formatPrice(activeVariants.find(v => v.id === selectedVariant)!.price_adjustment!)})
+                      </span>
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Quantity Selector and Add to Cart */}
             <div className="space-y-4">
-              {product.stock > 0 && (
+              {getCurrentStock() > 0 && (
                 <div className="flex items-center gap-4">
                   <label className="text-sm font-medium">Cantidad:</label>
                   <div className="flex items-center gap-2">
@@ -602,8 +701,8 @@ const ProductDetails = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                      disabled={quantity >= product.stock}
+                      onClick={() => setQuantity(Math.min(getCurrentStock(), quantity + 1))}
+                      disabled={quantity >= getCurrentStock()}
                     >
                       +
                     </Button>
@@ -615,13 +714,13 @@ const ProductDetails = () => {
                 <div className="flex gap-3">
                   <Button
                     onClick={handleAddToCart}
-                    disabled={product.stock === 0}
+                    disabled={getCurrentStock() === 0}
                     className="flex-1"
                     variant="gaming"
                     size="lg"
                   >
                     <ShoppingCart className="mr-2 h-5 w-5" />
-                    {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
+                    {getCurrentStock() > 0 ? 'Agregar al Carrito' : 'Agotado'}
                   </Button>
                   <Button variant="outline" size="lg">
                     <Heart className="h-5 w-5" />
