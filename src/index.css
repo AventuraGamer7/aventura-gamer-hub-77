@@ -426,3 +426,61 @@ All colors MUST be HSL for consistency.
 .animate-gradient-reverse {
   animation: gradient-reverse 8s ease-in-out infinite;
 }
+
+/* Gaming logo animation */
+@keyframes gaming-glow {
+  0%, 100% {
+    text-shadow: 0 0 10px hsl(var(--led-violet)),
+                 0 0 20px hsl(var(--led-violet) / 0.5),
+                 0 0 30px hsl(var(--led-cyan) / 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px hsl(var(--led-cyan)),
+                 0 0 30px hsl(var(--led-cyan) / 0.5),
+                 0 0 40px hsl(var(--led-violet) / 0.3);
+  }
+}
+
+@keyframes gaming-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gaming-logo {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--led-violet)),
+    hsl(var(--led-cyan)),
+    hsl(var(--led-blue)),
+    hsl(var(--led-violet))
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gaming-glow 3s ease-in-out infinite,
+             gaming-pulse 2s ease-in-out infinite,
+             gradient-shift 4s ease infinite;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.gaming-logo:hover {
+  animation-duration: 1s, 1s, 2s;
+}
