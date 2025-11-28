@@ -5,9 +5,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Upload } from 'lucide-react';
+import { Plus, Upload, X } from 'lucide-react';
 
 const AddProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,12 +21,14 @@ const AddProductForm = () => {
     price: '',
     stock: '',
     category: '',
-    subcategory: '',
+    subcategory: [] as string[],
     image: '',
     images: [] as string[],
     badge_text: '',
     badge_color: 'primary'
   });
+  
+  const [newSubcategory, setNewSubcategory] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -56,7 +59,7 @@ const AddProductForm = () => {
             price: parseFloat(formData.price),
             stock: parseInt(formData.stock) || 0,
             category: formData.category || null,
-            subcategory: formData.subcategory || null,
+            subcategory: formData.subcategory.length > 0 ? formData.subcategory : null,
             image: formData.image || null,
             images: formData.images.length > 0 ? formData.images : null,
             badge_text: formData.badge_text || null,
@@ -78,13 +81,14 @@ const AddProductForm = () => {
         price: '',
         stock: '',
         category: '',
-        subcategory: '',
+        subcategory: [],
         image: '',
         images: [],
         badge_text: '',
         badge_color: 'primary'
       });
       
+      setNewSubcategory('');
       setIsOpen(false);
     } catch (error: any) {
       console.error('Error adding product:', error);
@@ -141,14 +145,68 @@ const AddProductForm = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="subcategory">Subcategoría</Label>
-              <Input
-                id="subcategory"
-                name="subcategory"
-                value={formData.subcategory}
-                onChange={handleInputChange}
-                placeholder="Ej: Xbox, PS4, PS5"
-              />
+              <Label htmlFor="subcategory">Subcategorías</Label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input
+                    id="subcategory"
+                    value={newSubcategory}
+                    onChange={(e) => setNewSubcategory(e.target.value)}
+                    placeholder="Ej: Xbox, PS4, PS5"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newSubcategory.trim() && !formData.subcategory.includes(newSubcategory.trim())) {
+                          setFormData(prev => ({
+                            ...prev,
+                            subcategory: [...prev.subcategory, newSubcategory.trim()]
+                          }));
+                          setNewSubcategory('');
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      if (newSubcategory.trim() && !formData.subcategory.includes(newSubcategory.trim())) {
+                        setFormData(prev => ({
+                          ...prev,
+                          subcategory: [...prev.subcategory, newSubcategory.trim()]
+                        }));
+                        setNewSubcategory('');
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                {formData.subcategory.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {formData.subcategory.map((subcat) => (
+                      <Badge key={subcat} variant="secondary" className="gap-1">
+                        {subcat}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData(prev => ({
+                              ...prev,
+                              subcategory: prev.subcategory.filter(s => s !== subcat)
+                            }));
+                          }}
+                          className="ml-1 hover:text-destructive"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Presiona Enter o haz clic en + para agregar cada subcategoría
+                </p>
+              </div>
             </div>
           </div>
 
