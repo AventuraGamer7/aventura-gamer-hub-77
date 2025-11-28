@@ -157,7 +157,7 @@ const Header = () => {
               alt="Aventura Gamer Logo" 
               className="h-10 w-auto rounded-lg"
             />
-            <span className="text-mario text-sm sm:text-base md:text-lg">Aventura Gamer</span>
+            <span className="text-xl font-bold text-led-violet">Aventura Gamer</span>
           </Link>
 
           {/* Desktop Navigation */}
