@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,14 +6,19 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Upload, X } from 'lucide-react';
+import { useProducts } from '@/hooks/useProducts';
+import { Plus, Upload, X, Check } from 'lucide-react';
 
 const AddProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const { toast } = useToast();
+  const { products } = useProducts();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,6 +34,37 @@ const AddProductForm = () => {
   });
   
   const [newSubcategory, setNewSubcategory] = useState('');
+
+  // Get all existing unique subcategories from products
+  const existingSubcategories = useMemo(() => {
+    const subcats = new Set<string>();
+    products.forEach(product => {
+      if (product.subcategory && Array.isArray(product.subcategory)) {
+        product.subcategory.forEach(sub => subcats.add(sub));
+      }
+    });
+    return Array.from(subcats).sort();
+  }, [products]);
+
+  // Filter suggestions based on input
+  const filteredSuggestions = useMemo(() => {
+    if (!newSubcategory.trim()) return existingSubcategories;
+    return existingSubcategories.filter(sub =>
+      sub.toLowerCase().includes(newSubcategory.toLowerCase())
+    );
+  }, [newSubcategory, existingSubcategories]);
+
+  const addSubcategory = (value: string) => {
+    const trimmedValue = value.trim();
+    if (trimmedValue && !formData.subcategory.includes(trimmedValue)) {
+      setFormData(prev => ({
+        ...prev,
+        subcategory: [...prev.subcategory, trimmedValue]
+      }));
+      setNewSubcategory('');
+      setPopoverOpen(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -148,36 +184,68 @@ const AddProductForm = () => {
               <Label htmlFor="subcategory">Subcategorías</Label>
               <div className="space-y-2">
                 <div className="flex gap-2">
-                  <Input
-                    id="subcategory"
-                    value={newSubcategory}
-                    onChange={(e) => setNewSubcategory(e.target.value)}
-                    placeholder="Ej: Xbox, PS4, PS5"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        if (newSubcategory.trim() && !formData.subcategory.includes(newSubcategory.trim())) {
-                          setFormData(prev => ({
-                            ...prev,
-                            subcategory: [...prev.subcategory, newSubcategory.trim()]
-                          }));
-                          setNewSubcategory('');
-                        }
-                      }
-                    }}
-                  />
+                  <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <div className="flex-1">
+                        <Input
+                          id="subcategory"
+                          value={newSubcategory}
+                          onChange={(e) => {
+                            setNewSubcategory(e.target.value);
+                            setPopoverOpen(true);
+                          }}
+                          onFocus={() => setPopoverOpen(true)}
+                          placeholder="Ej: Xbox, PS4, PS5"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              addSubcategory(newSubcategory);
+                            }
+                          }}
+                        />
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[300px] p-0" align="start">
+                      <Command>
+                        <CommandInput 
+                          placeholder="Buscar subcategoría..." 
+                          value={newSubcategory}
+                          onValueChange={setNewSubcategory}
+                        />
+                        <CommandList>
+                          {filteredSuggestions.length === 0 ? (
+                            <CommandEmpty>
+                              Presiona Enter para agregar "{newSubcategory}"
+                            </CommandEmpty>
+                          ) : (
+                            <CommandGroup heading="Subcategorías existentes">
+                              {filteredSuggestions.map((suggestion) => (
+                                <CommandItem
+                                  key={suggestion}
+                                  value={suggestion}
+                                  onSelect={() => addSubcategory(suggestion)}
+                                  className="cursor-pointer"
+                                >
+                                  <Check
+                                    className={`mr-2 h-4 w-4 ${
+                                      formData.subcategory.includes(suggestion)
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    }`}
+                                  />
+                                  {suggestion}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          )}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => {
-                      if (newSubcategory.trim() && !formData.subcategory.includes(newSubcategory.trim())) {
-                        setFormData(prev => ({
-                          ...prev,
-                          subcategory: [...prev.subcategory, newSubcategory.trim()]
-                        }));
-                        setNewSubcategory('');
-                      }
-                    }}
+                    onClick={() => addSubcategory(newSubcategory)}
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -204,7 +272,7 @@ const AddProductForm = () => {
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Presiona Enter o haz clic en + para agregar cada subcategoría
+                  Escribe para ver sugerencias o presiona Enter para agregar nueva
                 </p>
               </div>
             </div>
