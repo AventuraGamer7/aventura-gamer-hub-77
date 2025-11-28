@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,13 +8,15 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
 import { ProductVariantsManager } from './ProductVariantsManager';
-import { Edit, Trash2, Package, Eye, Search, EyeOff, Plus, X } from 'lucide-react';
+import { Edit, Trash2, Package, Eye, Search, EyeOff, Plus, X, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductManagementPanel = () => {
@@ -29,6 +31,7 @@ const ProductManagementPanel = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [newSubcategory, setNewSubcategory] = useState('');
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -38,8 +41,44 @@ const ProductManagementPanel = () => {
     }).format(price);
   };
 
+  // Get all existing unique subcategories from products
+  const existingSubcategories = useMemo(() => {
+    const subcats = new Set<string>();
+    products.forEach(product => {
+      if (product.subcategory && Array.isArray(product.subcategory)) {
+        product.subcategory.forEach(sub => subcats.add(sub));
+      }
+    });
+    return Array.from(subcats).sort();
+  }, [products]);
+
+  // Filter suggestions based on input
+  const filteredSuggestions = useMemo(() => {
+    if (!newSubcategory.trim()) return existingSubcategories;
+    return existingSubcategories.filter(sub =>
+      sub.toLowerCase().includes(newSubcategory.toLowerCase())
+    );
+  }, [newSubcategory, existingSubcategories]);
+
+  const addSubcategory = (value: string) => {
+    const trimmedValue = value.trim();
+    if (trimmedValue && editingProduct && !editingProduct.subcategory.includes(trimmedValue)) {
+      setEditingProduct({
+        ...editingProduct,
+        subcategory: [...editingProduct.subcategory, trimmedValue]
+      });
+      setNewSubcategory('');
+      setPopoverOpen(false);
+    }
+  };
+
   const handleEdit = (product: any) => {
-    setEditingProduct(product);
+    setEditingProduct({
+      ...product,
+      subcategory: product.subcategory || []
+    });
+    setNewSubcategory('');
+    setPopoverOpen(false);
     setIsEditOpen(true);
   };
 
@@ -384,42 +423,68 @@ const ProductManagementPanel = () => {
                         <Label htmlFor="subcategory">Subcategorías</Label>
                         <div className="space-y-2">
                           <div className="flex gap-2">
-                            <Input
-                              id="subcategory"
-                              value={newSubcategory}
-                              onChange={(e) => setNewSubcategory(e.target.value)}
-                              placeholder="Ej: Xbox, PS4, PS5"
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  e.preventDefault();
-                                  const currentSubcats = Array.isArray(editingProduct.subcategory) 
-                                    ? editingProduct.subcategory 
-                                    : [];
-                                  if (newSubcategory.trim() && !currentSubcats.includes(newSubcategory.trim())) {
-                                    setEditingProduct((prev: any) => ({
-                                      ...prev,
-                                      subcategory: [...currentSubcats, newSubcategory.trim()]
-                                    }));
-                                    setNewSubcategory('');
-                                  }
-                                }
-                              }}
-                            />
+                            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                              <PopoverTrigger asChild>
+                                <div className="flex-1">
+                                  <Input
+                                    id="subcategory"
+                                    value={newSubcategory}
+                                    onChange={(e) => {
+                                      setNewSubcategory(e.target.value);
+                                      setPopoverOpen(true);
+                                    }}
+                                    onFocus={() => setPopoverOpen(true)}
+                                    placeholder="Ej: Xbox, PS4, PS5"
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        addSubcategory(newSubcategory);
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-[300px] p-0" align="start">
+                                <Command>
+                                  <CommandInput 
+                                    placeholder="Buscar subcategoría..." 
+                                    value={newSubcategory}
+                                    onValueChange={setNewSubcategory}
+                                  />
+                                  <CommandList>
+                                    {filteredSuggestions.length === 0 ? (
+                                      <CommandEmpty>
+                                        Presiona Enter para agregar "{newSubcategory}"
+                                      </CommandEmpty>
+                                    ) : (
+                                      <CommandGroup heading="Subcategorías existentes">
+                                        {filteredSuggestions.map((suggestion) => (
+                                          <CommandItem
+                                            key={suggestion}
+                                            value={suggestion}
+                                            onSelect={() => addSubcategory(suggestion)}
+                                            className="cursor-pointer"
+                                          >
+                                            <Check
+                                              className={`mr-2 h-4 w-4 ${
+                                                editingProduct.subcategory.includes(suggestion)
+                                                  ? 'opacity-100'
+                                                  : 'opacity-0'
+                                              }`}
+                                            />
+                                            {suggestion}
+                                          </CommandItem>
+                                        ))}
+                                      </CommandGroup>
+                                    )}
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
                             <Button
                               type="button"
                               variant="outline"
-                              onClick={() => {
-                                const currentSubcats = Array.isArray(editingProduct.subcategory) 
-                                  ? editingProduct.subcategory 
-                                  : [];
-                                if (newSubcategory.trim() && !currentSubcats.includes(newSubcategory.trim())) {
-                                  setEditingProduct((prev: any) => ({
-                                    ...prev,
-                                    subcategory: [...currentSubcats, newSubcategory.trim()]
-                                  }));
-                                  setNewSubcategory('');
-                                }
-                              }}
+                              onClick={() => addSubcategory(newSubcategory)}
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -446,7 +511,7 @@ const ProductManagementPanel = () => {
                             </div>
                           )}
                           <p className="text-xs text-muted-foreground">
-                            Presiona Enter o haz clic en + para agregar cada subcategoría
+                            Escribe para ver sugerencias o presiona Enter para agregar nueva
                           </p>
                         </div>
                       </div>
