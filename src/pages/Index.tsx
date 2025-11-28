@@ -165,51 +165,36 @@ const Index = () => {
 
         {/* Hero Carousel */}
         <div className="relative h-screen">
-          {heroLoading ? (
-            <div className="h-full flex items-center justify-center">
+          {heroLoading ? <div className="h-full flex items-center justify-center">
               <div className="text-center space-y-4">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow mx-auto"></div>
                 <p className="text-muted-foreground">Cargando hero...</p>
               </div>
-            </div>
-          ) : activeHeroSlides.length === 0 ? (
-            <div className="h-full flex items-center justify-center">
+            </div> : activeHeroSlides.length === 0 ? <div className="h-full flex items-center justify-center">
               <div className="container mx-auto px-4">
                 <div className="max-w-4xl mx-auto text-center space-y-6">
                   <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-mario leading-tight py-8">
                     Aventura Gamer
                   </h1>
                   <p className="text-xl md:text-2xl text-muted-foreground font-orbitron">
-                    Configura los slides del hero desde el panel de control
+                    ​
                   </p>
                 </div>
               </div>
-            </div>
-          ) : (
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              plugins={[
-                Autoplay({
-                  delay: 5000,
-                }),
-              ]}
-              className="w-full h-full"
-            >
+            </div> : <Carousel opts={{
+              align: "start",
+              loop: true
+            }} plugins={[Autoplay({
+              delay: 5000
+            })]} className="w-full h-full">
               <CarouselContent className="h-full">
-                {activeHeroSlides.map((slide, index) => (
-                  <CarouselItem key={slide.id} className="h-full">
+                {activeHeroSlides.map((slide, index) => <CarouselItem key={slide.id} className="h-full">
                     <div className="relative h-full w-full">
                       {/* Parallax Background Image */}
-                      <div 
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
-                        style={{
-                          backgroundImage: `url(${slide.image_url})`,
-                          transform: 'scale(1.1)',
-                        }}
-                      />
+                      <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700" style={{
+                      backgroundImage: `url(${slide.image_url})`,
+                      transform: 'scale(1.1)'
+                    }} />
                       
                       {/* Gradient Overlays */}
                       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
@@ -225,10 +210,7 @@ const Index = () => {
                           <div className="max-w-3xl space-y-6 animate-fade-in">
                             {/* Subtitle */}
                             <div className="inline-block">
-                              <Badge 
-                                variant="outline" 
-                                className="text-sm md:text-base px-4 py-2 bg-primary/20 border-primary/50 text-primary backdrop-blur-sm animate-scale-in"
-                              >
+                              <Badge variant="outline" className="text-sm md:text-base px-4 py-2 bg-primary/20 border-primary/50 text-primary backdrop-blur-sm animate-scale-in">
                                 {slide.subtitle}
                               </Badge>
                             </div>
@@ -245,12 +227,7 @@ const Index = () => {
 
                             {/* CTA Button */}
                             <div className="[animation-delay:0.3s] animate-fade-in">
-                              <Button
-                                variant="gaming"
-                                size="lg"
-                                className="text-lg px-8 py-6 group relative overflow-hidden"
-                                onClick={() => handleSlideNavigation(slide.button_url)}
-                              >
+                              <Button variant="gaming" size="lg" className="text-lg px-8 py-6 group relative overflow-hidden" onClick={() => handleSlideNavigation(slide.button_url)}>
                                 <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 <span className="relative z-10 flex items-center gap-2">
                                   {slide.button_text}
@@ -261,36 +238,27 @@ const Index = () => {
 
                             {/* Stats Row */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 [animation-delay:0.4s] animate-fade-in">
-                              {stats.map((stat, idx) => (
-                                <div 
-                                  key={idx}
-                                  className="backdrop-blur-sm bg-card/30 border border-primary/20 rounded-lg p-4 hover:bg-card/50 hover:border-primary/40 transition-all group"
-                                >
+                              {stats.map((stat, idx) => <div key={idx} className="backdrop-blur-sm bg-card/30 border border-primary/20 rounded-lg p-4 hover:bg-card/50 hover:border-primary/40 transition-all group">
                                   <div className="flex items-center gap-2 mb-2 text-primary group-hover:scale-110 transition-transform">
                                     {stat.icon}
                                   </div>
                                   <div className="text-2xl font-bold text-neon">{stat.value}</div>
                                   <div className="text-xs text-muted-foreground">{stat.label}</div>
-                                </div>
-                              ))}
+                                </div>)}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </CarouselItem>
-                ))}
+                  </CarouselItem>)}
               </CarouselContent>
               
               {/* Carousel Controls - Only show if there are multiple slides */}
-              {activeHeroSlides.length > 1 && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+              {activeHeroSlides.length > 1 && <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-20">
                   <CarouselPrevious className="relative left-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
                   <CarouselNext className="relative right-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
-                </div>
-              )}
-            </Carousel>
-          )}
+                </div>}
+            </Carousel>}
         </div>
       </section>
       
@@ -468,8 +436,8 @@ const Index = () => {
       <section className="py-24 relative overflow-hidden">
         {/* Gaming Background */}
         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-60" style={{
-          backgroundImage: `url('/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png')`
-        }} />
+            backgroundImage: `url('/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png')`
+          }} />
         <div className="absolute inset-0 bg-background/85" />
         
         <div className="container mx-auto px-4 relative z-10">
@@ -536,8 +504,8 @@ const Index = () => {
                       </div>
                       <div className="w-full bg-muted/30 rounded-full h-2">
                         <div className="bg-gradient-to-r from-gaming-blue to-primary h-full rounded-full transition-all duration-500" style={{
-                      width: `${Math.floor(Math.random() * 80) + 20}%`
-                    }}></div>
+                        width: `${Math.floor(Math.random() * 80) + 20}%`
+                      }}></div>
                       </div>
                     </div>
                     
@@ -601,8 +569,8 @@ const Index = () => {
                 <CardContent className="p-0">
                   <div className="relative">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.9463822928747!2d-75.59047032501901!3d6.168064593822529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4682f7b8b8b8b8%3A0x1234567890abcdef!2sCalle%2036%20Sur%20%2341-36%2C%20Envigado%2C%20Antioquia%2C%20Colombia!5e0!3m2!1ses!2sco!4v1735001234567!5m2!1ses!2sco" width="100%" height="300" style={{
-                      border: 0
-                    }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full" />
+                        border: 0
+                      }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full" />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
                   </div>
                 </CardContent>
@@ -694,6 +662,6 @@ const Index = () => {
       <Footer />
       </div>
     </div>
-  </>
+  </>;
 };
 export default Index;
