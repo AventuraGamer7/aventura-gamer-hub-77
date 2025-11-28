@@ -19,12 +19,6 @@ import { generateServiceSchema, generateProductSchema, generateCourseSchema } fr
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon, Instagram } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 import LEDParticles from '@/components/LEDParticles';
-
-// Import images
-import heroImage from '@/assets/gaming-hero.jpg';
-import repairImage from '@/assets/repair-services.jpg';
-import coursesImage from '@/assets/gaming-courses.jpg';
-import storeImage from '@/assets/gaming-store.jpg';
 const Index = () => {
   const {
     user
@@ -50,41 +44,8 @@ const Index = () => {
     error: coursesError
   } = useCourses();
 
-  // Fallback hero slides if no slides from database
-  const fallbackHeroSlides = [{
-    id: '1',
-    title: "Aventura Gamer",
-    subtitle: "Farmeando experiencia para tu mejor versión",
-    description: "Tu centro de confianza para reparaciones gaming, cursos especializados y repuestos originales",
-    image_url: heroImage,
-    button_text: "Ver Servicios",
-    button_url: "/servicios",
-    is_active: true,
-    display_order: 1
-  }, {
-    id: '2',
-    title: "Reparaciones Profesionales",
-    subtitle: "Expertos en consolas y periféricos",
-    description: "Técnicos certificados con garantía completa en todas las reparaciones",
-    image_url: repairImage,
-    button_text: "Solicitar Reparación",
-    button_url: "/servicios",
-    is_active: true,
-    display_order: 2
-  }, {
-    id: '3',
-    title: "Cursos Especializados",
-    subtitle: "Aprende de los mejores",
-    description: "Conviértete en un maestro de la reparación con nuestros cursos hands-on",
-    image_url: coursesImage,
-    button_text: "Ver Cursos",
-    button_url: "/cursos",
-    is_active: true,
-    display_order: 3
-  }];
-
-  // Use database slides if available, otherwise use fallback
-  const activeHeroSlides = heroLoading ? fallbackHeroSlides : heroSlides.filter(slide => slide.is_active).length > 0 ? heroSlides.filter(slide => slide.is_active) : fallbackHeroSlides;
+  // Use only database slides
+  const activeHeroSlides = heroSlides.filter(slide => slide.is_active);
   const handleSlideNavigation = (url: string) => {
     if (url.startsWith('/')) {
       navigate(url);
@@ -203,108 +164,132 @@ const Index = () => {
 
         {/* Hero Carousel */}
         <div className="relative h-screen">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            plugins={[
-              Autoplay({
-                delay: 5000,
-              }),
-            ]}
-            className="w-full h-full"
-          >
-            <CarouselContent className="h-full">
-              {activeHeroSlides.map((slide, index) => (
-                <CarouselItem key={slide.id} className="h-full">
-                  <div className="relative h-full w-full">
-                    {/* Parallax Background Image */}
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
-                      style={{
-                        backgroundImage: `url(${slide.image_url})`,
-                        transform: 'scale(1.1)',
-                      }}
-                    />
-                    
-                    {/* Gradient Overlays */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          {heroLoading ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center space-y-4">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow mx-auto"></div>
+                <p className="text-muted-foreground">Cargando hero...</p>
+              </div>
+            </div>
+          ) : activeHeroSlides.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="container mx-auto px-4">
+                <div className="max-w-3xl mx-auto text-center space-y-6">
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bungee text-glow leading-tight">
+                    Aventura Gamer
+                  </h1>
+                  <p className="text-xl md:text-2xl text-muted-foreground">
+                    Configura los slides del hero desde el panel de control
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              plugins={[
+                Autoplay({
+                  delay: 5000,
+                }),
+              ]}
+              className="w-full h-full"
+            >
+              <CarouselContent className="h-full">
+                {activeHeroSlides.map((slide, index) => (
+                  <CarouselItem key={slide.id} className="h-full">
+                    <div className="relative h-full w-full">
+                      {/* Parallax Background Image */}
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
+                        style={{
+                          backgroundImage: `url(${slide.image_url})`,
+                          transform: 'scale(1.1)',
+                        }}
+                      />
+                      
+                      {/* Gradient Overlays */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
 
-                    {/* Animated gradient accent */}
-                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[hsl(180,100%,50%)]/10 via-transparent to-transparent animate-pulse" />
-                    <div className="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-r from-[hsl(270,100%,60%)]/10 via-transparent to-transparent animate-pulse [animation-delay:0.5s]" />
+                      {/* Animated gradient accent */}
+                      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[hsl(180,100%,50%)]/10 via-transparent to-transparent animate-pulse" />
+                      <div className="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-r from-[hsl(270,100%,60%)]/10 via-transparent to-transparent animate-pulse [animation-delay:0.5s]" />
 
-                    {/* Content */}
-                    <div className="relative h-full flex items-center">
-                      <div className="container mx-auto px-4 md:px-8">
-                        <div className="max-w-3xl space-y-6 animate-fade-in">
-                          {/* Subtitle */}
-                          <div className="inline-block">
-                            <Badge 
-                              variant="outline" 
-                              className="text-sm md:text-base px-4 py-2 bg-primary/20 border-primary/50 text-primary backdrop-blur-sm animate-scale-in"
-                            >
-                              {slide.subtitle}
-                            </Badge>
-                          </div>
-
-                          {/* Title */}
-                          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bungee text-glow leading-tight [animation-delay:0.1s] animate-fade-in">
-                            {slide.title}
-                          </h1>
-
-                          {/* Description */}
-                          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl [animation-delay:0.2s] animate-fade-in">
-                            {slide.description}
-                          </p>
-
-                          {/* CTA Button */}
-                          <div className="[animation-delay:0.3s] animate-fade-in">
-                            <Button
-                              variant="gaming"
-                              size="lg"
-                              className="text-lg px-8 py-6 group relative overflow-hidden"
-                              onClick={() => handleSlideNavigation(slide.button_url)}
-                            >
-                              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                              <span className="relative z-10 flex items-center gap-2">
-                                {slide.button_text}
-                                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                              </span>
-                            </Button>
-                          </div>
-
-                          {/* Stats Row */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 [animation-delay:0.4s] animate-fade-in">
-                            {stats.map((stat, idx) => (
-                              <div 
-                                key={idx}
-                                className="backdrop-blur-sm bg-card/30 border border-primary/20 rounded-lg p-4 hover:bg-card/50 hover:border-primary/40 transition-all group"
+                      {/* Content */}
+                      <div className="relative h-full flex items-center">
+                        <div className="container mx-auto px-4 md:px-8">
+                          <div className="max-w-3xl space-y-6 animate-fade-in">
+                            {/* Subtitle */}
+                            <div className="inline-block">
+                              <Badge 
+                                variant="outline" 
+                                className="text-sm md:text-base px-4 py-2 bg-primary/20 border-primary/50 text-primary backdrop-blur-sm animate-scale-in"
                               >
-                                <div className="flex items-center gap-2 mb-2 text-primary group-hover:scale-110 transition-transform">
-                                  {stat.icon}
+                                {slide.subtitle}
+                              </Badge>
+                            </div>
+
+                            {/* Title */}
+                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bungee text-glow leading-tight [animation-delay:0.1s] animate-fade-in">
+                              {slide.title}
+                            </h1>
+
+                            {/* Description */}
+                            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl [animation-delay:0.2s] animate-fade-in">
+                              {slide.description}
+                            </p>
+
+                            {/* CTA Button */}
+                            <div className="[animation-delay:0.3s] animate-fade-in">
+                              <Button
+                                variant="gaming"
+                                size="lg"
+                                className="text-lg px-8 py-6 group relative overflow-hidden"
+                                onClick={() => handleSlideNavigation(slide.button_url)}
+                              >
+                                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                                <span className="relative z-10 flex items-center gap-2">
+                                  {slide.button_text}
+                                  <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                </span>
+                              </Button>
+                            </div>
+
+                            {/* Stats Row */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 [animation-delay:0.4s] animate-fade-in">
+                              {stats.map((stat, idx) => (
+                                <div 
+                                  key={idx}
+                                  className="backdrop-blur-sm bg-card/30 border border-primary/20 rounded-lg p-4 hover:bg-card/50 hover:border-primary/40 transition-all group"
+                                >
+                                  <div className="flex items-center gap-2 mb-2 text-primary group-hover:scale-110 transition-transform">
+                                    {stat.icon}
+                                  </div>
+                                  <div className="text-2xl font-bold text-neon">{stat.value}</div>
+                                  <div className="text-xs text-muted-foreground">{stat.label}</div>
                                 </div>
-                                <div className="text-2xl font-bold text-neon">{stat.value}</div>
-                                <div className="text-xs text-muted-foreground">{stat.label}</div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            
-            {/* Carousel Controls */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-20">
-              <CarouselPrevious className="relative left-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
-              <CarouselNext className="relative right-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
-            </div>
-          </Carousel>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              
+              {/* Carousel Controls - Only show if there are multiple slides */}
+              {activeHeroSlides.length > 1 && (
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+                  <CarouselPrevious className="relative left-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
+                  <CarouselNext className="relative right-0 bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary/20" />
+                </div>
+              )}
+            </Carousel>
+          )}
         </div>
       </section>
       
