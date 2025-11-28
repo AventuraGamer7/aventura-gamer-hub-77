@@ -365,57 +365,73 @@ const Tienda = () => {
           </div>
 
           {/* Subcategories Collapsible */}
-          {selectedCategory !== 'Todos' && subcategories.length > 0 && (
+          {selectedCategory !== 'Todos' && (
             <div className="mb-6">
-              <Collapsible open={isSubcategoryOpen} onOpenChange={setIsSubcategoryOpen}>
-                <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-lg p-4 border border-primary/20">
-                  <CollapsibleTrigger className="w-full flex items-center justify-between group hover:text-primary transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-1 bg-gradient-to-b from-primary to-secondary rounded-full animate-pulse" />
-                      <div>
-                        <h3 className="text-lg font-bold text-glow">
-                          {selectedCategory}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {subcategories.length} subcategorías disponibles
-                        </p>
+              {subcategories.length > 0 ? (
+                <Collapsible open={isSubcategoryOpen} onOpenChange={setIsSubcategoryOpen}>
+                  <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-lg p-4 border border-primary/20 shadow-lg">
+                    <CollapsibleTrigger className="w-full flex items-center justify-between group hover:text-primary transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-1 bg-gradient-to-b from-primary to-secondary rounded-full animate-pulse" />
+                        <div className="text-left">
+                          <h3 className="text-lg font-bold text-glow">
+                            {selectedCategory}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {subcategories.length} subcategorías disponibles
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${isSubcategoryOpen ? 'rotate-180' : ''}`} />
-                  </CollapsibleTrigger>
-                  
-                  <CollapsibleContent className="pt-4">
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
-                        size="sm"
-                        onClick={() => setSelectedSubcategory('all')}
-                        className="relative overflow-hidden group"
-                      >
-                        <span className="relative z-10">Todas</span>
-                        {selectedSubcategory === 'all' && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
-                        )}
-                      </Button>
-                      
-                      {subcategories.map(subcat => (
+                      <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${isSubcategoryOpen ? 'rotate-180' : ''}`} />
+                    </CollapsibleTrigger>
+                    
+                    <CollapsibleContent className="pt-4">
+                      <div className="flex flex-wrap gap-2">
                         <Button
-                          key={subcat}
-                          variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
+                          variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
                           size="sm"
-                          onClick={() => setSelectedSubcategory(subcat)}
-                          className="relative overflow-hidden group hover:scale-105 transition-transform"
+                          onClick={() => setSelectedSubcategory('all')}
+                          className="relative overflow-hidden group"
                         >
-                          <span className="relative z-10">{subcat}</span>
-                          {selectedSubcategory === subcat && (
+                          <span className="relative z-10">Todas</span>
+                          {selectedSubcategory === 'all' && (
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
                           )}
                         </Button>
-                      ))}
+                        
+                        {subcategories.map(subcat => (
+                          <Button
+                            key={subcat}
+                            variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
+                            size="sm"
+                            onClick={() => setSelectedSubcategory(subcat)}
+                            className="relative overflow-hidden group hover:scale-105 transition-transform"
+                          >
+                            <span className="relative z-10">{subcat}</span>
+                            {selectedSubcategory === subcat && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
+                            )}
+                          </Button>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </div>
+                </Collapsible>
+              ) : (
+                <div className="bg-gradient-to-r from-muted/10 to-muted/5 rounded-lg p-4 border border-muted/20">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-1 bg-muted rounded-full" />
+                    <div>
+                      <h3 className="text-base font-semibold text-foreground">
+                        {selectedCategory}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        No hay subcategorías configuradas para esta categoría
+                      </p>
                     </div>
-                  </CollapsibleContent>
+                  </div>
                 </div>
-              </Collapsible>
+              )}
             </div>
           )}
 
