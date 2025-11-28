@@ -21,6 +21,7 @@ const Tienda = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState('all');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const { categoria } = useParams();
   const navigate = useNavigate();
@@ -39,6 +40,17 @@ const Tienda = () => {
 
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  
+  // Get unique subcategories based on selected category
+  const getSubcategories = () => {
+    if (selectedCategory === 'Todos') return [];
+    const subcats = products
+      .filter(p => p.category === selectedCategory && p.subcategory)
+      .map(p => p.subcategory)
+      .filter(Boolean);
+    return Array.from(new Set(subcats));
+  };
+  const subcategories = getSubcategories();
   
   // Normalize category to lowercase and redirect if needed
   useEffect(() => {
@@ -98,6 +110,7 @@ const Tienda = () => {
 
   // Update URL when category changes
   const handleCategoryChange = (category: string) => {
+    setSelectedSubcategory('all'); // Reset subcategory when category changes
     if (category === 'Todos') {
       // Navigate to base tienda route for 'Todos'
       navigate('/tienda');
@@ -132,6 +145,11 @@ const Tienda = () => {
     });
   }
   
+  // Apply subcategory filter
+  if (selectedSubcategory !== 'all') {
+    filteredProducts = filteredProducts.filter(p => p.subcategory === selectedSubcategory);
+  }
+  
   // Apply sorting
   filteredProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
@@ -160,7 +178,7 @@ const Tienda = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory, sortBy, priceRange]);
+  }, [searchTerm, selectedCategory, sortBy, priceRange, selectedSubcategory]);
   const wholesaleFeatures = ['Precios especiales mayoristas', 'Envíos gratuitos en pedidos >$200.000', 'Acceso prioritario a nuevos productos', 'Soporte técnico especializado', 'Descuentos progresivos por volumen', 'Facturación empresarial'];
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -191,9 +209,16 @@ const Tienda = () => {
       
       <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
         <div className="flex items-start justify-between">
-          <Badge variant="secondary" className="text-xs">
-            {product.category || 'General'}
-          </Badge>
+          <div className="flex flex-col gap-1">
+            <Badge variant="secondary" className="text-xs">
+              {product.category || 'General'}
+            </Badge>
+            {product.subcategory && (
+              <Badge variant="outline" className="text-xs">
+                {product.subcategory}
+              </Badge>
+            )}
+          </div>
           <div className="flex items-center gap-1 text-sm">
             <Star className="h-4 w-4 fill-current text-yellow-500" />
             4.8
@@ -374,6 +399,26 @@ const Tienda = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Subcategory Filter - Only show when category is selected */}
+              {subcategories.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Subcategoría" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas las subcategorías</SelectItem>
+                      {subcategories.map((subcat) => (
+                        <SelectItem key={subcat} value={subcat}>
+                          {subcat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {/* Results Count */}
               <div className="text-sm text-muted-foreground">

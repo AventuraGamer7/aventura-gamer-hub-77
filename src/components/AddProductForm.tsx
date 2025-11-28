@@ -20,6 +20,7 @@ const AddProductForm = () => {
     price: '',
     stock: '',
     category: '',
+    subcategory: '',
     image: '',
     images: [] as string[],
     badge_text: '',
@@ -55,6 +56,7 @@ const AddProductForm = () => {
             price: parseFloat(formData.price),
             stock: parseInt(formData.stock) || 0,
             category: formData.category || null,
+            subcategory: formData.subcategory || null,
             image: formData.image || null,
             images: formData.images.length > 0 ? formData.images : null,
             badge_text: formData.badge_text || null,
@@ -76,6 +78,7 @@ const AddProductForm = () => {
         price: '',
         stock: '',
         category: '',
+        subcategory: '',
         image: '',
         images: [],
         badge_text: '',
@@ -137,6 +140,19 @@ const AddProductForm = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="subcategory">Subcategoría</Label>
+              <Input
+                id="subcategory"
+                name="subcategory"
+                value={formData.subcategory}
+                onChange={handleInputChange}
+                placeholder="Ej: Xbox, PS4, PS5"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Precio (COP) *</Label>
               <Input

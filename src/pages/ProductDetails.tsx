@@ -24,6 +24,7 @@ interface Product {
   price: number;
   stock: number;
   category: string | null;
+  subcategory: string | null;
   image: string | null;
   images: string[] | null;
   badge_text: string | null;
@@ -579,9 +580,16 @@ const ProductDetails = () => {
           <div className="space-y-6">
             <div>
               <div className="flex items-start justify-between mb-2">
-                <Badge variant="secondary" className="mb-2">
-                  {product.category || 'General'}
-                </Badge>
+                <div className="flex flex-col gap-2">
+                  <Badge variant="secondary" className="w-fit">
+                    {product.category || 'General'}
+                  </Badge>
+                  {product.subcategory && (
+                    <Badge variant="outline" className="w-fit">
+                      {product.subcategory}
+                    </Badge>
+                  )}
+                </div>
                 <Button variant="ghost" size="sm" onClick={handleShare}>
                   <Share2 className="h-4 w-4" />
                 </Button>
