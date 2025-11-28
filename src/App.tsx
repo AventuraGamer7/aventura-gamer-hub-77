@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { CartProvider } from "./hooks/useCart";
 import { TechnicalServicesProvider } from "./hooks/useTechnicalServices";
+import { GamificationProvider } from "./components/GamificationProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import Index from "./pages/Index";
@@ -33,12 +34,13 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <CartProvider>
-        <TechnicalServicesProvider>
-          <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+      <GamificationProvider>
+        <CartProvider>
+          <TechnicalServicesProvider>
+            <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -97,10 +99,11 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-          </TooltipProvider>
-        </TechnicalServicesProvider>
-      </CartProvider>
+            </BrowserRouter>
+            </TooltipProvider>
+          </TechnicalServicesProvider>
+        </CartProvider>
+      </GamificationProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

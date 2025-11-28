@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star, Trophy, Target, Zap, ShoppingCart, Share2, Award, Crown, Gift } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useProfile } from '@/hooks/useProfile';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Achievement {
   id: string;
@@ -20,14 +22,50 @@ interface Achievement {
 }
 
 const GamificationPanel = () => {
-  const [userLevel] = useState(2);
-  const [userXP] = useState(25);
-  const [nextLevelXP] = useState(30);
-  const [totalPoints] = useState(2850);
-  const [purchases] = useState(0); // Simulated user purchases
-  const [socialPosts] = useState(0); // Simulated social media posts
+  const { profile, loading } = useProfile();
+  const [purchases, setPurchases] = useState(0);
   const [claimedAchievements, setClaimedAchievements] = useState<string[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (profile) {
+      fetchUserPurchases();
+    }
+  }, [profile]);
+
+  const fetchUserPurchases = async () => {
+    if (!profile) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('id')
+        .eq('user_id', profile.id);
+
+      if (error) throw error;
+      setPurchases(data?.length || 0);
+    } catch (error) {
+      console.error('Error fetching purchases:', error);
+    }
+  };
+
+  if (loading || !profile) {
+    return (
+      <Card className="card-gaming border-primary/20 w-full">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const userLevel = profile.level || 1;
+  const totalPoints = profile.points || 0;
+  const nextLevelXP = (userLevel * 100);
+  const currentLevelXP = ((userLevel - 1) * 100);
+  const userXP = totalPoints - currentLevelXP;
 
   const achievements: Achievement[] = [
     {
@@ -38,45 +76,45 @@ const GamificationPanel = () => {
       unlocked: purchases >= 1,
       canClaim: purchases >= 1 && !claimedAchievements.includes('first-purchase'),
       claimed: claimedAchievements.includes('first-purchase'),
-      xpReward: 2,
+      xpReward: 50,
       progress: purchases,
       maxProgress: 1,
     },
     {
-      id: 'social-media',
-      title: 'Influencer Gamer',
-      description: 'Haz tu primer post etiquetando @AventuraGamer',
-      icon: <Share2 className="h-4 w-4" />,
-      unlocked: socialPosts >= 1,
-      canClaim: socialPosts >= 1 && !claimedAchievements.includes('social-media'),
-      claimed: claimedAchievements.includes('social-media'),
-      xpReward: 2,
-      progress: socialPosts,
-      maxProgress: 1,
+      id: 'level-3',
+      title: 'Nivel 3 Alcanzado',
+      description: 'Llega al nivel 3',
+      icon: <Star className="h-4 w-4" />,
+      unlocked: userLevel >= 3,
+      canClaim: userLevel >= 3 && !claimedAchievements.includes('level-3'),
+      claimed: claimedAchievements.includes('level-3'),
+      xpReward: 100,
+      progress: userLevel,
+      maxProgress: 3,
     },
     {
-      id: 'novice-level',
-      title: 'Rango Novato',
-      description: 'Alcanza 30 XP Coins',
-      icon: <Award className="h-4 w-4" />,
-      unlocked: userXP >= 30,
-      canClaim: userXP >= 30 && !claimedAchievements.includes('novice-level'),
-      claimed: claimedAchievements.includes('novice-level'),
-      xpReward: 5,
-      progress: userXP,
-      maxProgress: 30,
-    },
-    {
-      id: 'pro-gamer-level',
+      id: 'level-5',
       title: 'Rango ProGamer',
-      description: 'Alcanza 60 XP Coins',
+      description: 'Alcanza el nivel 5',
       icon: <Crown className="h-4 w-4" />,
-      unlocked: userXP >= 60,
-      canClaim: userXP >= 60 && !claimedAchievements.includes('pro-gamer-level'),
-      claimed: claimedAchievements.includes('pro-gamer-level'),
-      xpReward: 10,
-      progress: userXP,
-      maxProgress: 60,
+      unlocked: userLevel >= 5,
+      canClaim: userLevel >= 5 && !claimedAchievements.includes('level-5'),
+      claimed: claimedAchievements.includes('level-5'),
+      xpReward: 200,
+      progress: userLevel,
+      maxProgress: 5,
+    },
+    {
+      id: 'big-spender',
+      title: 'Gran Comprador',
+      description: 'Realiza 5 compras',
+      icon: <Trophy className="h-4 w-4" />,
+      unlocked: purchases >= 5,
+      canClaim: purchases >= 5 && !claimedAchievements.includes('big-spender'),
+      claimed: claimedAchievements.includes('big-spender'),
+      xpReward: 150,
+      progress: purchases,
+      maxProgress: 5,
     },
   ];
 
