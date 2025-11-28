@@ -155,8 +155,9 @@ const Index = () => {
       <section className="relative min-h-screen overflow-hidden">
         {/* Animated gradient background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,100%,50%)]/20 via-background to-[hsl(270,100%,60%)]/20 animate-gradient" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-accent/10 animate-gradient-reverse" />
+          <div className="absolute inset-0 bg-gradient-to-br from-led-cyan/30 via-background to-led-violet/30 animate-gradient" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-led-pink/20 via-transparent to-led-blue/20 animate-gradient-reverse" />
+          <div className="absolute inset-0 bg-gradient-to-tl from-led-orange/15 via-transparent to-led-green/15 animate-gradient" />
         </div>
 
         {/* LED Particles */}
@@ -174,11 +175,11 @@ const Index = () => {
           ) : activeHeroSlides.length === 0 ? (
             <div className="h-full flex items-center justify-center">
               <div className="container mx-auto px-4">
-                <div className="max-w-3xl mx-auto text-center space-y-6">
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bungee text-glow leading-tight">
+                <div className="max-w-4xl mx-auto text-center space-y-6">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-mario leading-tight py-8">
                     Aventura Gamer
                   </h1>
-                  <p className="text-xl md:text-2xl text-muted-foreground">
+                  <p className="text-xl md:text-2xl text-muted-foreground font-orbitron">
                     Configura los slides del hero desde el panel de control
                   </p>
                 </div>
