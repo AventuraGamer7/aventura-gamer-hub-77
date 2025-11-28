@@ -211,26 +211,31 @@ const Tienda = () => {
           </div>}
       </div>
       
-      <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
-        <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-1">
-            <Badge variant="secondary" className="text-xs">
+      <CardHeader className="space-y-3 transition-all duration-300 group-hover:pb-6">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <Badge variant="secondary" className="text-xs w-fit">
               {product.category || 'General'}
             </Badge>
             {product.subcategory && product.subcategory.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {product.subcategory.map(subcat => (
-                  <Badge key={subcat} variant="outline" className="text-xs">
+              <div className="flex flex-wrap gap-1.5 max-w-full">
+                {product.subcategory.slice(0, 3).map(subcat => (
+                  <Badge key={subcat} variant="outline" className="text-[10px] px-2 py-0.5 truncate max-w-[120px]">
                     {subcat}
                   </Badge>
                 ))}
+                {product.subcategory.length > 3 && (
+                  <Badge variant="outline" className="text-[10px] px-2 py-0.5">
+                    +{product.subcategory.length - 3}
+                  </Badge>
+                )}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-1 text-sm">
+          <div className="flex items-center gap-1 text-sm shrink-0">
             <Star className="h-4 w-4 fill-current text-yellow-500" />
             4.8
-            <span className="text-muted-foreground">(156)</span>
+            <span className="text-muted-foreground hidden sm:inline">(156)</span>
           </div>
         </div>
         <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{product.name}</CardTitle>
@@ -407,12 +412,12 @@ const Tienda = () => {
                         <div className="space-y-3">
                           <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
                           
-                          <div className="flex flex-wrap gap-3">
+                          <div className="flex flex-wrap gap-2.5 justify-center sm:justify-start">
                             <Button
                               variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
                               size="lg"
                               onClick={() => setSelectedSubcategory('all')}
-                              className="relative overflow-hidden group/btn font-semibold"
+                              className="relative overflow-hidden group/btn font-semibold min-w-[100px]"
                             >
                               <span className="relative z-10 flex items-center gap-2">
                                 <Package className="h-4 w-4" />
@@ -429,16 +434,26 @@ const Tienda = () => {
                                 variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
                                 size="lg"
                                 onClick={() => setSelectedSubcategory(subcat)}
-                                className="relative overflow-hidden group/btn font-semibold hover:scale-105 transition-all"
+                                className="relative overflow-hidden group/btn font-semibold hover:scale-105 transition-all min-w-[80px] max-w-[200px] truncate"
                                 style={{ animationDelay: `${index * 50}ms` }}
+                                title={subcat}
                               >
-                                <span className="relative z-10">{subcat}</span>
+                                <span className="relative z-10 truncate px-2">{subcat}</span>
                                 {selectedSubcategory === subcat && (
                                   <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 animate-pulse" />
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
                               </Button>
                             ))}
+                          </div>
+                          
+                          {/* Counter badge */}
+                          <div className="flex justify-center sm:justify-start mt-3">
+                            <Badge variant="secondary" className="text-xs px-3 py-1">
+                              {selectedSubcategory === 'all' 
+                                ? `${filteredProducts.length} productos en total` 
+                                : `${filteredProducts.length} productos en ${selectedSubcategory}`}
+                            </Badge>
                           </div>
                         </div>
                       </CollapsibleContent>
