@@ -114,6 +114,7 @@ const ProductManagementPanel = () => {
           price: parseFloat(editingProduct.price),
           stock: parseInt(editingProduct.stock) || 0,
           category: editingProduct.category,
+          subcategory: editingProduct.subcategory || null,
           image: editingProduct.image,
           images: editingProduct.images,
           badge_text: editingProduct.badge_text,
@@ -233,7 +234,7 @@ const ProductManagementPanel = () => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <h4 className="font-medium">{product.name}</h4>
                           {!product.active && (
                             <Badge variant="outline" className="text-xs">
@@ -241,9 +242,21 @@ const ProductManagementPanel = () => {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {product.category || 'Sin categoría'} • Stock: {product.stock}
-                        </p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm text-muted-foreground">
+                            {product.category || 'Sin categoría'}
+                          </p>
+                          {product.subcategory && (
+                            <>
+                              <span className="text-muted-foreground">→</span>
+                              <Badge variant="secondary" className="text-xs">
+                                {product.subcategory}
+                              </Badge>
+                            </>
+                          )}
+                          <span className="text-muted-foreground">•</span>
+                          <span className="text-sm text-muted-foreground">Stock: {product.stock}</span>
+                        </div>
                         <p className="text-sm font-semibold text-primary">
                           {formatPrice(product.price)}
                         </p>
