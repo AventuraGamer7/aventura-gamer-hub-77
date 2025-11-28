@@ -365,72 +365,90 @@ const Tienda = () => {
             </Tabs>
           </div>
 
-          {/* Subcategories Collapsible */}
+          {/* Subcategories Section - Enhanced Gaming Style */}
           {selectedCategory !== 'Todos' && (
-            <div className="mb-6">
+            <div className="mb-8">
               {subcategories.length > 0 ? (
                 <Collapsible open={isSubcategoryOpen} onOpenChange={setIsSubcategoryOpen}>
-                  <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-lg p-4 border border-primary/20 shadow-lg">
-                    <CollapsibleTrigger className="w-full flex items-center justify-between group hover:text-primary transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-1 bg-gradient-to-b from-primary to-secondary rounded-full animate-pulse" />
-                        <div className="text-left">
-                          <h3 className="text-lg font-bold text-glow">
-                            {selectedCategory}
-                          </h3>
-                          <p className="text-xs text-muted-foreground">
-                            {subcategories.length} subcategorías disponibles
-                          </p>
-                        </div>
-                      </div>
-                      <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${isSubcategoryOpen ? 'rotate-180' : ''}`} />
-                    </CollapsibleTrigger>
+                  <div className="relative bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 rounded-xl p-6 border-2 border-primary/30 shadow-2xl overflow-hidden">
+                    {/* Animated background effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 animate-pulse" />
                     
-                    <CollapsibleContent className="pt-4">
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
-                          size="sm"
-                          onClick={() => setSelectedSubcategory('all')}
-                          className="relative overflow-hidden group"
-                        >
-                          <span className="relative z-10">Todas</span>
-                          {selectedSubcategory === 'all' && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
-                          )}
-                        </Button>
-                        
-                        {subcategories.map(subcat => (
-                          <Button
-                            key={subcat}
-                            variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
-                            size="sm"
-                            onClick={() => setSelectedSubcategory(subcat)}
-                            className="relative overflow-hidden group hover:scale-105 transition-transform"
-                          >
-                            <span className="relative z-10">{subcat}</span>
-                            {selectedSubcategory === subcat && (
-                              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
-                            )}
-                          </Button>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
+                    <div className="relative z-10">
+                      <CollapsibleTrigger className="w-full group">
+                        <div className="flex items-center justify-between hover:scale-[1.02] transition-transform duration-300">
+                          <div className="flex items-center gap-4">
+                            <div className="h-12 w-2 bg-gradient-to-b from-primary via-secondary to-primary rounded-full animate-pulse shadow-lg" />
+                            <div className="text-left">
+                              <h3 className="text-2xl font-bold text-glow mb-1 group-hover:text-primary transition-colors">
+                                {selectedCategory}
+                              </h3>
+                              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                <Filter className="h-3 w-3" />
+                                {subcategories.length} subcategorías disponibles
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground hidden sm:inline">
+                              {isSubcategoryOpen ? 'Ocultar' : 'Ver subcategorías'}
+                            </span>
+                            <ChevronDown className={`h-6 w-6 text-primary transition-all duration-500 group-hover:scale-110 ${isSubcategoryOpen ? 'rotate-180' : ''}`} />
+                          </div>
+                        </div>
+                      </CollapsibleTrigger>
+                      
+                      <CollapsibleContent className="pt-6">
+                        <div className="space-y-3">
+                          <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                          
+                          <div className="flex flex-wrap gap-3">
+                            <Button
+                              variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
+                              size="lg"
+                              onClick={() => setSelectedSubcategory('all')}
+                              className="relative overflow-hidden group/btn font-semibold"
+                            >
+                              <span className="relative z-10 flex items-center gap-2">
+                                <Package className="h-4 w-4" />
+                                Todas
+                              </span>
+                              {selectedSubcategory === 'all' && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 animate-pulse" />
+                              )}
+                            </Button>
+                            
+                            {subcategories.map((subcat, index) => (
+                              <Button
+                                key={subcat}
+                                variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
+                                size="lg"
+                                onClick={() => setSelectedSubcategory(subcat)}
+                                className="relative overflow-hidden group/btn font-semibold hover:scale-105 transition-all"
+                                style={{ animationDelay: `${index * 50}ms` }}
+                              >
+                                <span className="relative z-10">{subcat}</span>
+                                {selectedSubcategory === subcat && (
+                                  <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 animate-pulse" />
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </CollapsibleContent>
+                    </div>
                   </div>
                 </Collapsible>
               ) : (
-                <div className="bg-gradient-to-r from-muted/10 to-muted/5 rounded-lg p-4 border border-muted/20">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-1 bg-muted rounded-full" />
-                    <div>
-                      <h3 className="text-base font-semibold text-foreground">
-                        {selectedCategory}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        No hay subcategorías configuradas para esta categoría
-                      </p>
-                    </div>
-                  </div>
+                <div className="bg-gradient-to-r from-muted/50 to-muted/30 rounded-xl p-6 border border-border/50 text-center">
+                  <Package className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
+                  <p className="text-sm text-muted-foreground">
+                    No hay subcategorías configuradas para <span className="font-semibold text-foreground">{selectedCategory}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Agrega productos con subcategorías desde el panel de administración
+                  </p>
                 </div>
               )}
             </div>
