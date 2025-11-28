@@ -479,8 +479,29 @@ All colors MUST be HSL for consistency.
              gradient-shift 4s ease infinite;
   transition: all 0.3s ease;
   display: inline-block;
+  will-change: transform, text-shadow;
 }
 
 .gaming-logo:hover {
   animation-duration: 1s, 1s, 2s;
 }
+
+/* Optimize animation for mobile devices */
+@media (max-width: 768px) {
+  .gaming-logo {
+    animation: gaming-glow 4s ease-in-out infinite,
+               gradient-shift 5s ease infinite;
+  }
+  
+  @keyframes gaming-glow {
+    0%, 100% {
+      text-shadow: 0 0 8px hsl(var(--led-violet)),
+                   0 0 15px hsl(var(--led-violet) / 0.4);
+    }
+    50% {
+      text-shadow: 0 0 15px hsl(var(--led-cyan)),
+                   0 0 25px hsl(var(--led-cyan) / 0.4);
+    }
+  }
+}
+
