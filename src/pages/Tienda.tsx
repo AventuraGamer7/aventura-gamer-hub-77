@@ -24,7 +24,7 @@ const Tienda = () => {
   const [priceRange, setPriceRange] = useState('all');
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState(true);
+  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState(false);
   const { categoria } = useParams();
   const navigate = useNavigate();
   
@@ -113,6 +113,7 @@ const Tienda = () => {
   // Update URL when category changes
   const handleCategoryChange = (category: string) => {
     setSelectedSubcategory('all'); // Reset subcategory when category changes
+    setIsSubcategoryOpen(true); // Open subcategories when category changes
     if (category === 'Todos') {
       // Navigate to base tienda route for 'Todos'
       navigate('/tienda');
