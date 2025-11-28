@@ -41,17 +41,6 @@ const Tienda = () => {
   // Get unique categories from products
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
   
-  // Get unique subcategories based on selected category
-  const getSubcategories = () => {
-    if (selectedCategory === 'Todos') return [];
-    const subcats = products
-      .filter(p => p.category === selectedCategory && p.subcategory)
-      .map(p => p.subcategory)
-      .filter(Boolean);
-    return Array.from(new Set(subcats));
-  };
-  const subcategories = getSubcategories();
-  
   // Normalize category to lowercase and redirect if needed
   useEffect(() => {
     if (categoria && categoria !== categoria.toLowerCase()) {
@@ -65,6 +54,17 @@ const Tienda = () => {
   const selectedCategory = normalizedCategory && categories.map(c => c.toLowerCase()).includes(normalizedCategory) 
     ? categories.find(c => c.toLowerCase() === normalizedCategory) || 'Todos'
     : 'Todos';
+  
+  // Get unique subcategories based on selected category
+  const getSubcategories = () => {
+    if (selectedCategory === 'Todos') return [];
+    const subcats = products
+      .filter(p => p.category === selectedCategory && p.subcategory)
+      .map(p => p.subcategory)
+      .filter(Boolean);
+    return Array.from(new Set(subcats));
+  };
+  const subcategories = getSubcategories();
 
   // SEO data for different categories
   const seoData = {
