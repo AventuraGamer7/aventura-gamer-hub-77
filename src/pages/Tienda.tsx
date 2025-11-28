@@ -61,9 +61,8 @@ const Tienda = () => {
   const getSubcategories = () => {
     if (selectedCategory === 'Todos') return [];
     const subcats = products
-      .filter(p => p.category === selectedCategory && p.subcategory)
-      .map(p => p.subcategory)
-      .filter(Boolean);
+      .filter(p => p.category === selectedCategory && p.subcategory && p.subcategory.length > 0)
+      .flatMap(p => p.subcategory || []);
     return Array.from(new Set(subcats));
   };
   const subcategories = getSubcategories();
@@ -150,7 +149,9 @@ const Tienda = () => {
   
   // Apply subcategory filter
   if (selectedSubcategory !== 'all') {
-    filteredProducts = filteredProducts.filter(p => p.subcategory === selectedSubcategory);
+    filteredProducts = filteredProducts.filter(p => 
+      p.subcategory && p.subcategory.includes(selectedSubcategory)
+    );
   }
   
   // Apply sorting
@@ -216,10 +217,14 @@ const Tienda = () => {
             <Badge variant="secondary" className="text-xs">
               {product.category || 'General'}
             </Badge>
-            {product.subcategory && (
-              <Badge variant="outline" className="text-xs">
-                {product.subcategory}
-              </Badge>
+            {product.subcategory && product.subcategory.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {product.subcategory.map(subcat => (
+                  <Badge key={subcat} variant="outline" className="text-xs">
+                    {subcat}
+                  </Badge>
+                ))}
+              </div>
             )}
           </div>
           <div className="flex items-center gap-1 text-sm">

@@ -14,7 +14,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
 import { ProductVariantsManager } from './ProductVariantsManager';
-import { Edit, Trash2, Package, Eye, Search, EyeOff } from 'lucide-react';
+import { Edit, Trash2, Package, Eye, Search, EyeOff, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductManagementPanel = () => {
@@ -28,6 +28,7 @@ const ProductManagementPanel = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [newSubcategory, setNewSubcategory] = useState('');
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -114,7 +115,7 @@ const ProductManagementPanel = () => {
           price: parseFloat(editingProduct.price),
           stock: parseInt(editingProduct.stock) || 0,
           category: editingProduct.category,
-          subcategory: editingProduct.subcategory || null,
+          subcategory: editingProduct.subcategory && Array.isArray(editingProduct.subcategory) && editingProduct.subcategory.length > 0 ? editingProduct.subcategory : null,
           image: editingProduct.image,
           images: editingProduct.images,
           badge_text: editingProduct.badge_text,
@@ -246,12 +247,16 @@ const ProductManagementPanel = () => {
                           <p className="text-sm text-muted-foreground">
                             {product.category || 'Sin categoría'}
                           </p>
-                          {product.subcategory && (
+                          {product.subcategory && Array.isArray(product.subcategory) && product.subcategory.length > 0 && (
                             <>
                               <span className="text-muted-foreground">→</span>
-                              <Badge variant="secondary" className="text-xs">
-                                {product.subcategory}
-                              </Badge>
+                              <div className="flex flex-wrap gap-1">
+                                {product.subcategory.map((subcat: string) => (
+                                  <Badge key={subcat} variant="secondary" className="text-xs">
+                                    {subcat}
+                                  </Badge>
+                                ))}
+                              </div>
                             </>
                           )}
                           <span className="text-muted-foreground">•</span>
@@ -376,13 +381,74 @@ const ProductManagementPanel = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="subcategory">Subcategoría</Label>
-                        <Input
-                          id="subcategory"
-                          name="subcategory"
-                          value={editingProduct.subcategory || ''}
-                          onChange={handleInputChange}
-                        />
+                        <Label htmlFor="subcategory">Subcategorías</Label>
+                        <div className="space-y-2">
+                          <div className="flex gap-2">
+                            <Input
+                              id="subcategory"
+                              value={newSubcategory}
+                              onChange={(e) => setNewSubcategory(e.target.value)}
+                              placeholder="Ej: Xbox, PS4, PS5"
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const currentSubcats = Array.isArray(editingProduct.subcategory) 
+                                    ? editingProduct.subcategory 
+                                    : [];
+                                  if (newSubcategory.trim() && !currentSubcats.includes(newSubcategory.trim())) {
+                                    setEditingProduct((prev: any) => ({
+                                      ...prev,
+                                      subcategory: [...currentSubcats, newSubcategory.trim()]
+                                    }));
+                                    setNewSubcategory('');
+                                  }
+                                }
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => {
+                                const currentSubcats = Array.isArray(editingProduct.subcategory) 
+                                  ? editingProduct.subcategory 
+                                  : [];
+                                if (newSubcategory.trim() && !currentSubcats.includes(newSubcategory.trim())) {
+                                  setEditingProduct((prev: any) => ({
+                                    ...prev,
+                                    subcategory: [...currentSubcats, newSubcategory.trim()]
+                                  }));
+                                  setNewSubcategory('');
+                                }
+                              }}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          {editingProduct.subcategory && Array.isArray(editingProduct.subcategory) && editingProduct.subcategory.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {editingProduct.subcategory.map((subcat: string) => (
+                                <Badge key={subcat} variant="secondary" className="gap-1">
+                                  {subcat}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setEditingProduct((prev: any) => ({
+                                        ...prev,
+                                        subcategory: prev.subcategory.filter((s: string) => s !== subcat)
+                                      }));
+                                    }}
+                                    className="ml-1 hover:text-destructive"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                          <p className="text-xs text-muted-foreground">
+                            Presiona Enter o haz clic en + para agregar cada subcategoría
+                          </p>
+                        </div>
                       </div>
                     </div>
 
