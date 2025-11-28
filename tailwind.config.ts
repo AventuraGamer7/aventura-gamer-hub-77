@@ -66,6 +66,10 @@ export default {
 				'led-blue': 'hsl(var(--led-blue))',
 				'led-violet': 'hsl(var(--led-violet))',
 				'led-cyan': 'hsl(var(--led-cyan))',
+				'led-pink': 'hsl(var(--led-pink))',
+				'led-yellow': 'hsl(var(--led-yellow))',
+				'led-green': 'hsl(var(--led-green))',
+				'led-orange': 'hsl(var(--led-orange))',
 				'dark-gray': 'hsl(var(--dark-gray))',
 				'medium-gray': 'hsl(var(--medium-gray))'
 			},
@@ -136,7 +140,8 @@ export default {
 				'gaming': ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
 				'bungee': ['Bungee', 'cursive'],
 				'orbitron': ['Orbitron', 'monospace'],
-				'rajdhani': ['Rajdhani', 'sans-serif']
+				'rajdhani': ['Rajdhani', 'sans-serif'],
+				'mario': ['"Press Start 2P"', 'cursive']
 			}
 		}
 	},

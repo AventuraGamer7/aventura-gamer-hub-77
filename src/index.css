@@ -46,6 +46,10 @@ All colors MUST be HSL for consistency.
     --led-blue: 211 100% 50%;                 /* Electric blue LED */
     --led-violet: 274 93% 36%;                /* Violet LED accent */
     --led-cyan: 180 100% 50%;                 /* Cyan LED for variety */
+    --led-pink: 330 100% 60%;                 /* Pink LED gaming */
+    --led-yellow: 60 100% 50%;                /* Yellow LED gaming */
+    --led-green: 120 100% 50%;                /* Green LED gaming */
+    --led-orange: 30 100% 50%;                /* Orange LED gaming */
     --dark-gray: 0 0% 12%;                    /* Primary dark gray */
     --medium-gray: 0 0% 20%;                  /* Medium gray for borders */
 
@@ -54,6 +58,8 @@ All colors MUST be HSL for consistency.
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--accent) / 0.7));
     --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--medium-gray)));
     --gradient-neon: linear-gradient(90deg, hsl(var(--led-blue)), hsl(var(--led-violet)), hsl(var(--led-cyan)));
+    --gradient-rainbow: linear-gradient(135deg, hsl(var(--led-pink)), hsl(var(--led-violet)), hsl(var(--led-blue)), hsl(var(--led-cyan)));
+    --gradient-fire: linear-gradient(135deg, hsl(var(--led-orange)), hsl(var(--led-yellow)), hsl(var(--led-pink)));
     --gradient-dark: linear-gradient(180deg, hsl(var(--background)), hsl(var(--dark-gray)));
 
     /* LED Shadows & Glows */
@@ -139,6 +145,43 @@ All colors MUST be HSL for consistency.
 
   .text-glow {
     text-shadow: 0 0 20px hsl(var(--primary) / 0.8);
+  }
+
+  /* Mario Bros Style Text */
+  .text-mario {
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(
+      45deg,
+      #FF0000 0%,    /* Rojo vibrante */
+      #FF4D00 20%,   /* Naranja-rojo */
+      #FFD700 40%,   /* Dorado */
+      #FFFF00 60%,   /* Amarillo */
+      #FF0000 80%,   /* Rojo */
+      #FF0000 100%   /* Rojo */
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(3px 3px 0px #000000)
+            drop-shadow(-2px -2px 0px #FFFFFF)
+            drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    animation: mario-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes mario-pulse {
+    0%, 100% {
+      filter: drop-shadow(3px 3px 0px #000000)
+              drop-shadow(-2px -2px 0px #FFFFFF)
+              drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+    }
+    50% {
+      filter: drop-shadow(4px 4px 0px #000000)
+              drop-shadow(-3px -3px 0px #FFFFFF)
+              drop-shadow(0 0 20px rgba(255, 215, 0, 1))
+              drop-shadow(0 0 30px rgba(255, 0, 0, 0.6));
+    }
   }
 }
 
