@@ -151,13 +151,13 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold">
+          <Link to="/" className="flex items-center gap-2">
             <img 
               src="/lovable-uploads/9cbb1996-c02c-4b63-b7bd-45e2ca06d3eb.png" 
               alt="Aventura Gamer Logo" 
               className="h-10 w-auto rounded-lg"
             />
-            <span className="text-neon">Aventura Gamer</span>
+            <span className="text-mario text-sm sm:text-base md:text-lg">Aventura Gamer</span>
           </Link>
 
           {/* Desktop Navigation */}
