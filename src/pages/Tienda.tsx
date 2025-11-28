@@ -9,13 +9,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List, SlidersHorizontal, ArrowUpDown, ChevronDown } from 'lucide-react';
 const Tienda = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,6 +24,7 @@ const Tienda = () => {
   const [priceRange, setPriceRange] = useState('all');
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState(true);
   const { categoria } = useParams();
   const navigate = useNavigate();
   
@@ -361,6 +363,61 @@ const Tienda = () => {
               </TabsList>
             </Tabs>
           </div>
+
+          {/* Subcategories Collapsible */}
+          {selectedCategory !== 'Todos' && subcategories.length > 0 && (
+            <div className="mb-6">
+              <Collapsible open={isSubcategoryOpen} onOpenChange={setIsSubcategoryOpen}>
+                <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 rounded-lg p-4 border border-primary/20">
+                  <CollapsibleTrigger className="w-full flex items-center justify-between group hover:text-primary transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-1 bg-gradient-to-b from-primary to-secondary rounded-full animate-pulse" />
+                      <div>
+                        <h3 className="text-lg font-bold text-glow">
+                          {selectedCategory}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {subcategories.length} subcategorías disponibles
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${isSubcategoryOpen ? 'rotate-180' : ''}`} />
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent className="pt-4">
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
+                        size="sm"
+                        onClick={() => setSelectedSubcategory('all')}
+                        className="relative overflow-hidden group"
+                      >
+                        <span className="relative z-10">Todas</span>
+                        {selectedSubcategory === 'all' && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
+                        )}
+                      </Button>
+                      
+                      {subcategories.map(subcat => (
+                        <Button
+                          key={subcat}
+                          variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
+                          size="sm"
+                          onClick={() => setSelectedSubcategory(subcat)}
+                          className="relative overflow-hidden group hover:scale-105 transition-transform"
+                        >
+                          <span className="relative z-10">{subcat}</span>
+                          {selectedSubcategory === subcat && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
+                          )}
+                        </Button>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </div>
+              </Collapsible>
+            </div>
+          )}
 
           {/* Filters and Controls */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8 items-center justify-between bg-muted/30 p-4 rounded-lg">
