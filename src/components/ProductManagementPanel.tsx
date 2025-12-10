@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +14,8 @@ import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
 import { ProductVariantsManager } from './ProductVariantsManager';
-import { Edit, Trash2, Package, Eye, Search, EyeOff, Plus, X } from 'lucide-react';
+import CategorySelector from './CategorySelector';
+import { Edit, Trash2, Package, Eye, Search, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductManagementPanel = () => {
@@ -28,7 +29,6 @@ const ProductManagementPanel = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [newSubcategory, setNewSubcategory] = useState('');
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -43,7 +43,6 @@ const ProductManagementPanel = () => {
       ...product,
       subcategory: product.subcategory || []
     });
-    setNewSubcategory('');
     setIsEditOpen(true);
   };
 
@@ -373,87 +372,16 @@ const ProductManagementPanel = () => {
                           required
                         />
                       </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="category">Categoría</Label>
-                        <Input
-                          id="category"
-                          name="category"
-                          value={editingProduct.category || ''}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="subcategory">Subcategorías</Label>
-                        <div className="space-y-2">
-                          <div className="flex gap-2">
-                            <Input
-                              id="subcategory"
-                              value={newSubcategory}
-                              onChange={(e) => setNewSubcategory(e.target.value)}
-                              placeholder="Ej: Xbox, PS4, PS5"
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  e.preventDefault();
-                                  const currentSubcats = Array.isArray(editingProduct.subcategory) 
-                                    ? editingProduct.subcategory 
-                                    : [];
-                                  if (newSubcategory.trim() && !currentSubcats.includes(newSubcategory.trim())) {
-                                    setEditingProduct((prev: any) => ({
-                                      ...prev,
-                                      subcategory: [...currentSubcats, newSubcategory.trim()]
-                                    }));
-                                    setNewSubcategory('');
-                                  }
-                                }
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => {
-                                const currentSubcats = Array.isArray(editingProduct.subcategory) 
-                                  ? editingProduct.subcategory 
-                                  : [];
-                                if (newSubcategory.trim() && !currentSubcats.includes(newSubcategory.trim())) {
-                                  setEditingProduct((prev: any) => ({
-                                    ...prev,
-                                    subcategory: [...currentSubcats, newSubcategory.trim()]
-                                  }));
-                                  setNewSubcategory('');
-                                }
-                              }}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          {editingProduct.subcategory && Array.isArray(editingProduct.subcategory) && editingProduct.subcategory.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {editingProduct.subcategory.map((subcat: string) => (
-                                <Badge key={subcat} variant="secondary" className="gap-1">
-                                  {subcat}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setEditingProduct((prev: any) => ({
-                                        ...prev,
-                                        subcategory: prev.subcategory.filter((s: string) => s !== subcat)
-                                      }));
-                                    }}
-                                    className="ml-1 hover:text-destructive"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </button>
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
-                          <p className="text-xs text-muted-foreground">
-                            Presiona Enter o haz clic en + para agregar cada subcategoría
-                          </p>
-                        </div>
-                      </div>
+                    {/* Category Selector Component */}
+                    <div className="border border-border/50 rounded-lg p-4 bg-muted/10">
+                      <CategorySelector
+                        selectedCategory={editingProduct.category || ''}
+                        selectedSubcategories={Array.isArray(editingProduct.subcategory) ? editingProduct.subcategory : []}
+                        onCategoryChange={(category) => setEditingProduct((prev: any) => ({ ...prev, category }))}
+                        onSubcategoriesChange={(subcategory) => setEditingProduct((prev: any) => ({ ...prev, subcategory }))}
+                      />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
