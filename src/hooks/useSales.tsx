@@ -11,6 +11,7 @@ interface Sale {
   products?: {
     name: string;
     price: number;
+    image: string | null;
   };
   profiles?: {
     username: string;
@@ -32,7 +33,7 @@ export const useSales = () => {
         .from('sales')
         .select(`
           *,
-          products:product_id (name, price)
+          products:product_id (name, price, image)
         `)
         .order('created_at', { ascending: false });
 
