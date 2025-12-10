@@ -3,12 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Upload, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import CategorySelector from './CategorySelector';
 
 const AddProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +26,6 @@ const AddProductForm = () => {
     badge_text: '',
     badge_color: 'primary'
   });
-  
-  const [newSubcategory, setNewSubcategory] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -88,7 +85,6 @@ const AddProductForm = () => {
         badge_color: 'primary'
       });
       
-      setNewSubcategory('');
       setIsOpen(false);
     } catch (error: any) {
       console.error('Error adding product:', error);
@@ -111,7 +107,7 @@ const AddProductForm = () => {
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl text-glow">Agregar Nuevo Producto</DialogTitle>
           <DialogDescription>
@@ -134,84 +130,6 @@ const AddProductForm = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Categoría</Label>
-              <Input
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                placeholder="Ej: Controles"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="subcategory">Subcategorías</Label>
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Input
-                    id="subcategory"
-                    value={newSubcategory}
-                    onChange={(e) => setNewSubcategory(e.target.value)}
-                    placeholder="Ej: Xbox, PS4, PS5"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        if (newSubcategory.trim() && !formData.subcategory.includes(newSubcategory.trim())) {
-                          setFormData(prev => ({
-                            ...prev,
-                            subcategory: [...prev.subcategory, newSubcategory.trim()]
-                          }));
-                          setNewSubcategory('');
-                        }
-                      }
-                    }}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      if (newSubcategory.trim() && !formData.subcategory.includes(newSubcategory.trim())) {
-                        setFormData(prev => ({
-                          ...prev,
-                          subcategory: [...prev.subcategory, newSubcategory.trim()]
-                        }));
-                        setNewSubcategory('');
-                      }
-                    }}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {formData.subcategory.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {formData.subcategory.map((subcat) => (
-                      <Badge key={subcat} variant="secondary" className="gap-1">
-                        {subcat}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setFormData(prev => ({
-                              ...prev,
-                              subcategory: prev.subcategory.filter(s => s !== subcat)
-                            }));
-                          }}
-                          className="ml-1 hover:text-destructive"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-                <p className="text-xs text-muted-foreground">
-                  Presiona Enter o haz clic en + para agregar cada subcategoría
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
               <Label htmlFor="price">Precio (COP) *</Label>
               <Input
                 id="price"
@@ -225,19 +143,29 @@ const AddProductForm = () => {
                 required
               />
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="stock">Stock</Label>
-              <Input
-                id="stock"
-                name="stock"
-                type="number"
-                value={formData.stock}
-                onChange={handleInputChange}
-                placeholder="10"
-                min="0"
-              />
-            </div>
+          {/* Category Selector Component */}
+          <div className="border border-border/50 rounded-lg p-4 bg-muted/10">
+            <CategorySelector
+              selectedCategory={formData.category}
+              selectedSubcategories={formData.subcategory}
+              onCategoryChange={(category) => setFormData(prev => ({ ...prev, category }))}
+              onSubcategoriesChange={(subcategory) => setFormData(prev => ({ ...prev, subcategory }))}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="stock">Stock</Label>
+            <Input
+              id="stock"
+              name="stock"
+              type="number"
+              value={formData.stock}
+              onChange={handleInputChange}
+              placeholder="10"
+              min="0"
+            />
           </div>
 
           <div className="space-y-2">
