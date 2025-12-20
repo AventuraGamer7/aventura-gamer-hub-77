@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus } from 'lucide-react';
-import CategorySelector from './CategorySelector';
 
 const AddProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +19,6 @@ const AddProductForm = () => {
     price: '',
     stock: '',
     category: '',
-    subcategory: [] as string[],
     image: '',
     images: [] as string[],
     badge_text: '',
@@ -56,7 +54,6 @@ const AddProductForm = () => {
             price: parseFloat(formData.price),
             stock: parseInt(formData.stock) || 0,
             category: formData.category || null,
-            subcategory: formData.subcategory.length > 0 ? formData.subcategory : null,
             image: formData.image || null,
             images: formData.images.length > 0 ? formData.images : null,
             badge_text: formData.badge_text || null,
@@ -78,7 +75,6 @@ const AddProductForm = () => {
         price: '',
         stock: '',
         category: '',
-        subcategory: [],
         image: '',
         images: [],
         badge_text: '',
@@ -145,27 +141,30 @@ const AddProductForm = () => {
             </div>
           </div>
 
-          {/* Category Selector Component */}
-          <div className="border border-border/50 rounded-lg p-4 bg-muted/10">
-            <CategorySelector
-              selectedCategory={formData.category}
-              selectedSubcategories={formData.subcategory}
-              onCategoryChange={(category) => setFormData(prev => ({ ...prev, category }))}
-              onSubcategoriesChange={(subcategory) => setFormData(prev => ({ ...prev, subcategory }))}
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="category">Categoría</Label>
+              <Input
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                placeholder="Ej: Controles, Consolas, Accesorios..."
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="stock">Stock</Label>
-            <Input
-              id="stock"
-              name="stock"
-              type="number"
-              value={formData.stock}
-              onChange={handleInputChange}
-              placeholder="10"
-              min="0"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="stock">Stock</Label>
+              <Input
+                id="stock"
+                name="stock"
+                type="number"
+                value={formData.stock}
+                onChange={handleInputChange}
+                placeholder="10"
+                min="0"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
