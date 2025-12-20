@@ -14,7 +14,6 @@ import { useProducts } from '@/hooks/useProducts';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
 import { ProductVariantsManager } from './ProductVariantsManager';
-import CategorySelector from './CategorySelector';
 import { Edit, Trash2, Package, Eye, Search, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,10 +38,7 @@ const ProductManagementPanel = () => {
   };
 
   const handleEdit = (product: any) => {
-    setEditingProduct({
-      ...product,
-      subcategory: product.subcategory || []
-    });
+    setEditingProduct({ ...product });
     setIsEditOpen(true);
   };
 
@@ -118,7 +114,6 @@ const ProductManagementPanel = () => {
           price: parseFloat(editingProduct.price),
           stock: parseInt(editingProduct.stock) || 0,
           category: editingProduct.category,
-          subcategory: editingProduct.subcategory && Array.isArray(editingProduct.subcategory) && editingProduct.subcategory.length > 0 ? editingProduct.subcategory : null,
           image: editingProduct.image,
           images: editingProduct.images,
           badge_text: editingProduct.badge_text,
@@ -250,18 +245,6 @@ const ProductManagementPanel = () => {
                           <p className="text-sm text-muted-foreground">
                             {product.category || 'Sin categoría'}
                           </p>
-                          {product.subcategory && Array.isArray(product.subcategory) && product.subcategory.length > 0 && (
-                            <>
-                              <span className="text-muted-foreground">→</span>
-                              <div className="flex flex-wrap gap-1">
-                                {product.subcategory.map((subcat: string) => (
-                                  <Badge key={subcat} variant="secondary" className="text-xs">
-                                    {subcat}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </>
-                          )}
                           <span className="text-muted-foreground">•</span>
                           <span className="text-sm text-muted-foreground">Stock: {product.stock}</span>
                         </div>
@@ -372,16 +355,17 @@ const ProductManagementPanel = () => {
                           required
                         />
                       </div>
-                    </div>
 
-                    {/* Category Selector Component */}
-                    <div className="border border-border/50 rounded-lg p-4 bg-muted/10">
-                      <CategorySelector
-                        selectedCategory={editingProduct.category || ''}
-                        selectedSubcategories={Array.isArray(editingProduct.subcategory) ? editingProduct.subcategory : []}
-                        onCategoryChange={(category) => setEditingProduct((prev: any) => ({ ...prev, category }))}
-                        onSubcategoriesChange={(subcategory) => setEditingProduct((prev: any) => ({ ...prev, subcategory }))}
-                      />
+                      <div className="space-y-2">
+                        <Label htmlFor="category">Categoría</Label>
+                        <Input
+                          id="category"
+                          name="category"
+                          value={editingProduct.category || ''}
+                          onChange={handleInputChange}
+                          placeholder="Ej: Controles, Consolas..."
+                        />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
