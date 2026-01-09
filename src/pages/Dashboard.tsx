@@ -4,20 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Sidebar, 
-  SidebarProvider, 
-  SidebarContent, 
-  SidebarTrigger, 
-  SidebarInset, 
-  SidebarMenu, 
-  SidebarMenuItem, 
-  SidebarMenuButton, 
-  SidebarGroup, 
-  SidebarGroupContent, 
-  SidebarGroupLabel, 
-  useSidebar 
-} from '@/components/ui/sidebar';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useAuth } from '@/hooks/useAuth';
@@ -35,7 +21,7 @@ import ManagementPanel from '@/components/ManagementPanel';
 import CourseManagementPanel from '@/components/CourseManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import GestionUsuarios from '@/components/GestionUsuarios';
-import { AppSidebar } from '@/components/AppSidebar';
+import { DashboardTopNav } from '@/components/DashboardTopNav';
 import { CustomerOrders } from '@/components/CustomerOrders';
 import OrdenesCliente from '@/components/OrdenesCliente';
 import SalesManagementPanel from '@/components/SalesManagementPanel';
@@ -114,7 +100,7 @@ const getStatusText = (status: string) => {
 };
 
 const Dashboard = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const { profile, canCreateContent, isSuperadmin, isAdmin } = useProfile();
@@ -642,68 +628,28 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex w-full">
-      <AppSidebar 
+    <div className="min-h-screen bg-background flex flex-col w-full">
+      <DashboardTopNav 
         sidebarItems={sidebarItems}
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         handleLogout={handleLogout}
         navigate={navigate}
-        isCollapsed={isCollapsed}
+        userEmail={user?.email}
+        userRole={profile?.role}
       />
       
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-card/30 border-b border-border/50 p-4 lg:p-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-10 w-10 bg-primary hover:bg-primary/90 border-primary/50 text-primary-foreground shadow-lg transition-all duration-300"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </Button>
-            
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl lg:text-2xl font-bold text-glow truncate">Panel de Control</h1>
-              <p className="text-sm text-muted-foreground hidden sm:block">
-                {profile?.role === 'cliente' ? 'Tu espacio personal de Aventura Gamer' : 'Gestiona todos los aspectos de Aventura Gamer'}
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 lg:gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="border-border/50 hidden sm:flex"
-              >
-                <Home className="mr-2 h-4 w-4" />
-                Inicio
-              </Button>
-              <Badge variant="secondary" className="bg-secondary/20 text-secondary hidden lg:flex">
-                <Clock className="mr-1 h-3 w-3" />
-                {new Date().toLocaleDateString()}
-              </Badge>
-            </div>
-          </div>
-        </header>
-
-        {/* Content Area */}
-        <main className="flex-1 p-3 lg:p-6 overflow-auto">
-          <div className="max-w-6xl mx-auto">
+      {/* Content Area */}
+      <main className="flex-1 p-4 lg:p-6 overflow-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="flex flex-col gap-6">
-              {/* Main Content */}
-              <div className="flex-1 min-w-0">
-                {renderMainContent()}
-              </div>
+            {/* Main Content */}
+            <div className="flex-1 min-w-0">
+              {renderMainContent()}
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
