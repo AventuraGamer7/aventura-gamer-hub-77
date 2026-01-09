@@ -26,7 +26,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useProducts } from '@/hooks/useProducts';
 import { useCourses } from '@/hooks/useCourses';
 import { useServices } from '@/hooks/useServices';
-import GamificationPanel from '@/components/GamificationPanel';
+
 import AddProductForm from '@/components/AddProductForm';
 import AddCourseForm from '@/components/AddCourseForm';
 import AddServiceForm from '@/components/AddServiceForm';
@@ -695,18 +695,11 @@ const Dashboard = () => {
         {/* Content Area */}
         <main className="flex-1 p-3 lg:p-6 overflow-auto">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex flex-col gap-6">
               {/* Main Content */}
               <div className="flex-1 min-w-0">
                 {renderMainContent()}
               </div>
-
-              {/* Sidebar Content - Only for admin users */}
-              {profile?.role !== 'cliente' && (
-                <div className="hidden lg:block w-72 space-y-6 flex-shrink-0">
-                  <GamificationPanel />
-                </div>
-              )}
             </div>
           </div>
         </main>
