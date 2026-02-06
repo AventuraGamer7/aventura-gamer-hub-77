@@ -9,6 +9,7 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import GamificationPanel from '@/components/GamificationPanel';
 import SEOHead from '@/components/SEO/SEOHead';
 import FAQSection from '@/components/SEO/FAQSection';
+import FeaturedProducts from '@/components/FeaturedProducts';
 import { useAuth } from '@/hooks/useAuth';
 import { useServices } from '@/hooks/useServices';
 import { useProducts } from '@/hooks/useProducts';
@@ -133,6 +134,11 @@ const Index = () => {
         <div className="bg-gaming-overlay min-h-screen">
           <Header />
           <WhatsAppFloat />
+
+          {/* Featured Products Showcase - Top Section */}
+          <div className="mt-20">
+            <FeaturedProducts />
+          </div>
 
       {/* Featured Services Section - Modular */}
       <section className="py-24 relative overflow-hidden mt-20">{" "}
