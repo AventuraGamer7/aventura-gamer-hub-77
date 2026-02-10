@@ -1,63 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Star, Package, Truck, CreditCard, Crown, Filter, Search, Grid, List, SlidersHorizontal, ArrowUpDown, ChevronDown } from 'lucide-react';
+import { ShoppingCart, Search, Package, Truck, CreditCard, Crown, ChevronRight, Star, SlidersHorizontal } from 'lucide-react';
+
 const Tienda = () => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState('all');
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState(false);
   const { categoria } = useParams();
   const navigate = useNavigate();
-  
-  const {
-    products,
-    loading,
-    error
-  } = useProducts();
-  const {
-    addItem
-  } = useCart();
-  const {
-    toast
-  } = useToast();
 
-  // Get unique categories from products
+  const { products, loading, error } = useProducts();
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
-  
-  // Normalize category to lowercase and redirect if needed
+
   useEffect(() => {
     if (categoria && categoria !== categoria.toLowerCase()) {
       navigate(`/tienda/${categoria.toLowerCase()}`, { replace: true });
-      return;
     }
   }, [categoria, navigate]);
-  
-  // Get selected category from URL params or default to 'Todos'
+
   const normalizedCategory = categoria?.toLowerCase();
-  const selectedCategory = normalizedCategory && categories.map(c => c.toLowerCase()).includes(normalizedCategory) 
+  const selectedCategory = normalizedCategory && categories.map(c => c.toLowerCase()).includes(normalizedCategory)
     ? categories.find(c => c.toLowerCase() === normalizedCategory) || 'Todos'
     : 'Todos';
-  
-  // Get unique subcategories based on selected category
+
   const getSubcategories = () => {
     if (selectedCategory === 'Todos') return [];
     const subcats = products
@@ -67,674 +50,404 @@ const Tienda = () => {
   };
   const subcategories = getSubcategories();
 
-  // SEO data for different categories
-  const seoData = {
-    'Todos': {
-      title: 'Tienda Gamer - Gaming Store | Aventura Gamer',
-      description: 'Descubre nuestra amplia selección de productos gaming: controles, consolas, accesorios y más. Los mejores precios y calidad garantizada en Aventura Gamer.',
-      url: '/tienda'
-    },
-    'Controles': {
-      title: 'Controles para PS4, Xbox y más | Aventura Gamer',
-      description: 'Controles gaming profesionales para Xbox, PlayStation y PC. Mejora tu experiencia de juego con nuestros controles de alta calidad en Aventura Gamer.',
-      url: '/tienda/controles'
-    },
-    'Consolas': {
-      title: 'Consolas de Videojuegos Xbox, PlayStation | Aventura Gamer',
-      description: 'Las mejores consolas gaming: Xbox Series X/S, PlayStation 5, Nintendo Switch y más. Encuentra tu consola ideal al mejor precio en Aventura Gamer.',
-      url: '/tienda/consolas'
-    },
-    'Extras': {
-      title: 'Accesorios Gaming y Extras | Aventura Gamer',
-      description: 'Accesorios gaming premium: auriculares, teclados mecánicos, mouse gaming, cables y componentes. Mejora tu setup gaming en Aventura Gamer.',
-      url: '/tienda/extras'
-    },
-    'XBOX': {
-      title: 'Accesorios y Controles Xbox | Aventura Gamer',
-      description: 'Controles Xbox Series X/S, accesorios oficiales y compatibles. La mejor selección de productos Xbox al mejor precio en Aventura Gamer.',
-      url: '/tienda/xbox'
-    },
-    'PS4': {
-      title: 'Controles y Accesorios PS4 | Aventura Gamer',
-      description: 'Controles DualShock 4, accesorios y repuestos para PlayStation 4. Productos originales y compatibles en Aventura Gamer.',
-      url: '/tienda/ps4'
-    },
-    'PS5': {
-      title: 'Controles DualSense y Accesorios PS5 | Aventura Gamer',
-      description: 'Controles DualSense, cargadores y accesorios para PlayStation 5. La mejor experiencia gaming de nueva generación en Aventura Gamer.',
-      url: '/tienda/ps5'
-    }
+  const seoData: Record<string, { title: string; description: string; url: string }> = {
+    'Todos': { title: 'Tienda Gamer - Gaming Store | Aventura Gamer', description: 'Descubre nuestra amplia selección de productos gaming.', url: '/tienda' },
   };
-
-  const currentSeo = seoData[selectedCategory as keyof typeof seoData] || seoData['Todos'];
+  const currentSeo = seoData[selectedCategory] || seoData['Todos'];
   const canonicalUrl = `https://aventuragamer.com${currentSeo.url}`;
 
-  // Update URL when category changes
   const handleCategoryChange = (category: string) => {
-    setSelectedSubcategory('all'); // Reset subcategory when category changes
-    setIsSubcategoryOpen(true); // Open subcategories when category changes
+    setSelectedSubcategory('all');
     if (category === 'Todos') {
-      // Navigate to base tienda route for 'Todos'
       navigate('/tienda');
     } else {
-      // Navigate to category route with lowercase
       navigate(`/tienda/${category.toLowerCase()}`);
     }
   };
 
-  // Filter and sort products - only show active products
   let filteredProducts = (selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory))
     .filter(p => p.active);
-  
-  // Apply search filter
+
   if (searchTerm) {
-    filteredProducts = filteredProducts.filter(p => 
+    filteredProducts = filteredProducts.filter(p =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
-  
-  // Apply price filter
+
   if (priceRange !== 'all') {
     const [min, max] = priceRange.split('-').map(Number);
-    filteredProducts = filteredProducts.filter(p => {
-      if (max) {
-        return p.price >= min && p.price <= max;
-      } else {
-        return p.price >= min;
-      }
-    });
+    filteredProducts = filteredProducts.filter(p => max ? (p.price >= min && p.price <= max) : p.price >= min);
   }
-  
-  // Apply subcategory filter
+
   if (selectedSubcategory !== 'all') {
-    filteredProducts = filteredProducts.filter(p => 
-      p.subcategory && p.subcategory.includes(selectedSubcategory)
-    );
+    filteredProducts = filteredProducts.filter(p => p.subcategory && p.subcategory.includes(selectedSubcategory));
   }
-  
-  // Apply sorting
+
   filteredProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
-      case 'name':
-        return a.name.localeCompare(b.name);
-      case 'stock':
-        return b.stock - a.stock;
-      case 'newest':
-      default:
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      case 'price-low': return a.price - b.price;
+      case 'price-high': return b.price - a.price;
+      case 'name': return a.name.localeCompare(b.name);
+      case 'stock': return b.stock - a.stock;
+      default: return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     }
   });
 
-  // Pagination logic
-  const PRODUCTS_PER_PAGE = 18;
+  const PRODUCTS_PER_PAGE = 24;
   const totalProducts = filteredProducts.length;
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-  const endIndex = startIndex + PRODUCTS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+  const currentProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
 
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, selectedCategory, sortBy, priceRange, selectedSubcategory]);
-  const wholesaleFeatures = ['Precios especiales mayoristas', 'Envíos gratuitos en pedidos >$200.000', 'Acceso prioritario a nuevos productos', 'Soporte técnico especializado', 'Descuentos progresivos por volumen', 'Facturación empresarial'];
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
-  const ProductCard = ({
-    product
-  }: {
-    product: typeof products[0];
-  }) => (
-    <Card 
-      className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40 cursor-pointer"
-      onClick={() => navigate(`/producto/${product.id}`)}
-    >
-      <div className="relative h-72 bg-muted/10 rounded-lg overflow-hidden flex items-center justify-center">
-        <img 
-          src={product.image || '/api/placeholder/300/300'} 
-          alt={product.name} 
-          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105" 
-        />
-        {product.stock === 0 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <Badge variant="destructive">Agotado</Badge>
-          </div>}
-      </div>
-      
-      <CardHeader className="space-y-3 transition-all duration-300 group-hover:pb-6">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex flex-col gap-2 flex-1 min-w-0">
-            <Badge variant="secondary" className="text-xs w-fit">
-              {product.category || 'General'}
-            </Badge>
-            {product.subcategory && product.subcategory.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 max-w-full">
-                {product.subcategory.slice(0, 3).map(subcat => (
-                  <Badge key={subcat} variant="outline" className="text-[10px] px-2 py-0.5 truncate max-w-[120px]">
-                    {subcat}
-                  </Badge>
-                ))}
-                {product.subcategory.length > 3 && (
-                  <Badge variant="outline" className="text-[10px] px-2 py-0.5">
-                    +{product.subcategory.length - 3}
-                  </Badge>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-1 text-sm shrink-0">
-            <Star className="h-4 w-4 fill-current text-yellow-500" />
-            4.8
-            <span className="text-muted-foreground hidden sm:inline">(156)</span>
-          </div>
-        </div>
-        <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{product.name}</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
-          {product.description || 'Sin descripción disponible'}
-        </CardDescription>
-        
-        {/* Expanded content on hover */}
-        <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
-          <div className="space-y-2 pt-2 border-t border-muted/20">
-            <p className="text-xs text-muted-foreground">✓ Garantía incluida</p>
-            <p className="text-xs text-muted-foreground">✓ Envíos a nivel nacional</p>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary">{formatPrice(product.price)}</span>
-          </div>
-          {product.stock > 0 && <p className="text-xs text-muted-foreground">
-              {product.stock} unidades disponibles
-            </p>}
-        </div>
-        
-        <div className="flex gap-2">
-          <Button 
-            variant="gaming" 
-            className="flex-1" 
-            disabled={product.stock === 0} 
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent card click when clicking button
-              addItem({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.image || undefined,
-                type: 'product'
-              });
-              toast({
-                title: 'Producto agregado',
-                description: `${product.name} se agregó al carrito`
-              });
-            }}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            {product.stock > 0 ? 'Agregar al Carrito' : 'Agotado'}
-          </Button>
-        </div>
-        
-        {/* Badge en la parte inferior para mejor visibilidad */}
-        {product.badge_text && (
-          <div className="flex justify-center mt-3">
-            <Badge variant={product.badge_color as any} className="text-sm px-4 py-2 animate-[pulse_1.5s_ease-in-out_infinite] shadow-lg hover:scale-105 transition-transform duration-300">
-              {product.badge_text}
-            </Badge>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-  return <div className="min-h-screen bg-gaming-vibrant">
-      <div className="bg-gaming-overlay">
-        <Helmet>
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedCategory, sortBy, priceRange, selectedSubcategory]);
+
+  const formatPrice = (price: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(price);
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Helmet>
         <title>{currentSeo.title}</title>
         <meta name="description" content={currentSeo.description} />
         <link rel="canonical" href={canonicalUrl} />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content={currentSeo.title} />
-        <meta property="og:description" content={currentSeo.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="Aventura Gamer" />
-        <meta property="og:locale" content="es_CO" />
-        
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@aventuragamer" />
-        <meta name="twitter:title" content={currentSeo.title} />
-        <meta name="twitter:description" content={currentSeo.description} />
-        <meta name="twitter:url" content={canonicalUrl} />
       </Helmet>
       <Header />
       <WhatsAppFloat />
-      
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-background to-primary/10" />
-        
-        <div className="relative container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            
-            
-            <h1 className="text-4xl md:text-6xl font-bold text-glow">
-              Repuestos & Consolas
-            </h1>
-            
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Encuentra repuestos originales, consolas y accesorios gaming de la más alta calidad. Precios mayoristas disponibles.
-            </p>
-          </div>
-        </div>
-      </section>
 
-      {/* Products Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          {/* Search Bar */}
-          <div className="mb-8">
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+      {/* Top bar with breadcrumb + results count */}
+      <div className="pt-20 border-b border-border bg-muted/30">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Link to="/" className="hover:text-foreground transition-colors">Inicio</Link>
+            <ChevronRight className="h-3 w-3" />
+            <span className="text-foreground font-medium">Tienda</span>
+            {selectedCategory !== 'Todos' && (
+              <>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-foreground font-medium">{selectedCategory}</span>
+              </>
+            )}
+          </div>
+          <span>{totalProducts} resultados</span>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+
+          {/* Sidebar Filters */}
+          <aside className="w-full lg:w-60 shrink-0 space-y-6">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar productos por nombre, categoría o descripción..."
+                placeholder="Buscar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 text-base border-primary/20 focus:border-primary transition-colors"
+                className="pl-9 h-10 bg-card border-border"
               />
             </div>
-          </div>
 
-          {/* Categories Tabs */}
-          <div className="mb-6">
-            <Tabs value={selectedCategory} onValueChange={handleCategoryChange} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 h-auto p-2 bg-muted/50">
-                {categories.map(category => (
-                  <TabsTrigger 
-                    key={category} 
-                    value={category} 
-                    className="text-xs sm:text-sm py-2 px-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
+            {/* Categories */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-3">Categorías</h3>
+              <div className="space-y-1">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategoryChange(cat)}
+                    className={`w-full text-left text-sm px-3 py-2 rounded-md transition-colors ${
+                      selectedCategory === cat
+                        ? 'bg-primary/10 text-primary font-medium'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
                   >
-                    {category}
-                  </TabsTrigger>
+                    {cat}
+                  </button>
                 ))}
-              </TabsList>
-            </Tabs>
-          </div>
+              </div>
+            </div>
 
-          {/* Subcategories Section - Enhanced Gaming Style */}
-          {selectedCategory !== 'Todos' && (
-            <div className="mb-8">
-              {subcategories.length > 0 ? (
-                <Collapsible open={isSubcategoryOpen} onOpenChange={setIsSubcategoryOpen}>
-                  <div className="relative bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 rounded-xl p-6 border-2 border-primary/30 shadow-2xl overflow-hidden">
-                    {/* Animated background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 animate-pulse" />
-                    
-                    <div className="relative z-10">
-                      <CollapsibleTrigger className="w-full group">
-                        <div className="flex items-center justify-between hover:scale-[1.02] transition-transform duration-300">
-                          <div className="flex items-center gap-4">
-                            <div className="h-12 w-2 bg-gradient-to-b from-primary via-secondary to-primary rounded-full animate-pulse shadow-lg" />
-                            <div className="text-left">
-                              <h3 className="text-2xl font-bold text-glow mb-1 group-hover:text-primary transition-colors">
-                                {selectedCategory}
-                              </h3>
-                              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                <Filter className="h-3 w-3" />
-                                {subcategories.length} subcategorías disponibles
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground hidden sm:inline">
-                              {isSubcategoryOpen ? 'Ocultar' : 'Ver subcategorías'}
-                            </span>
-                            <ChevronDown className={`h-6 w-6 text-primary transition-all duration-500 group-hover:scale-110 ${isSubcategoryOpen ? 'rotate-180' : ''}`} />
-                          </div>
-                        </div>
-                      </CollapsibleTrigger>
-                      
-                      <CollapsibleContent className="pt-6">
-                        <div className="space-y-3">
-                          <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-                          
-                          <div className="flex flex-wrap gap-2.5 justify-center sm:justify-start">
-                            <Button
-                              variant={selectedSubcategory === 'all' ? 'gaming' : 'outline'}
-                              size="lg"
-                              onClick={() => setSelectedSubcategory('all')}
-                              className="relative overflow-hidden group/btn font-semibold min-w-[100px]"
-                            >
-                              <span className="relative z-10 flex items-center gap-2">
-                                <Package className="h-4 w-4" />
-                                Todas
-                              </span>
-                              {selectedSubcategory === 'all' && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 animate-pulse" />
-                              )}
-                            </Button>
-                            
-                            {subcategories.map((subcat, index) => (
-                              <Button
-                                key={subcat}
-                                variant={selectedSubcategory === subcat ? 'gaming' : 'outline'}
-                                size="lg"
-                                onClick={() => setSelectedSubcategory(subcat)}
-                                className="relative overflow-hidden group/btn font-semibold hover:scale-105 transition-all min-w-[80px] max-w-[200px] truncate"
-                                style={{ animationDelay: `${index * 50}ms` }}
-                                title={subcat}
-                              >
-                                <span className="relative z-10 truncate px-2">{subcat}</span>
-                                {selectedSubcategory === subcat && (
-                                  <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 animate-pulse" />
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                              </Button>
-                            ))}
-                          </div>
-                          
-                          {/* Counter badge */}
-                          <div className="flex justify-center sm:justify-start mt-3">
-                            <Badge variant="secondary" className="text-xs px-3 py-1">
-                              {selectedSubcategory === 'all' 
-                                ? `${filteredProducts.length} productos en total` 
-                                : `${filteredProducts.length} productos en ${selectedSubcategory}`}
-                            </Badge>
-                          </div>
-                        </div>
-                      </CollapsibleContent>
+            {/* Subcategories */}
+            {subcategories.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-foreground mb-3">Subcategorías</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setSelectedSubcategory('all')}
+                    className={`w-full text-left text-sm px-3 py-2 rounded-md transition-colors ${
+                      selectedSubcategory === 'all'
+                        ? 'bg-primary/10 text-primary font-medium'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    Todas
+                  </button>
+                  {subcategories.map(sub => (
+                    <button
+                      key={sub}
+                      onClick={() => setSelectedSubcategory(sub)}
+                      className={`w-full text-left text-sm px-3 py-2 rounded-md transition-colors ${
+                        selectedSubcategory === sub
+                          ? 'bg-primary/10 text-primary font-medium'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Price */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4" /> Precio
+              </h3>
+              <div className="space-y-1">
+                {[
+                  { value: 'all', label: 'Todos los precios' },
+                  { value: '0-50000', label: 'Hasta $50.000' },
+                  { value: '50000-100000', label: '$50.000 - $100.000' },
+                  { value: '100000-200000', label: '$100.000 - $200.000' },
+                  { value: '200000-500000', label: '$200.000 - $500.000' },
+                  { value: '500000', label: 'Más de $500.000' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setPriceRange(opt.value)}
+                    className={`w-full text-left text-sm px-3 py-2 rounded-md transition-colors ${
+                      priceRange === opt.value
+                        ? 'bg-primary/10 text-primary font-medium'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 min-w-0">
+            {/* Sort bar */}
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm text-muted-foreground hidden sm:block">
+                Mostrando {startIndex + 1}-{Math.min(startIndex + PRODUCTS_PER_PAGE, totalProducts)} de {totalProducts}
+              </p>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[200px] bg-card">
+                  <SelectValue placeholder="Ordenar por" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Más recientes</SelectItem>
+                  <SelectItem value="price-low">Precio: menor a mayor</SelectItem>
+                  <SelectItem value="price-high">Precio: mayor a menor</SelectItem>
+                  <SelectItem value="name">Nombre A-Z</SelectItem>
+                  <SelectItem value="stock">Mayor disponibilidad</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Products */}
+            {loading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="bg-card rounded-lg border border-border overflow-hidden">
+                    <Skeleton className="aspect-square w-full" />
+                    <div className="p-3 space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-6 w-1/3" />
                     </div>
                   </div>
-                </Collapsible>
-              ) : (
-                <div className="bg-gradient-to-r from-muted/50 to-muted/30 rounded-xl p-6 border border-border/50 text-center">
-                  <Package className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-                  <p className="text-sm text-muted-foreground">
-                    No hay subcategorías configuradas para <span className="font-semibold text-foreground">{selectedCategory}</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Agrega productos con subcategorías desde el panel de administración
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Filters and Controls */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 items-center justify-between bg-muted/30 p-4 rounded-lg">
-            <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
-              {/* Sort Filter */}
-              <div className="flex items-center gap-2">
-                <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Ordenar por" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Más recientes</SelectItem>
-                    <SelectItem value="price-low">Precio: menor a mayor</SelectItem>
-                    <SelectItem value="price-high">Precio: mayor a menor</SelectItem>
-                    <SelectItem value="name">Nombre A-Z</SelectItem>
-                    <SelectItem value="stock">Mayor stock</SelectItem>
-                  </SelectContent>
-                </Select>
+                ))}
               </div>
-
-              {/* Price Range Filter */}
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-                <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Rango de precio" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos los precios</SelectItem>
-                    <SelectItem value="0-50000">Menos de $50.000</SelectItem>
-                    <SelectItem value="50000-100000">$50.000 - $100.000</SelectItem>
-                    <SelectItem value="100000-200000">$100.000 - $200.000</SelectItem>
-                    <SelectItem value="200000-500000">$200.000 - $500.000</SelectItem>
-                    <SelectItem value="500000">Más de $500.000</SelectItem>
-                  </SelectContent>
-                </Select>
+            ) : error ? (
+              <div className="text-center py-20">
+                <p className="text-muted-foreground">Error al cargar productos: {error}</p>
               </div>
+            ) : totalProducts === 0 ? (
+              <div className="text-center py-20 space-y-3">
+                <Package className="h-16 w-16 mx-auto text-muted-foreground/40" />
+                <p className="text-muted-foreground text-lg">No se encontraron productos</p>
+                <p className="text-sm text-muted-foreground">Intenta ajustar los filtros o buscar otro término</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                {currentProducts.map(product => (
+                  <div
+                    key={product.id}
+                    className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-200 cursor-pointer flex flex-col"
+                    onClick={() => navigate(`/producto/${product.id}`)}
+                  >
+                    {/* Image */}
+                    <div className="relative aspect-square bg-muted/20 overflow-hidden">
+                      {product.image ? (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="h-12 w-12 text-muted-foreground/30" />
+                        </div>
+                      )}
 
-              {/* Subcategory Filter - Only show when category is selected */}
-              {subcategories.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
-                  <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Subcategoría" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas las subcategorías</SelectItem>
-                      {subcategories.map((subcat) => (
-                        <SelectItem key={subcat} value={subcat}>
-                          {subcat}
-                        </SelectItem>
+                      {/* Badges */}
+                      {product.badge_text && (
+                        <Badge
+                          className="absolute top-2 left-2 text-xs font-semibold shadow-sm"
+                          style={{ backgroundColor: product.badge_color || undefined }}
+                        >
+                          {product.badge_text}
+                        </Badge>
+                      )}
+                      {product.stock === 0 && (
+                        <div className="absolute inset-0 bg-background/70 flex items-center justify-center">
+                          <Badge variant="destructive" className="text-sm">Agotado</Badge>
+                        </div>
+                      )}
+                      {product.stock > 0 && product.stock <= 5 && (
+                        <Badge className="absolute top-2 right-2 text-[10px] bg-destructive/90 text-destructive-foreground">
+                          Quedan {product.stock}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="p-3 flex flex-col flex-1">
+                      {product.category && (
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
+                          {product.category}
+                        </span>
+                      )}
+                      <h3 className="text-sm font-medium text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors leading-snug">
+                        {product.name}
+                      </h3>
+                      {product.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-2 mb-2 hidden sm:block">
+                          {product.description}
+                        </p>
+                      )}
+
+                      <div className="mt-auto space-y-2">
+                        <span className="text-lg font-bold text-foreground block">
+                          {formatPrice(product.price)}
+                        </span>
+
+                        {product.stock > 0 && (
+                          <span className="text-xs text-primary font-medium">En stock</span>
+                        )}
+
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="w-full text-xs"
+                          disabled={product.stock === 0}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: product.price,
+                              image: product.image || undefined,
+                              type: 'product'
+                            });
+                            toast({
+                              title: 'Agregado al carrito',
+                              description: product.name
+                            });
+                          }}
+                        >
+                          <ShoppingCart className="h-3 w-3 mr-1" />
+                          {product.stock > 0 ? 'Agregar' : 'Agotado'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    {currentPage > 1 && (
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(e) => { e.preventDefault(); setCurrentPage(currentPage - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        />
+                      </PaginationItem>
+                    )}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(page => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+                      .map((page, idx, arr) => (
+                        <React.Fragment key={page}>
+                          {idx > 0 && arr[idx - 1] !== page - 1 && (
+                            <PaginationItem><span className="px-2 text-muted-foreground">...</span></PaginationItem>
+                          )}
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#"
+                              isActive={currentPage === page}
+                              onClick={(e) => { e.preventDefault(); setCurrentPage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        </React.Fragment>
                       ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {/* Results Count */}
-              <div className="text-sm text-muted-foreground">
-                {totalProducts} productos encontrados - Página {currentPage} de {totalPages}
+                    {currentPage < totalPages && (
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(e) => { e.preventDefault(); setCurrentPage(currentPage + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        />
+                      </PaginationItem>
+                    )}
+                  </PaginationContent>
+                </Pagination>
               </div>
-            </div>
-            
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-2 border rounded-lg p-1">
-              <Button 
-                variant={viewMode === 'grid' ? 'default' : 'ghost'} 
-                size="sm" 
-                onClick={() => setViewMode('grid')}
-                className="h-8 w-8 p-0"
-              >
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant={viewMode === 'list' ? 'default' : 'ghost'} 
-                size="sm" 
-                onClick={() => setViewMode('list')}
-                className="h-8 w-8 p-0"
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Products Grid */}
-          {loading ? <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-              {Array.from({
-            length: 6
-          }).map((_, i) => <Card key={i} className="overflow-hidden">
-                  <Skeleton className="w-full h-48" />
-                  <CardHeader>
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className="h-6 w-1/3 mb-2" />
-                    <Skeleton className="h-8 w-full" />
-                  </CardContent>
-                </Card>)}
-            </div> : error ? <div className="text-center py-12">
-              <p className="text-muted-foreground">Error al cargar productos: {error}</p>
-            </div> : totalProducts === 0 ? <div className="text-center py-12">
-              <p className="text-muted-foreground">
-                {products.length === 0 ? 'No hay productos disponibles en este momento.' : `No se encontraron productos en la categoría "${selectedCategory}".`}
-              </p>
-            </div> : <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-              {currentProducts.map(product => <ProductCard key={product.id} product={product} />)}
-            </div>}
-            
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-12 flex justify-center">
-              <Pagination>
-                <PaginationContent>
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        href="#" 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentPage(currentPage - 1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      />
-                    </PaginationItem>
-                  )}
-                  
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        href="#"
-                        isActive={currentPage === page}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentPage(page);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <PaginationNext 
-                        href="#" 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentPage(currentPage + 1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      />
-                    </PaginationItem>
-                  )}
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+            )}
+          </main>
         </div>
-      </section>
+      </div>
 
-      {/* Wholesale Banner */}
-      <section className="py-16 bg-gradient-to-r from-primary/10 to-secondary/10">
+      {/* Trust bar */}
+      <section className="border-t border-border bg-muted/20 py-8">
         <div className="container mx-auto px-4">
-          <Card className="card-gaming border-primary/30 overflow-hidden">
-            <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div className="space-y-6">
-                  <Badge className="bg-primary/30 text-primary border-primary/50">
-                    <Crown className="mr-2 h-4 w-4" />
-                    Suscripción Mayorista
-                  </Badge>
-                  
-                  <h2 className="text-3xl md:text-4xl font-bold text-glow">
-                    Acceso VIP a Precios Mayoristas
-                  </h2>
-                  
-                  <p className="text-lg text-muted-foreground">
-                    Únete a nuestro programa mayorista y obtén acceso exclusivo a precios especiales, 
-                    envíos gratuitos y soporte prioritario.
-                  </p>
-                  
-                  <div className="flex gap-4">
-                    <Button variant="hero" size="lg">
-                      <Crown className="mr-2 h-5 w-5" />
-                      Suscribirse Ahora
-                    </Button>
-                    <Button variant="gaming-secondary" size="lg">
-                      Más Información
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold mb-4">Beneficios Incluidos:</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {wholesaleFeatures.map((feature, index) => <div key={index} className="flex items-center gap-2 text-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        {feature}
-                      </div>)}
-                  </div>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Truck className="h-6 w-6 text-primary" />
+              <span className="text-sm font-medium text-foreground">Envío a toda Colombia</span>
+              <span className="text-xs text-muted-foreground">24-48h en Medellín</span>
             </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* Services Banner */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="card-gaming border-primary/20 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Truck className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">Envío Rápido</h3>
-                <p className="text-sm text-muted-foreground">
-                  Envíos a toda Colombia<br />
-                  Entrega en 24-48 horas<br />
-                  en Medellín y área metropolitana
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="card-gaming border-primary/20 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-secondary/20 flex items-center justify-center">
-                  <Package className="h-6 w-6 text-secondary" />
-                </div>
-                <h3 className="font-semibold mb-2">Garantía Total</h3>
-                <p className="text-sm text-muted-foreground">
-                  Garantía en todos<br />
-                  nuestros productos<br />
-                  Devoluciones fáciles
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="card-gaming border-primary/20 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gaming-orange/20 flex items-center justify-center">
-                  <CreditCard className="h-6 w-6 text-gaming-orange" />
-                </div>
-                <h3 className="font-semibold mb-2">Pago Seguro</h3>
-                <p className="text-sm text-muted-foreground">
-                  Múltiples métodos de pago<br />
-                  Pagos seguros y protegidos<br />
-                  Cuotas disponibles
-                </p>
-              </CardContent>
-            </Card>
+            <div className="flex flex-col items-center gap-2">
+              <Package className="h-6 w-6 text-primary" />
+              <span className="text-sm font-medium text-foreground">Garantía incluida</span>
+              <span className="text-xs text-muted-foreground">Devoluciones fáciles</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <CreditCard className="h-6 w-6 text-primary" />
+              <span className="text-sm font-medium text-foreground">Pago seguro</span>
+              <span className="text-xs text-muted-foreground">Múltiples métodos</span>
+            </div>
           </div>
         </div>
       </section>
 
       <Footer />
-      </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Tienda;
