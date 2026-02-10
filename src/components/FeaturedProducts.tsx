@@ -44,8 +44,8 @@ const FeaturedProducts = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">
-            Productos Destacados
+          <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+            🛒 Tienda — Lo Más Vendido
           </h2>
           <Link to="/tienda" className="text-sm text-primary hover:underline flex items-center gap-1">
             Ver todo <ChevronRight className="h-4 w-4" />
