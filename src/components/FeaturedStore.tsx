@@ -43,8 +43,8 @@ const FeaturedStore = () => {
     <section className="py-6 bg-background">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">
-            Tienda Gaming
+          <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
+            🎮 Más Productos Gaming
           </h2>
           <Link to="/tienda" className="text-sm text-primary hover:underline flex items-center gap-1">
             Ver tienda completa <ChevronRight className="h-4 w-4" />
