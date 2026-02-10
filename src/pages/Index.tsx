@@ -10,9 +10,9 @@ import GamificationPanel from '@/components/GamificationPanel';
 import SEOHead from '@/components/SEO/SEOHead';
 import FAQSection from '@/components/SEO/FAQSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
+import FeaturedServices from '@/components/FeaturedServices';
+import FeaturedStore from '@/components/FeaturedStore';
 import { useAuth } from '@/hooks/useAuth';
-import { useServices } from '@/hooks/useServices';
-import { useProducts } from '@/hooks/useProducts';
 import { useCourses } from '@/hooks/useCourses';
 import { generateServiceSchema, generateProductSchema, generateCourseSchema } from '@/utils/seoUtils';
 import { Wrench, GraduationCap, ShoppingCart, Star, Award, Zap, ChevronRight, MapPin, Phone, Clock, Users, Trophy, Target, Play, GamepadIcon, Instagram } from 'lucide-react';
@@ -21,16 +21,6 @@ const Index = () => {
     user
   } = useAuth();
   const navigate = useNavigate();
-  const {
-    services,
-    loading,
-    error
-  } = useServices();
-  const {
-    products,
-    loading: productsLoading,
-    error: productsError
-  } = useProducts();
   const {
     courses,
     loading: coursesLoading,
@@ -140,175 +130,11 @@ const Index = () => {
             <FeaturedProducts />
           </div>
 
-      {/* Featured Services Section - Modular */}
-      <section className="py-24 relative overflow-hidden mt-20">{" "}
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16 animate-fade-in">
-            
-            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">servicio elite!</h2>
-            
-          </div>
-      
-          {loading ? <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow"></div>
-            </div> : error ? <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
-                  <Wrench className="h-8 w-8 text-destructive" />
-                </div>
-                <p className="text-destructive mb-4">Error al cargar los servicios: {error}</p>
-                <Button variant="gaming" onClick={() => window.location.reload()}>
-                  Reintentar Carga
-                </Button>
-              </CardContent>
-            </Card> : services.length === 0 ? <Card className="card-gaming max-w-md mx-auto">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
-                  <Wrench className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <p className="text-muted-foreground">No hay servicios disponibles en este momento.</p>
-              </CardContent>
-            </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
-              {services.slice(0, 1).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {service.image ? <div className="relative h-96 overflow-hidden">
-                      <img src={service.image} alt={service.name} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                    </div> : <div className="relative h-96 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                      <Wrench className="h-20 w-20 text-primary/40" />
-                    </div>}
-                  
-                  <CardHeader className="pb-2 px-4">
-                    <CardTitle className="text-lg text-neon group-hover:text-primary transition-colors line-clamp-1">
-                      {service.name}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
-                      {service.description || 'Servicio profesional gaming especializado'}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0 px-4 pb-4">
-                    <div className="flex justify-between items-center">
-                      <div className="flex flex-col">
-                        <span className="text-xl font-bold text-secondary">
-                          ${service.price.toLocaleString('es-CO')} COP
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Precio base
-                        </span>
-                      </div>
-                      <Button variant="gaming" size="sm" className="px-4" onClick={() => navigate('/servicios')}>
-                        <Play className="mr-1 h-4 w-4" />
-                        Solicitar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>)}
-            </div>}
-          
-          {/* Social Media Buttons */}
-          <div className="flex justify-center gap-4 mt-12 mb-8">
-            <Button variant="outline" size="lg" className="px-6 py-3 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-red-400" onClick={() => window.open('https://www.youtube.com/@aventuragamer777', '_blank')}>
-              <img src="/lovable-uploads/cc10dbd8-68ed-412d-9016-15dd833460b9.png" alt="YouTube" className="mr-2 h-5 w-5" />
-              Canal YouTube
-            </Button>
-            <Button variant="outline" size="lg" className="px-6 py-3 bg-pink-600/20 border-pink-500/30 hover:bg-pink-600/30 text-pink-400" onClick={() => window.open('https://www.instagram.com/aventuragamer777/', '_blank')}>
-              <Instagram className="mr-2 h-5 w-5" />
-              Instagram
-            </Button>
-          </div>
+      {/* Featured Services Section */}
+      <FeaturedServices />
 
-          {/* View All Services CTA */}
-          <div className="text-center mt-8">
-            <Button variant="gaming-secondary" size="lg" className="px-8 py-4 text-lg" onClick={() => navigate('/servicios')}>
-              Ver Todos los Servicios
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
-              </div>
-            </section>
-      {/* Featured Products Section - Modular */}
-      <section className="py-24 bg-muted/20 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16 animate-fade-in">
-            
-            
-            <h2 className="text-4xl md:text-6xl font-bungee mb-6 text-glow">Tienda Gamer</h2>
-            
-          </div>
-      
-          {productsLoading ? <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary shadow-glow"></div>
-            </div> : productsError ? <Card className="card-gaming border-destructive/30 max-w-md mx-auto">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/20 flex items-center justify-center">
-                  <ShoppingCart className="h-8 w-8 text-destructive" />
-                </div>
-                <p className="text-destructive mb-4">Error al cargar los productos: {productsError}</p>
-                <Button variant="gaming" onClick={() => window.location.reload()}>
-                  Reintentar Carga
-                </Button>
-              </CardContent>
-            </Card> : products.length === 0 ? <Card className="card-gaming max-w-md mx-auto">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
-                  <ShoppingCart className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <p className="text-muted-foreground">No hay productos disponibles en este momento.</p>
-              </CardContent>
-            </Card> : <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
-              {products.slice(0, 1).map(product => <Card key={product.id} className="card-gaming border-secondary/20 overflow-hidden group bg-gradient-to-br from-card to-card/80">
-                  {product.image ? <div className="relative h-96 overflow-hidden">
-                      <img src={product.image} alt={product.name} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                      {product.badge_text && <div className="absolute top-4 right-4">
-                          <Badge variant="secondary" className="bg-secondary/90 text-secondary-foreground border-secondary/50">
-                            {product.badge_text}
-                          </Badge>
-                        </div>}
-                    </div> : <div className="relative h-96 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
-                      <ShoppingCart className="h-20 w-20 text-secondary/40" />
-                    </div>}
-                  
-                  <CardHeader className="pb-2 px-4">
-                    <CardTitle className="text-lg text-neon group-hover:text-secondary transition-colors line-clamp-1">
-                      {product.name}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground line-clamp-1 text-sm">
-                      {product.description || 'Producto gaming premium de alta calidad'}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0 px-4 pb-4">
-                    <div className="flex justify-between items-center">
-                      <div className="flex flex-col">
-                        <span className="text-xl font-bold text-primary">
-                          ${product.price.toLocaleString('es-CO')} COP
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Stock: {product.stock}
-                        </span>
-                      </div>
-                      <Button variant="gaming" size="sm" className="px-4" onClick={() => navigate(`/producto/${product.id}`)}>
-                        <ShoppingCart className="mr-1 h-4 w-4" />
-                        Comprar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>)}
-            </div>}
-          
-          {/* View All Products CTA */}
-          <div className="text-center mt-16">
-            <Button variant="gaming-secondary" size="lg" className="px-8 py-4 text-lg" onClick={() => navigate('/tienda')}>
-              Ver Todos los Productos
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Featured Store Section */}
+      <FeaturedStore />
 
       {/* Featured Courses Section - Modular */}
       <section className="py-24 relative overflow-hidden">
