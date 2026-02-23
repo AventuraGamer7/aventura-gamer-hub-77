@@ -51,12 +51,48 @@ const ProductDetails = () => {
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     if (id) {
       fetchProduct(id);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (product?.category && product?.id) {
+      fetchRelatedProducts(product.category, product.id);
+    }
+  }, [product?.category, product?.id]);
+
+  const fetchRelatedProducts = async (category: string, currentId: string) => {
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category', category)
+        .neq('id', currentId)
+        .eq('active', true)
+        .gt('stock', 0)
+        .limit(8);
+      
+      if (data && data.length > 0) {
+        setRelatedProducts(data);
+      } else {
+        // If no same-category products, fetch random ones
+        const { data: fallback } = await supabase
+          .from('products')
+          .select('*')
+          .neq('id', currentId)
+          .eq('active', true)
+          .gt('stock', 0)
+          .limit(8);
+        setRelatedProducts(fallback || []);
+      }
+    } catch (err) {
+      console.error('Error fetching related products:', err);
+    }
+  };
 
   const fetchProduct = async (productId: string) => {
     try {
@@ -775,6 +811,40 @@ const ProductDetails = () => {
             </Card>
           </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-16 border-t border-border pt-10">
+            <h2 className="text-xl font-bold mb-6">Productos que también te pueden interesar</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {relatedProducts.map((rp) => (
+                <Card 
+                  key={rp.id} 
+                  className="cursor-pointer hover:shadow-lg transition-shadow group"
+                  onClick={() => {
+                    navigate(`/producto/${rp.id}`);
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  <CardContent className="p-3">
+                    <div className="aspect-square bg-muted/20 rounded-md overflow-hidden mb-3 flex items-center justify-center">
+                      <img
+                        src={rp.images?.[0] || rp.image || '/placeholder.svg'}
+                        alt={rp.name}
+                        className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform"
+                      />
+                    </div>
+                    <h3 className="text-sm font-medium line-clamp-2 mb-1">{rp.name}</h3>
+                    <p className="text-primary font-bold text-sm">{formatPrice(rp.price)}</p>
+                    {rp.stock > 0 && rp.stock <= 5 && (
+                      <p className="text-xs text-destructive mt-1">¡Quedan {rp.stock}!</p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />
