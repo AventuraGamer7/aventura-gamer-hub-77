@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,16 +11,31 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/hooks/useProducts';
+import { useSales } from '@/hooks/useSales';
 import { useProfile } from '@/hooks/useProfile';
 import ProductImageManager from './ProductImageManager';
 import { ProductVariantsManager } from './ProductVariantsManager';
-import { Edit, Trash2, Package, Eye, Search, EyeOff, Filter, LayoutGrid, List } from 'lucide-react';
+import { Edit, Trash2, Package, Eye, Search, EyeOff, Filter, LayoutGrid, List, TrendingUp, TrendingDown, AlertTriangle, XCircle, Sparkles, Clock, Archive, ArrowUpDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+type QuickFilter = 'top_sellers' | 'low_sellers' | 'low_stock' | 'out_of_stock' | 'new_products' | 'no_movement' | 'high_stock';
+type SortOption = 'top_sellers' | 'low_sellers' | 'stock_asc' | 'stock_desc' | 'last_sale' | 'newest' | 'highest_revenue';
+
+const QUICK_FILTERS: { key: QuickFilter; label: string; icon: React.ReactNode }[] = [
+  { key: 'top_sellers', label: 'Más vendidos', icon: <TrendingUp className="h-3 w-3" /> },
+  { key: 'low_sellers', label: 'Menos vendidos', icon: <TrendingDown className="h-3 w-3" /> },
+  { key: 'low_stock', label: 'Bajo stock', icon: <AlertTriangle className="h-3 w-3" /> },
+  { key: 'out_of_stock', label: 'Agotados', icon: <XCircle className="h-3 w-3" /> },
+  { key: 'new_products', label: 'Nuevos', icon: <Sparkles className="h-3 w-3" /> },
+  { key: 'no_movement', label: 'Sin movimiento', icon: <Clock className="h-3 w-3" /> },
+  { key: 'high_stock', label: 'Inventario alto', icon: <Archive className="h-3 w-3" /> },
+];
 
 const ProductManagementPanel = () => {
   const { toast } = useToast();
   const { isSuperadmin } = useProfile();
   const { products } = useProducts();
+  const { sales } = useSales();
   const navigate = useNavigate();
   
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -29,6 +44,31 @@ const ProductManagementPanel = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [activeFilters, setActiveFilters] = useState<QuickFilter[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
+
+  // Pre-compute sales stats per product
+  const salesStats = useMemo(() => {
+    const stats: Record<string, { totalQty: number; totalRevenue: number; lastSaleDate: string | null }> = {};
+    if (!sales) return stats;
+    for (const sale of sales) {
+      if (!stats[sale.product_id]) {
+        stats[sale.product_id] = { totalQty: 0, totalRevenue: 0, lastSaleDate: null };
+      }
+      stats[sale.product_id].totalQty += sale.quantity;
+      stats[sale.product_id].totalRevenue += sale.total_price;
+      if (!stats[sale.product_id].lastSaleDate || sale.created_at > stats[sale.product_id].lastSaleDate!) {
+        stats[sale.product_id].lastSaleDate = sale.created_at;
+      }
+    }
+    return stats;
+  }, [sales]);
+
+  const toggleFilter = (filter: QuickFilter) => {
+    setActiveFilters(prev =>
+      prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
+    );
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -116,15 +156,61 @@ const ProductManagementPanel = () => {
     new Set(products?.map(p => p.category).filter(Boolean))
   ).sort();
 
-  const filteredProducts = products?.filter(product => {
-    const searchLower = searchTerm.toLowerCase();
-    const matchesSearch = 
-      product.name.toLowerCase().includes(searchLower) ||
-      product.category?.toLowerCase().includes(searchLower) ||
-      product.description?.toLowerCase().includes(searchLower);
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredProducts = useMemo(() => {
+    let result = products?.filter(product => {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = 
+        product.name.toLowerCase().includes(searchLower) ||
+        product.category?.toLowerCase().includes(searchLower) ||
+        product.description?.toLowerCase().includes(searchLower);
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    }) || [];
+
+    // Apply quick filters
+    if (activeFilters.length > 0) {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      result = result.filter(p => {
+        return activeFilters.some(filter => {
+          const stat = salesStats[p.id];
+          switch (filter) {
+            case 'top_sellers': return (stat?.totalQty || 0) > 0;
+            case 'low_sellers': return (stat?.totalQty || 0) === 0 || !stat;
+            case 'low_stock': return p.stock > 0 && p.stock <= 5;
+            case 'out_of_stock': return p.stock === 0;
+            case 'new_products': return new Date(p.created_at) > thirtyDaysAgo;
+            case 'no_movement': return !stat?.lastSaleDate || new Date(stat.lastSaleDate) < thirtyDaysAgo;
+            case 'high_stock': return p.stock > 20;
+            default: return true;
+          }
+        });
+      });
+    }
+
+    // Apply sorting
+    result = [...result].sort((a, b) => {
+      const statA = salesStats[a.id];
+      const statB = salesStats[b.id];
+      switch (sortBy) {
+        case 'top_sellers': return (statB?.totalQty || 0) - (statA?.totalQty || 0);
+        case 'low_sellers': return (statA?.totalQty || 0) - (statB?.totalQty || 0);
+        case 'stock_asc': return a.stock - b.stock;
+        case 'stock_desc': return b.stock - a.stock;
+        case 'last_sale': {
+          const dateA = statA?.lastSaleDate ? new Date(statA.lastSaleDate).getTime() : 0;
+          const dateB = statB?.lastSaleDate ? new Date(statB.lastSaleDate).getTime() : 0;
+          return dateB - dateA;
+        }
+        case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'highest_revenue': return (statB?.totalRevenue || 0) - (statA?.totalRevenue || 0);
+        default: return 0;
+      }
+    });
+
+    return result;
+  }, [products, searchTerm, selectedCategory, activeFilters, sortBy, salesStats]);
 
   const activeCount = products?.filter(p => p.active).length || 0;
   const lowStockCount = products?.filter(p => p.stock <= 5 && p.stock > 0).length || 0;
@@ -194,10 +280,55 @@ const ProductManagementPanel = () => {
         </div>
       </div>
 
-      {/* Results info */}
-      <p className="text-xs text-muted-foreground">
-        {filteredProducts?.length || 0} producto{filteredProducts?.length !== 1 ? 's' : ''} encontrado{filteredProducts?.length !== 1 ? 's' : ''}
-      </p>
+      {/* Quick Filters */}
+      <div className="flex flex-wrap gap-2">
+        {QUICK_FILTERS.map(({ key, label, icon }) => (
+          <button
+            key={key}
+            onClick={() => toggleFilter(key)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+              activeFilters.includes(key)
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground'
+            }`}
+          >
+            {icon}
+            {label}
+          </button>
+        ))}
+        {activeFilters.length > 0 && (
+          <button
+            onClick={() => setActiveFilters([])}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors"
+          >
+            <XCircle className="h-3 w-3" />
+            Limpiar
+          </button>
+        )}
+      </div>
+
+      {/* Sort selector */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">
+          {filteredProducts?.length || 0} producto{filteredProducts?.length !== 1 ? 's' : ''} encontrado{filteredProducts?.length !== 1 ? 's' : ''}
+        </p>
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="h-8 px-2 pr-6 border border-input bg-background rounded-md text-xs appearance-none cursor-pointer"
+          >
+            <option value="newest">Más recientes</option>
+            <option value="top_sellers">Más vendidos</option>
+            <option value="low_sellers">Menos vendidos</option>
+            <option value="stock_asc">Stock ascendente</option>
+            <option value="stock_desc">Stock descendente</option>
+            <option value="last_sale">Última venta</option>
+            <option value="highest_revenue">Mayor ingreso</option>
+          </select>
+        </div>
+      </div>
 
       {/* Product list */}
       {filteredProducts?.length === 0 ? (
@@ -247,6 +378,13 @@ const ProductManagementPanel = () => {
                     {product.stock} uds
                   </span>
                 </div>
+                {salesStats[product.id] && (
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                    <span>{salesStats[product.id].totalQty} vendidos</span>
+                    <span>·</span>
+                    <span>{formatPrice(salesStats[product.id].totalRevenue)}</span>
+                  </div>
+                )}
                 <div className="flex gap-1 pt-1">
                   <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => handleEdit(product)}>
                     <Edit className="h-3 w-3 mr-1" /> Editar
@@ -311,6 +449,14 @@ const ProductManagementPanel = () => {
                   <span className={product.stock === 0 ? 'text-destructive' : product.stock <= 5 ? 'text-yellow-600' : ''}>
                     Stock: {product.stock}
                   </span>
+                  {salesStats[product.id] && (
+                    <>
+                      <span>·</span>
+                      <span>{salesStats[product.id].totalQty} vendidos</span>
+                      <span>·</span>
+                      <span>{formatPrice(salesStats[product.id].totalRevenue)}</span>
+                    </>
+                  )}
                 </div>
               </div>
               <span className="text-sm font-bold text-primary whitespace-nowrap">{formatPrice(product.price)}</span>
