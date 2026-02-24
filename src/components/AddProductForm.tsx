@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Trash2, ImagePlus } from 'lucide-react';
+import { Plus, Trash2, ImagePlus, Upload, Link, Loader2 } from 'lucide-react';
 
 const AddProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadingMain, setUploadingMain] = useState(false);
+  const [uploadingExtra, setUploadingExtra] = useState<number | null>(null);
   const { toast } = useToast();
+  const mainFileRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -31,6 +35,51 @@ const AddProductForm = () => {
 
   const resetForm = () => {
     setFormData({ name: '', description: '', price: '', stock: '', category: '', image: '', images: [], badge_text: '', badge_color: 'primary' });
+  };
+
+  const uploadFile = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `products/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file);
+
+    if (error) {
+      console.error('Upload error:', error);
+      toast({ title: "Error", description: "No se pudo subir la imagen", variant: "destructive" });
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
+
+    return urlData.publicUrl;
+  };
+
+  const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingMain(true);
+    const url = await uploadFile(file);
+    if (url) setFormData(prev => ({ ...prev, image: url }));
+    setUploadingMain(false);
+    if (mainFileRef.current) mainFileRef.current.value = '';
+  };
+
+  const handleExtraImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingExtra(index);
+    const url = await uploadFile(file);
+    if (url) {
+      const newImages = [...formData.images];
+      newImages[index] = url;
+      setFormData(prev => ({ ...prev, images: newImages }));
+    }
+    setUploadingExtra(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,12 +159,36 @@ const AddProductForm = () => {
           </div>
 
           {/* Imagen principal */}
-          <div className="space-y-1">
-            <Label htmlFor="image" className="text-xs text-muted-foreground">Imagen principal (URL)</Label>
-            <Input id="image" name="image" type="url" value={formData.image} onChange={handleChange} placeholder="https://..." />
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Imagen principal</Label>
+            {formData.image && (
+              <div className="relative w-20 h-20 rounded-md overflow-hidden border border-border">
+                <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                <button type="button" onClick={() => setFormData(prev => ({ ...prev, image: '' }))} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5">
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            )}
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Input id="image" name="image" type="url" value={formData.image} onChange={handleChange} placeholder="https://..." className="h-9 text-sm" />
+              </div>
+              <input ref={mainFileRef} type="file" accept="image/*" className="hidden" onChange={handleMainImageUpload} />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 gap-1 shrink-0"
+                onClick={() => mainFileRef.current?.click()}
+                disabled={uploadingMain}
+              >
+                {uploadingMain ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+                Subir
+              </Button>
+            </div>
           </div>
 
-          {/* Imágenes adicionales - simplificado */}
+          {/* Imágenes adicionales */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label className="text-xs text-muted-foreground">Imágenes adicionales</Label>
@@ -130,27 +203,51 @@ const AddProductForm = () => {
               </Button>
             </div>
             {formData.images.map((img, i) => (
-              <div key={i} className="flex gap-2">
-                <Input
-                  type="url"
-                  value={img}
-                  onChange={(e) => {
-                    const newImages = [...formData.images];
-                    newImages[i] = e.target.value;
-                    setFormData(prev => ({ ...prev, images: newImages }));
-                  }}
-                  placeholder="https://..."
-                  className="h-9 text-sm"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
-                  onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
+              <div key={i} className="space-y-1">
+                {img && (
+                  <div className="relative w-16 h-16 rounded-md overflow-hidden border border-border">
+                    <img src={img} alt={`Extra ${i + 1}`} className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <Input
+                    type="url"
+                    value={img}
+                    onChange={(e) => {
+                      const newImages = [...formData.images];
+                      newImages[i] = e.target.value;
+                      setFormData(prev => ({ ...prev, images: newImages }));
+                    }}
+                    placeholder="https://..."
+                    className="h-9 text-sm"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id={`extra-img-${i}`}
+                    onChange={(e) => handleExtraImageUpload(e, i)}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
+                    onClick={() => document.getElementById(`extra-img-${i}`)?.click()}
+                    disabled={uploadingExtra === i}
+                  >
+                    {uploadingExtra === i ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+                    onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
