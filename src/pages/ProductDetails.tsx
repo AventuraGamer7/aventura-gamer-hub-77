@@ -450,43 +450,6 @@ const ProductDetails = () => {
                   <DialogContent className="max-w-5xl w-[95vw] h-auto p-4 md:p-6">
                     <div className="space-y-4">
                       <div className="relative">
-                        {/* Zoom Controls */}
-                        <div className="absolute top-2 right-2 z-10 flex gap-2 bg-background/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={handleZoomIn}
-                            disabled={zoomLevel >= 4}
-                            title="Acercar"
-                          >
-                            <ZoomIn className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={handleZoomOut}
-                            disabled={zoomLevel <= 1}
-                            title="Alejar"
-                          >
-                            <ZoomOut className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={handleResetZoom}
-                            disabled={zoomLevel === 1}
-                            title="Restablecer"
-                          >
-                            <RotateCcw className="h-4 w-4" />
-                          </Button>
-                        </div>
-
-                        {/* Zoom Level Indicator */}
-                        {zoomLevel > 1 && (
-                          <div className="absolute top-2 left-2 z-10 bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1 shadow-lg">
-                            <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
-                          </div>
-                        )}
 
                         {/* Navigation Arrows */}
                         {images.length > 1 && (
@@ -538,14 +501,6 @@ const ProductDetails = () => {
                           />
                         </div>
 
-                        {/* Instructions */}
-                        {zoomLevel === 1 && (
-                          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-background/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
-                            <p className="text-xs text-muted-foreground text-center">
-                              Usa la rueda del mouse o los botones + y - para acercar
-                            </p>
-                          </div>
-                        )}
                       </div>
 
                       {/* Thumbnails */}
