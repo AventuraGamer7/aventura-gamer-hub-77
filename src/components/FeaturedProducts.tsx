@@ -44,7 +44,7 @@ const FeaturedProducts = () => {
     <section className="py-6 bg-background">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <GamingSectionTitle title="Tienda Gamer" subtitle="Lo más vendido" />
+        <GamingSectionTitle title="Tienda Gamer" />
         <div className="flex justify-end mb-4 -mt-2">
           <Link to="/tienda" className="text-sm text-primary hover:underline flex items-center gap-1">
             Ver todo <ChevronRight className="h-4 w-4" />

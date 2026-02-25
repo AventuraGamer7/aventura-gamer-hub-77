@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import GamingSectionTitle from '@/components/GamingSectionTitle';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -14,6 +15,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCourses } from '@/hooks/useCourses';
 import { Badge } from '@/components/ui/badge';
 import { GraduationCap, MapPin, Phone, Clock, ChevronRight, Play, Truck, Package, CreditCard, Youtube, Instagram, ExternalLink } from 'lucide-react';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } },
+} as const;
 
 const Index = () => {
   const { user } = useAuth();
@@ -58,12 +64,12 @@ const Index = () => {
         <WhatsAppFloat />
 
         {/* Featured Products - Tienda */}
-        <div className="pt-20">
+        <motion.div className="pt-20" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
           <FeaturedProducts />
-        </div>
+        </motion.div>
 
         {/* Trust bar */}
-        <section className="py-4 border-y border-border bg-muted/20">
+        <motion.section className="py-4 border-y border-border bg-muted/20" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap justify-center gap-8 text-center">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -80,17 +86,20 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Featured Services */}
-        <FeaturedServices />
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
+          <FeaturedServices />
+        </motion.div>
 
-        {/* Featured Store */}
-        <FeaturedStore />
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
+          <FeaturedStore />
+        </motion.div>
 
         {/* Courses Section */}
         {!coursesLoading && !coursesError && courses.length > 0 && (
-          <section className="py-8 bg-muted/20">
+          <motion.section className="py-8 bg-muted/20" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
             <div className="container mx-auto px-4">
               <GamingSectionTitle title="Academy Gamer" subtitle="Cursos y capacitaciones" />
               <div className="flex justify-end mb-4 -mt-2">
@@ -134,11 +143,11 @@ const Index = () => {
                 ))}
               </div>
             </div>
-          </section>
+          </motion.section>
         )}
 
         {/* Social Media Section */}
-        <section className="py-8 bg-background border-t border-border">
+        <motion.section className="py-8 bg-background border-t border-border" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
           <div className="container mx-auto px-4">
             <GamingSectionTitle title="Comunidad Gamer" subtitle="Tutoriales, tips gaming y novedades de la tienda" className="mb-6" />
 
@@ -195,10 +204,10 @@ const Index = () => {
               </a>
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Contact Info */}
-        <section className="py-8 bg-muted/20 border-t border-border">
+        <motion.section className="py-8 bg-muted/20 border-t border-border" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
           <div className="container mx-auto px-4">
             <GamingSectionTitle title="Encuéntranos" subtitle="Visítanos en nuestra sede" />
 
@@ -238,7 +247,7 @@ const Index = () => {
               />
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* FAQ */}
         <FAQSection
