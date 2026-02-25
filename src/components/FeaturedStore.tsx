@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import GamingSectionTitle from '@/components/GamingSectionTitle';
 
 const FeaturedStore = () => {
   const { products, loading } = useProducts();
@@ -42,10 +43,8 @@ const FeaturedStore = () => {
   return (
     <section className="py-6 bg-background">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
-            🎮 Más Productos Gaming
-          </h2>
+        <GamingSectionTitle title="Más Productos" subtitle="Explora todo el catálogo gaming" />
+        <div className="flex justify-end mb-4 -mt-2">
           <Link to="/tienda" className="text-sm text-primary hover:underline flex items-center gap-1">
             Ver tienda completa <ChevronRight className="h-4 w-4" />
           </Link>
