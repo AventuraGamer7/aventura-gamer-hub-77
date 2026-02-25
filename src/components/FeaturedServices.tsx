@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
 import { Wrench, ChevronRight } from 'lucide-react';
+import GamingSectionTitle from '@/components/GamingSectionTitle';
 import { Button } from '@/components/ui/button';
 
 const FeaturedServices = () => {
@@ -36,10 +37,8 @@ const FeaturedServices = () => {
   return (
     <section className="py-6 bg-muted/20">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
-            🔧 Servicios Técnicos Especializados
-          </h2>
+        <GamingSectionTitle title="Servicio Técnico" subtitle="Reparación especializada de consolas" />
+        <div className="flex justify-end mb-4 -mt-2">
           <button onClick={() => navigate('/servicios')} className="text-sm text-primary hover:underline flex items-center gap-1">
             Ver todos <ChevronRight className="h-4 w-4" />
           </button>

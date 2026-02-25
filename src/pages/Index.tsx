@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import GamingSectionTitle from '@/components/GamingSectionTitle';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -91,11 +92,8 @@ const Index = () => {
         {!coursesLoading && !coursesError && courses.length > 0 && (
           <section className="py-8 bg-muted/20">
             <div className="container mx-auto px-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="h-6 w-6 text-primary" />
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground">📚 Cursos & Capacitaciones</h2>
-                </div>
+              <GamingSectionTitle title="Academy Gamer" subtitle="Cursos y capacitaciones" />
+              <div className="flex justify-end mb-4 -mt-2">
                 <button onClick={() => navigate('/cursos')} className="text-sm text-primary hover:underline flex items-center gap-1">
                   Ver todos <ChevronRight className="h-4 w-4" />
                 </button>
@@ -142,8 +140,7 @@ const Index = () => {
         {/* Social Media Section */}
         <section className="py-8 bg-background border-t border-border">
           <div className="container mx-auto px-4">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2 text-center">Síguenos en Redes Sociales</h2>
-            <p className="text-sm text-muted-foreground text-center mb-6">Tutoriales, tips gaming y novedades de la tienda</p>
+            <GamingSectionTitle title="Comunidad Gamer" subtitle="Tutoriales, tips gaming y novedades de la tienda" className="mb-6" />
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-2xl mx-auto">
               {/* YouTube */}
@@ -203,7 +200,7 @@ const Index = () => {
         {/* Contact Info */}
         <section className="py-8 bg-muted/20 border-t border-border">
           <div className="container mx-auto px-4">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 text-center">Encuéntranos</h2>
+            <GamingSectionTitle title="Encuéntranos" subtitle="Visítanos en nuestra sede" />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-card border border-border">
