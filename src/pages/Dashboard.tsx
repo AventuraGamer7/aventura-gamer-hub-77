@@ -39,6 +39,8 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { CustomerOrders } from '@/components/CustomerOrders';
 import OrdenesCliente from '@/components/OrdenesCliente';
 import SalesManagementPanel from '@/components/SalesManagementPanel';
+import ManualOrderForm from '@/components/ManualOrderForm';
+import ManualOrdersAdmin from '@/components/ManualOrdersAdmin';
 // Import customer orders hook
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
@@ -67,7 +69,8 @@ import {
   Loader2,
   CheckCircle,
   Truck,
-  DollarSign
+  DollarSign,
+  ClipboardList
 } from 'lucide-react';
 
 // Helper functions for status handling
@@ -157,6 +160,12 @@ const Dashboard = () => {
       section: 'Principal'
     },
     {
+      id: 'manual-orders',
+      title: 'Mis Compras',
+      icon: <ClipboardList className="h-5 w-5" />,
+      section: 'Principal'
+    },
+    {
       id: 'services',
       title: 'Mis Servicios',
       icon: <Wrench className="h-5 w-5" />,
@@ -204,6 +213,12 @@ const Dashboard = () => {
       id: 'sales',
       title: 'Ventas',
       icon: <DollarSign className="h-5 w-5" />,
+      section: 'Gestión Principal'
+    }] : []),
+    ...(profile && ['admin', 'superadmin', 'employee'].includes(profile.role) ? [{
+      id: 'manual-orders-admin',
+      title: 'Órdenes Manuales',
+      icon: <ClipboardList className="h-5 w-5" />,
       section: 'Gestión Principal'
     }] : []),
     // Solo mostrar usuarios para roles administrativos
@@ -312,6 +327,16 @@ const Dashboard = () => {
               ) : (
                 <CustomerOrders orders={orders} />
               )}
+            </div>
+          );
+        case 'manual-orders':
+          return (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-glow">Mis Compras</h2>
+                <p className="text-muted-foreground">Registra compras externas y gana puntos</p>
+              </div>
+              <ManualOrderForm />
             </div>
           );
         case 'services':
@@ -503,6 +528,16 @@ const Dashboard = () => {
               <p className="text-muted-foreground">Registra y visualiza el historial de ventas</p>
             </div>
             <SalesManagementPanel />
+          </div>
+        );
+      case 'manual-orders-admin':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-glow">Órdenes Manuales</h2>
+              <p className="text-muted-foreground">Valida compras registradas por los usuarios</p>
+            </div>
+            <ManualOrdersAdmin />
           </div>
         );
       case 'users':
