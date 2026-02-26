@@ -188,6 +188,42 @@ export type Database = {
         }
         Relationships: []
       }
+      manual_orders: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          payment_method: string
+          receipt_url: string | null
+          status: string
+          total_value: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          payment_method?: string
+          receipt_url?: string | null
+          status?: string
+          total_value: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          payment_method?: string
+          receipt_url?: string | null
+          status?: string
+          total_value?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ordenes_servicio: {
         Row: {
           admin_descripcion: string | null
