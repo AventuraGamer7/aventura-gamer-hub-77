@@ -410,6 +410,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ordenes_proveedores: {
+        Row: {
+          id: string
+          proveedor: string
+          fecha_creacion: string
+          fecha_recepcion: string | null
+          estado: string
+          total_orden: number
+          items: Json
+        }
+        Insert: {
+          id?: string
+          proveedor: string
+          fecha_creacion?: string
+          fecha_recepcion?: string | null
+          estado?: string
+          total_orden: number
+          items: Json
+        }
+        Update: {
+          id?: string
+          proveedor?: string
+          fecha_creacion?: string
+          fecha_recepcion?: string | null
+          estado?: string
+          total_orden?: number
+          items?: Json
+        }
+        Relationships: []
+      }
       ordenes_servicio: {
         Row: {
           admin_descripcion: string | null

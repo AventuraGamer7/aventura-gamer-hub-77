@@ -40,6 +40,11 @@ import {
   Mic,
   Zap,
   AlertTriangle,
+  Clock,
+  CheckCircle2,
+  Save,
+  History,
+  Trash2,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -81,6 +86,24 @@ interface ProductoInventario {
   slug: string | null;
   description?: string | null;
   active?: boolean | null;
+}
+
+interface OrdenGuardada {
+  id: string;
+  proveedor: string;
+  fecha_creacion: string;
+  fecha_recepcion: string | null;
+  estado: 'pendiente' | 'recibida';
+  total_orden: number;
+  items: Array<{
+    productoId: string;
+    nombre: string;
+    categoria: string;
+    variante: string | null;
+    cantidadSolicitada: number;
+    precioUnitario: number;
+    subtotal: number;
+  }>;
 }
 
 function getProductImage(p: ProductoInventario): string | null {
@@ -196,6 +219,13 @@ const CatalogoProveedores: React.FC = () => {
   const [editForm, setEditForm] = useState<Partial<ProductoInventario>>({});
   const [guardando, setGuardando] = useState(false);
 
+  const [ordenesGuardadas, setOrdenesGuardadas] = useState<OrdenGuardada[]>([]);
+  const [cargandoOrdenes, setCargandoOrdenes] = useState(false);
+  const [mostrarHistorialOrdenes, setMostrarHistorialOrdenes] = useState(false);
+  const [guardandoOrden, setGuardandoOrden] = useState(false);
+  const [confirmandoOrden, setConfirmandoOrden] = useState<string | null>(null);
+  const [eliminandoOrden, setEliminandoOrden] = useState<string | null>(null);
+
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Persist cart
@@ -251,6 +281,22 @@ const CatalogoProveedores: React.FC = () => {
       .then(({ data }) => { if (data) setInventario(data as ProductoInventario[]); });
   }, [mostrarComparativa]);
 
+  const fetchOrdenesGuardadas = useCallback(async () => {
+    setCargandoOrdenes(true);
+    const { data, error } = await supabase
+      .from('ordenes_proveedores')
+      .select('*')
+      .order('fecha_creacion', { ascending: false });
+    if (!error && data) {
+      setOrdenesGuardadas(data as any as OrdenGuardada[]);
+    }
+    setCargandoOrdenes(false);
+  }, []);
+
+  useEffect(() => {
+    if (mostrarHistorialOrdenes) fetchOrdenesGuardadas();
+  }, [mostrarHistorialOrdenes, fetchOrdenesGuardadas]);
+
   // ── Cart helpers ─────────────────────────────────────────────────────────────
 
   const isSeleccionado = (id: string) => ordenItems.some((i) => i.producto.id === id);
@@ -284,6 +330,92 @@ const CatalogoProveedores: React.FC = () => {
     await navigator.clipboard.writeText(generarTextoOrden());
     setCopiadoTexto(true);
     setTimeout(() => setCopiadoTexto(false), 2000);
+  };
+
+  const guardarOrden = async () => {
+    if (ordenItems.length === 0) return;
+    setGuardandoOrden(true);
+    const proveedor = ordenItems[0]?.producto.proveedor || 'Varios';
+    const total = totalOrden;
+    const itemsParaGuardar = ordenItems.map(item => ({
+      productoId: item.producto.id,
+      nombre: item.producto.nombre,
+      categoria: item.producto.categoria,
+      variante: item.producto.variante,
+      cantidadSolicitada: item.cantidad,
+      precioUnitario: item.producto.precio,
+      subtotal: item.producto.precio * item.cantidad,
+    }));
+    
+    const { error } = await supabase.from('ordenes_proveedores').insert([{
+      proveedor,
+      total_orden: total,
+      items: itemsParaGuardar as any,
+      estado: 'pendiente'
+    }]);
+
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Orden guardada', description: 'La orden ha sido registrada exitosamente.' });
+      setOrdenItems([]);
+      setMostrarOrden(false);
+      fetchOrdenesGuardadas();
+    }
+    setGuardandoOrden(false);
+  };
+
+  const confirmarRecepcionOrden = async (orden: OrdenGuardada) => {
+    if (!confirm('¿Confirmar que se recibió toda la mercancía de esta orden?')) return;
+    setConfirmandoOrden(orden.id);
+    
+    try {
+        const { error } = await supabase.from('ordenes_proveedores').update({
+          estado: 'recibida',
+          fecha_recepcion: new Date().toISOString()
+        }).eq('id', orden.id);
+        
+        if (error) throw error;
+
+        // Get all actual products from inventory to match and update stock
+        const { data: invData } = await supabase.from('products').select('id, name, stock');
+        const productosExis = invData || [];
+
+        // Update each item
+        for (const item of orden.items) {
+          const match = productosExis.find(p => p.name.toLowerCase() === item.nombre.toLowerCase());
+          if (match) {
+            await supabase.from('products').update({ stock: match.stock + item.cantidadSolicitada }).eq('id', match.id);
+          }
+        }
+        
+        toast({ title: 'Orden recibida', description: 'El inventario de los productos coincidentes ha sido actualizado.', variant: 'default' });
+        fetchOrdenesGuardadas();
+        
+        // Refresh catalog or inventory if they are active
+        if (mostrarComparativa) {
+          supabase.from('products').select('*').eq('active', true).then(({ data }) => setInventario(data as ProductoInventario[]));
+        }
+    } catch(e: any) {
+        toast({ title: 'Error', description: e.message, variant: 'destructive' });
+    } finally {
+        setConfirmandoOrden(null);
+    }
+  };
+
+  const eliminarOrdenGuardada = async (id: string) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar esta orden?')) return;
+    setEliminandoOrden(id);
+    try {
+      const { error } = await supabase.from('ordenes_proveedores').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Orden eliminada', description: 'La orden ha sido borrada exitosamente.' });
+      fetchOrdenesGuardadas();
+    } catch(e: any) {
+      toast({ title: 'Error al eliminar', description: e.message, variant: 'destructive' });
+    } finally {
+      setEliminandoOrden(null);
+    }
   };
 
   const exportarOrdenXLSX = () => {
@@ -633,7 +765,7 @@ const CatalogoProveedores: React.FC = () => {
         {/* Compare button */}
         {puedeComparar && (
           <button
-            onClick={() => { setMostrarComparativa((v) => !v); setSoloOportunidades(false); }}
+            onClick={() => { setMostrarComparativa((v) => !v); setSoloOportunidades(false); setMostrarHistorialOrdenes(false); }}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
               mostrarComparativa
                 ? 'bg-accent text-accent-foreground border-accent'
@@ -644,6 +776,19 @@ const CatalogoProveedores: React.FC = () => {
             Comparar inventario
           </button>
         )}
+
+        {/* Historial Órdenes pill */}
+        <button
+          onClick={() => { setMostrarHistorialOrdenes((v) => !v); setMostrarComparativa(false); }}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            mostrarHistorialOrdenes
+              ? 'bg-purple-500 text-white border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.4)]'
+              : 'bg-background text-muted-foreground border-border hover:border-purple-500/50 hover:text-purple-400'
+          }`}
+        >
+          <History className="h-3 w-3" />
+          Órdenes Guardadas
+        </button>
 
         {/* Cart pill */}
         {ordenItems.length > 0 && (
@@ -684,8 +829,106 @@ const CatalogoProveedores: React.FC = () => {
         )}
       </div>
 
-      {/* ── Main layout: products + comparativa ── */}
-      {mostrarComparativa ? (
+      {/* ── Main layout: products + comparativa + historial ── */}
+      {mostrarHistorialOrdenes ? (
+        /* ── Historial Órdenes View ── */
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-3">
+            <h3 className="text-lg font-bold tracking-wider uppercase text-purple-400 flex items-center gap-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+              <History className="h-5 w-5" />
+              Historial de Órdenes Guardadas
+            </h3>
+            <Button variant="outline" size="sm" onClick={() => fetchOrdenesGuardadas()}>
+              Actualizar
+            </Button>
+          </div>
+          
+          {cargandoOrdenes ? (
+            <div className="space-y-3">
+              {[1,2,3].map(i => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+            </div>
+          ) : ordenesGuardadas.length === 0 ? (
+            <div className="text-center py-16 text-muted-foreground border border-dashed border-border rounded-xl bg-card/20">
+              <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
+              <p className="font-medium text-lg">No hay órdenes guardadas</p>
+              <p className="text-sm mt-1">Cuando guardes una orden de compra aparecerá aquí.</p>
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {ordenesGuardadas.map(orden => (
+                <Card key={orden.id} className="overflow-hidden border-border/50 bg-card/50">
+                  <div className={`p-3 text-xs font-bold uppercase tracking-widest flex items-center justify-between ${
+                    orden.estado === 'recibida' ? 'bg-green-500/10 text-green-400 border-b border-green-500/20' : 'bg-primary/10 text-primary border-b border-primary/20'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <span className="opacity-70">Fecha:</span> 
+                      {new Date(orden.fecha_creacion).toLocaleDateString()}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {orden.estado === 'recibida' ? (
+                        <><CheckCircle2 className="h-4 w-4" /> RECIBIDA</>
+                      ) : (
+                        <><Clock className="h-4 w-4" /> PENDIENTE</>
+                      )}
+                    </div>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                      <div>
+                        <h4 className="text-lg font-bold">Proveedor: {orden.proveedor}</h4>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {orden.items.length} producto{orden.items.length !== 1 ? 's' : ''} en la orden
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Total Orden</p>
+                        <p className="text-2xl font-bold text-primary">{formatCOP(orden.total_orden)}</p>
+                      </div>
+                    </div>
+                    
+                    <Separator className="my-4 opacity-50" />
+                    
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Detalle de items</p>
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {orden.items.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-2 p-2 rounded bg-background/50 border border-border/40 text-sm">
+                            <span className="font-bold text-accent">{item.cantidadSolicitada}x</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="truncate font-medium">{item.nombre}</p>
+                              {item.variante && <p className="text-[10px] text-muted-foreground truncate">{item.variante}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {orden.estado === 'pendiente' && (
+                      <div className="mt-5 flex justify-end gap-3">
+                        <Button
+                          variant="destructive"
+                          onClick={() => eliminarOrdenGuardada(orden.id)}
+                          disabled={eliminandoOrden === orden.id || confirmandoOrden === orden.id}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          {eliminandoOrden === orden.id ? 'Eliminando...' : 'Eliminar Orden'}
+                        </Button>
+                        <Button 
+                          onClick={() => confirmarRecepcionOrden(orden)}
+                          disabled={confirmandoOrden === orden.id || eliminandoOrden === orden.id}
+                          className="bg-green-600 hover:bg-green-500 text-white"
+                        >
+                          {confirmandoOrden === orden.id ? 'Confirmando...' : 'Confirmar Recibido'}
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : mostrarComparativa ? (
         /* ── Comparativa view ── */
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-4">
@@ -1293,6 +1536,14 @@ const CatalogoProveedores: React.FC = () => {
                 <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono leading-relaxed">{generarTextoOrden()}</pre>
               </div>
               <div className="space-y-2">
+                <Button
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+                  onClick={guardarOrden}
+                  disabled={guardandoOrden}
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {guardandoOrden ? 'Guardando...' : 'Guardar Orden en BD'}
+                </Button>
                 <Button
                   className="w-full"
                   variant={copiadoTexto ? 'default' : 'outline'}
