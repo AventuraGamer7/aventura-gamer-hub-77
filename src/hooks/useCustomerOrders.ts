@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 interface Order {
   id: string;
@@ -21,7 +20,7 @@ interface Order {
 export function useCustomerOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+
 
   useEffect(() => {
     fetchOrders();
@@ -37,22 +36,12 @@ export function useCustomerOrders() {
 
       if (error) {
         console.error('Error fetching orders:', error);
-        toast({
-          title: 'Error',
-          description: 'No se pudieron cargar tus pedidos',
-          variant: 'destructive'
-        });
         return;
       }
 
       setOrders(data || []);
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        title: 'Error',
-        description: 'No se pudieron cargar tus pedidos',
-        variant: 'destructive'
-      });
     } finally {
       setLoading(false);
     }

@@ -42,6 +42,7 @@ import SalesManagementPanel from '@/components/SalesManagementPanel';
 import ManualOrderForm from '@/components/ManualOrderForm';
 import ManualOrdersAdmin from '@/components/ManualOrdersAdmin';
 import CatalogoProveedores from '@/components/admin/CatalogoProveedores';
+import SubidaMasivaImagenes from '@/components/SubidaMasivaImagenes';
 // Import customer orders hook
 import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
@@ -72,7 +73,8 @@ import {
   Truck,
   DollarSign,
   ClipboardList,
-  Store
+  Store,
+  ImagePlus
 } from 'lucide-react';
 
 // Helper functions for status handling
@@ -220,6 +222,12 @@ const Dashboard = () => {
       id: 'catalogo-proveedores',
       title: 'Catálogo Proveedores',
       icon: <Store className="h-5 w-5" />,
+      section: 'Gestión Principal'
+    }] : []),
+    ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
+      id: 'subida-imagenes',
+      title: 'Subida Masiva',
+      icon: <ImagePlus className="h-5 w-5" />,
       section: 'Gestión Principal'
     }] : []),
     // Solo mostrar usuarios para roles administrativos
@@ -535,6 +543,16 @@ const Dashboard = () => {
         return (
           <div className="space-y-4">
             <CatalogoProveedores />
+          </div>
+        );
+      case 'subida-imagenes':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-glow">Subida Masiva de Imágenes</h2>
+              <p className="text-muted-foreground">Sube múltiples imágenes y asígnalas a productos</p>
+            </div>
+            <SubidaMasivaImagenes />
           </div>
         );
       case 'users':

@@ -905,6 +905,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      buscar_referencia_producto: {
+        Args: { p_termino: string }
+        Returns: Json
+      }
       generate_slug: { Args: { input_text: string }; Returns: string }
       get_current_user_role: {
         Args: never
