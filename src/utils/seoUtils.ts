@@ -9,7 +9,7 @@ export const generateMetaTitle = (title: string, includeGaming = true): string =
 export const generateServiceSchema = (service: {
   name: string;
   description: string;
-  price: number;
+  price: number | null;
   image?: string;
 }) => ({
   "@context": "https://schema.org",
@@ -29,7 +29,7 @@ export const generateServiceSchema = (service: {
   },
   "offers": {
     "@type": "Offer",
-    "price": service.price,
+    "price": service.price || 0,
     "priceCurrency": "COP",
     "availability": "https://schema.org/InStock"
   },

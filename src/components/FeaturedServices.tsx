@@ -48,7 +48,7 @@ const FeaturedServices = () => {
           {services.slice(0, 10).map((service) => (
             <div
               key={service.id}
-              onClick={() => navigate('/servicios')}
+              onClick={() => navigate(`/servicio/${service.id}`)}
               className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer flex flex-col"
             >
               <div className="relative aspect-square bg-muted/10 overflow-hidden">
@@ -77,7 +77,7 @@ const FeaturedServices = () => {
                 )}
                 <div className="mt-auto">
                   <span className="text-base md:text-lg font-bold text-foreground block">
-                    {formatPrice(service.price)}
+                    {service.price ? formatPrice(service.price) : 'Precio según diagnóstico'}
                   </span>
                   <span className="text-[11px] text-primary font-medium">Garantía incluida</span>
                 </div>

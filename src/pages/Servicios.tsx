@@ -185,14 +185,14 @@ const Servicios = () => {
                 <TabsContent value="todos" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
-                        <div className="relative">
+                        <div className="relative cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>
                             {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-contain object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
                               <Wrench className="h-12 w-12 text-primary/30" />
                             </div>}
                         </div>
                         
                         <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
-                          <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                          <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300 hover:underline cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>{service.name}</CardTitle>
                           <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                             {service.description || 'Descripción no disponible'}
                           </CardDescription>
@@ -210,7 +210,7 @@ const Servicios = () => {
                         <CardContent className="space-y-4">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl font-bold text-primary">$ {service.price.toLocaleString('es-CO')} COP</span>
+                              <span className="text-2xl font-bold text-primary">{service.price ? `$ ${service.price.toLocaleString('es-CO')} COP` : 'Precio según diagnóstico'}</span>
                             </div>
                           </div>
                           
@@ -223,7 +223,7 @@ const Servicios = () => {
                                 addItem({
                                   id: service.id,
                                   name: service.name,
-                                  price: service.price,
+                                  price: service.price || 0,
                                   image: service.image || undefined,
                                   type: 'service'
                                 });
@@ -248,14 +248,14 @@ const Servicios = () => {
                 <TabsContent value="controles" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.filter(service => service.name.toLowerCase().includes('control') || service.name.toLowerCase().includes('joy') || service.name.toLowerCase().includes('boton') || service.name.toLowerCase().includes('analog') || service.name.toLowerCase().includes('carga')).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
-                          <div className="relative">
+                          <div className="relative cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>
                              {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-contain object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
                                 <Gamepad2 className="h-12 w-12 text-primary/30" />
                               </div>}
                           </div>
                           
                           <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
-                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300 hover:underline cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>{service.name}</CardTitle>
                             <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                               {service.description || 'Descripción no disponible'}
                             </CardDescription>
@@ -273,7 +273,7 @@ const Servicios = () => {
                           <CardContent className="space-y-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-primary">$ {service.price.toLocaleString('es-CO')} COP</span>
+                                <span className="text-2xl font-bold text-primary">{service.price ? `$ ${service.price.toLocaleString('es-CO')} COP` : 'Precio según diagnóstico'}</span>
                               </div>
                             </div>
                             
@@ -286,7 +286,7 @@ const Servicios = () => {
                                   addItem({
                                     id: service.id,
                                     name: service.name,
-                                    price: service.price,
+                                    price: service.price || 0,
                                     image: service.image || undefined,
                                     type: 'service'
                                   });
@@ -311,14 +311,14 @@ const Servicios = () => {
                 <TabsContent value="consolas" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.filter(service => service.name.toLowerCase().includes('consola') || service.name.toLowerCase().includes('switch') || service.name.toLowerCase().includes('play') || service.name.toLowerCase().includes('xbox') || service.name.toLowerCase().includes('mantenimiento') || service.name.toLowerCase().includes('pasta') || service.name.toLowerCase().includes('fuente') || service.name.toLowerCase().includes('lectura') || service.name.toLowerCase().includes('sobrecalentamiento') || service.name.toLowerCase().includes('pantalla') || service.name.toLowerCase().includes('disco')).map(service => <Card key={service.id} className="card-gaming border-primary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/40">
-                          <div className="relative">
+                          <div className="relative cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>
                              {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-contain object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-primary/10 flex items-center justify-center">
                                 <Cpu className="h-12 w-12 text-primary/30" />
                               </div>}
                           </div>
                           
                           <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
-                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300 hover:underline cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>{service.name}</CardTitle>
                             <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                               {service.description || 'Descripción no disponible'}
                             </CardDescription>
@@ -336,7 +336,7 @@ const Servicios = () => {
                           <CardContent className="space-y-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-primary">$ {service.price.toLocaleString('es-CO')} COP</span>
+                                <span className="text-2xl font-bold text-primary">{service.price ? `$ ${service.price.toLocaleString('es-CO')} COP` : 'Precio según diagnóstico'}</span>
                               </div>
                             </div>
                             
@@ -349,7 +349,7 @@ const Servicios = () => {
                                   addItem({
                                     id: service.id,
                                     name: service.name,
-                                    price: service.price,
+                                    price: service.price || 0,
                                     image: service.image || undefined,
                                     type: 'service'
                                   });
@@ -374,14 +374,14 @@ const Servicios = () => {
                 <TabsContent value="extras" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.filter(service => service.name.toLowerCase().includes('domicilio') || service.name.toLowerCase().includes('express') || service.name.toLowerCase().includes('urgente') || service.name.toLowerCase().includes('prioridad')).map(service => <Card key={service.id} className="card-gaming border-secondary/20 overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-secondary/40">
-                          <div className="relative">
+                          <div className="relative cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>
                             {service.image ? <img src={service.image} alt={service.name} className="w-full h-72 object-contain object-center transition-transform duration-500 group-hover:scale-110" /> : <div className="h-72 bg-secondary/10 flex items-center justify-center">
                                 <Home className="h-12 w-12 text-secondary/30" />
                               </div>}
                           </div>
                           
                           <CardHeader className="space-y-2 transition-all duration-300 group-hover:pb-6">
-                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300">{service.name}</CardTitle>
+                            <CardTitle className="text-lg text-neon group-hover:text-xl transition-all duration-300 hover:underline cursor-pointer" onClick={() => navigate(`/servicio/${service.id}`)}>{service.name}</CardTitle>
                             <CardDescription className="text-sm text-muted-foreground group-hover:text-base transition-all duration-300 group-hover:line-clamp-none line-clamp-2">
                               {service.description || 'Descripción no disponible'}
                             </CardDescription>
@@ -399,7 +399,7 @@ const Servicios = () => {
                           <CardContent className="space-y-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-secondary">$ {service.price.toLocaleString('es-CO')} COP</span>
+                                <span className="text-2xl font-bold text-secondary">{service.price ? `$ ${service.price.toLocaleString('es-CO')} COP` : 'Precio según diagnóstico'}</span>
                               </div>
                             </div>
                             
@@ -410,7 +410,7 @@ const Servicios = () => {
                                 addItem({
                                   id: service.id,
                                   name: service.name,
-                                  price: service.price,
+                                  price: service.price || 0,
                                   image: service.image || undefined,
                                   type: 'service'
                                 });

@@ -28,6 +28,8 @@ import TechnicalServicesDashboard from "./pages/TechnicalServicesDashboard";
 import TechnicalServicesAdmin from "./pages/TechnicalServicesAdmin";
 import ServiciosSpecific from "./pages/ServiciosSpecific";
 import Sitemap from "./pages/Sitemap";
+import ServiceDetails from "./pages/ServiceDetails";
+import Privacidad from "./pages/Privacidad";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +65,7 @@ const App = () => (
                 } 
               />
               <Route path="/servicios" element={<Servicios />} />
+              <Route path="/servicio/:id" element={<ServiceDetails />} />
               <Route path="/servicios/:categoria" element={<Servicios />} />
               <Route path="/servicios/reparacion-playstation" element={<ServiciosSpecific />} />
               <Route path="/servicios/reparacion-xbox" element={<ServiciosSpecific />} />
@@ -78,6 +81,7 @@ const App = () => (
               <Route path="/carrito" element={<Carrito />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/contacto" element={<Contacto />} />
+              <Route path="/privacidad" element={<Privacidad />} />
               <Route path="/payment/success" element={<PaymentSuccess />} />
               <Route path="/payment/failure" element={<PaymentFailure />} />
               <Route path="/payment/pending" element={<PaymentFailure />} />

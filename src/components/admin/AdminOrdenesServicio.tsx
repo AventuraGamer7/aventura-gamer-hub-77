@@ -18,6 +18,7 @@ import {
   FileText,
   Image as ImageIcon
 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface OrdenServicio {
@@ -71,6 +72,7 @@ const estadoLabel: Record<string, string> = {
 const AdminOrdenesServicio: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const location = useLocation();
 
   // Data
   const [ordenes, setOrdenes] = useState<OrdenServicio[]>([]);
@@ -113,6 +115,19 @@ const AdminOrdenesServicio: React.FC = () => {
   };
 
   useEffect(() => { fetchOrdenes(); }, []);
+
+  // Check for pre-filled data from URL navigation
+  useEffect(() => {
+    if (location.state?.descripcion_sugerida) {
+      setFormDescripcion(location.state.descripcion_sugerida);
+      if (location.state?.servicio_nombre) {
+        setFormDispositivo(location.state.servicio_nombre);
+      }
+      setShowCreateModal(true);
+      // Clean up the location state so it doesn't trigger again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // ── Create ─────────────────────────────────────────────────────────────────
   const handleCreate = async () => {

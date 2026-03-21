@@ -3,20 +3,23 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface Sale {
   id: string;
-  product_id: string;
+  item_id?: string | null;
+  product_id?: string | null; // legacy fallback
   item_type: string;
+  product_name: string;
+  product_category: string;
+  product_image: string | null;
+  product_price: number;
   quantity: number;
   total_price: number;
-  sold_by: string;
+  payment_method: string;
+  description: string | null;
+  seller_name: string;
+  sold_by: string; // fallback
   created_at: string;
-  products?: {
-    name: string;
-    price: number;
-    image: string | null;
-  };
-  profiles?: {
-    username: string;
-  };
+  // legacy relations
+  products?: any;
+  profiles?: any;
 }
 
 export const useSales = () => {
@@ -29,44 +32,14 @@ export const useSales = () => {
       setLoading(true);
       setError(null);
 
-      // Tipos se regenerarán automáticamente después de la migración
       const { data, error } = await (supabase as any)
-        .from('sales')
-        .select(`
-          id,
-          created_at,
-          item_id,
-          item_type,
-          quantity,
-          total_price,
-          payment_method,
-          description,
-          sold_by,
-          products:item_id (name, price, image, images, category, platform)
-        `)
+        .from('all_sales_unified')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Obtener información de usuarios por separado
-      const userIds = [...new Set((data as any[])?.map((s: any) => s.sold_by).filter(Boolean))];
-      
-      let profilesData: any[] = [];
-      if (userIds.length > 0) {
-        const { data: pData } = await supabase
-          .from('profiles')
-          .select('id, username')
-          .in('id', userIds);
-        profilesData = pData || [];
-      }
-
-      // Combinar datos
-      const salesWithProfiles = (data as any[])?.map((sale: any) => ({
-        ...sale,
-        profiles: profilesData?.find((p: any) => p.id === sale.sold_by)
-      }));
-
-      setSales(salesWithProfiles || []);
+      setSales((data as any[]) || []);
     } catch (err: any) {
       console.error('Error fetching sales:', err);
       setError(err.message);

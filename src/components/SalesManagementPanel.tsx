@@ -34,6 +34,16 @@ const ItemTypeBadge = ({ type }: { type: ItemType }) => {
   return <Badge variant='outline' className={`text-xs gap-1 ${cfg.color}`}>{cfg.icon} {cfg.label}</Badge>;
 };
 
+const getUnifiedBadge = (type: string) => {
+  switch (type) {
+    case 'service': return <Badge variant='outline' className='text-[10px] bg-blue-500/20 text-blue-400 border-blue-500/40 ml-2'>Servicio</Badge>;
+    case 'orden_servicio': return <Badge variant='outline' className='text-[10px] bg-orange-500/20 text-orange-400 border-orange-500/40 ml-2'>Orden de servicio</Badge>;
+    case 'course': return <Badge variant='outline' className='text-[10px] bg-green-500/20 text-green-400 border-green-500/40 ml-2'>Curso</Badge>;
+    case 'pedido': return <Badge variant='outline' className='text-[10px] bg-yellow-500/20 text-yellow-400 border-yellow-500/40 ml-2'>Pedido</Badge>;
+    default: return null;
+  }
+};
+
 const SalesManagementPanel = () => {
   const { user } = useAuth();
   const { products } = useProducts();
@@ -125,10 +135,10 @@ const SalesManagementPanel = () => {
     if (salesSearch) {
       const term = salesSearch.toLowerCase();
       filtered = filtered.filter((s: any) => {
-        const itemName = s.products?.name || s.description || '';
+        const itemName = s.product_name || s.description || '';
         return (
           itemName.toLowerCase().includes(term) ||
-          (s.profiles?.username || '').toLowerCase().includes(term) ||
+          (s.seller_name || s.sold_by || '').toLowerCase().includes(term) ||
           (s.total_price || 0).toString().includes(term) ||
           (s.payment_method || '').toLowerCase().includes(term)
         );
@@ -250,16 +260,16 @@ const SalesManagementPanel = () => {
                   <TableBody>
                     {filteredSales.map((sale: any) => {
                       const saleDate = new Date(sale.created_at);
-                      const itemName = sale.products?.name || sale.description || 'Venta libre';
-                      const category = sale.products?.category || '—';
-                      const image = sale.products?.image || '';
+                      const itemName = sale.product_name || sale.description || 'Venta libre';
+                      const category = sale.product_category || '—';
+                      const image = sale.product_image || '';
                       const method = sale.payment_method || '—';
-                      const userName = sale.profiles?.username || sale.sold_by || 'Desconocido';
-                      const isFree = sale.item_id === null;
+                      const userName = sale.seller_name || sale.sold_by || 'Desconocido';
+                      const isFree = sale.item_type === 'producto' && !sale.item_id;
                       return (
                         <TableRow key={sale.id} className={isToday(saleDate) ? 'bg-primary/5' : ''}>
                           <TableCell><div className='h-10 w-10 rounded-lg overflow-hidden bg-muted border border-border'>{image ? <img src={image} alt={itemName} className='h-full w-full object-cover' /> : <div className='h-full w-full flex items-center justify-center text-[10px] text-muted-foreground'>Sin imagen</div>}</div></TableCell>
-                          <TableCell><div className='flex items-center gap-2'><span>{itemName}</span>{isFree && <Badge variant='outline' className='text-[10px]'>Libre</Badge>}</div></TableCell>
+                          <TableCell><div className='flex items-center gap-2'><span>{itemName}</span>{!isFree ? getUnifiedBadge(sale.item_type) : <Badge variant='outline' className='text-[10px]'>Libre</Badge>}</div></TableCell>
                           <TableCell>{category}</TableCell>
                           <TableCell>{sale.quantity}</TableCell>
                           <TableCell>{(sale.total_price ?? 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}</TableCell>
@@ -276,18 +286,18 @@ const SalesManagementPanel = () => {
               <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
                 {filteredSales.map((sale: any) => {
                   const saleDate = new Date(sale.created_at);
-                  const itemName = sale.products?.name || sale.description || 'Venta libre';
-                  const category = sale.products?.category || '—';
-                  const image = sale.products?.image || '';
+                  const itemName = sale.product_name || sale.description || 'Venta libre';
+                  const category = sale.product_category || '—';
+                  const image = sale.product_image || '';
                   const method = sale.payment_method || '—';
-                  const userName = sale.profiles?.username || sale.sold_by || 'Desconocido';
-                  const isFree = sale.item_id === null;
+                  const userName = sale.seller_name || sale.sold_by || 'Desconocido';
+                  const isFree = sale.item_type === 'producto' && !sale.item_id;
                   return (
                     <div key={sale.id} className='border border-border rounded-xl p-3 bg-card space-y-2'>
                       <div className='flex items-start gap-2'>
                         <div className='h-14 w-14 rounded-lg overflow-hidden bg-muted border border-border'>{image ? <img src={image} alt={itemName} className='h-full w-full object-cover' /> : <div className='h-full w-full flex items-center justify-center text-[10px] text-muted-foreground'>Sin imagen</div>}</div>
                         <div className='flex-1'>
-                          <div className='flex items-center gap-2'><p className='font-semibold line-clamp-1'>{itemName}</p>{isFree && <Badge variant='outline' className='text-[10px]'>Libre</Badge>}</div>
+                          <div className='flex items-center gap-1 flex-wrap'><p className='font-semibold line-clamp-1'>{itemName}</p>{!isFree ? getUnifiedBadge(sale.item_type) : <Badge variant='outline' className='text-[10px]'>Libre</Badge>}</div>
                           <p className='text-xs text-muted-foreground'>Categoría: {category}</p>
                           <p className='text-xs text-muted-foreground'>Usuario: {userName}</p>
                         </div>

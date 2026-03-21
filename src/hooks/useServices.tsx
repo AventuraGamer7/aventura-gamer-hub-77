@@ -5,8 +5,10 @@ interface Service {
   id: string;
   name: string;
   description: string | null;
-  price: number;
+  price: number | null;
   image: string | null;
+  platform: string[] | null;
+  active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -24,13 +26,14 @@ export const useServices = () => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
-        .order('created_at', { ascending: false });
+        .eq('active', true)
+        .order('name', { ascending: true });
 
       if (error) {
         throw error;
       }
 
-      setServices(data || []);
+      setServices((data as any[]) || []);
     } catch (err: any) {
       console.error('Error fetching services:', err);
       setError(err.message);
