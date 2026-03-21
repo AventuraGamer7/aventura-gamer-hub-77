@@ -30,6 +30,7 @@ import ServiciosSpecific from "./pages/ServiciosSpecific";
 import Sitemap from "./pages/Sitemap";
 import ServiceDetails from "./pages/ServiceDetails";
 import Privacidad from "./pages/Privacidad";
+import SolicitarServicio from "./pages/SolicitarServicio";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
               />
               <Route path="/servicios" element={<Servicios />} />
               <Route path="/servicio/:id" element={<ServiceDetails />} />
+              <Route path="/solicitar-servicio" element={<SolicitarServicio />} />
               <Route path="/servicios/:categoria" element={<Servicios />} />
               <Route path="/servicios/reparacion-playstation" element={<ServiciosSpecific />} />
               <Route path="/servicios/reparacion-xbox" element={<ServiciosSpecific />} />

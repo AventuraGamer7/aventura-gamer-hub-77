@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import SEOHead from '@/components/SEO/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, MessageCircle, Wrench, Shield, Clock, Star, ClipboardList } from 'lucide-react';
+import { ArrowLeft, MessageCircle, Wrench, Shield, Clock, Star, ClipboardList, Smartphone } from 'lucide-react';
 
 interface Service {
   id: string;
@@ -193,7 +193,7 @@ const ServiceDetails = () => {
 
               <Button
                 variant="outline"
-                onClick={() => navigate('/admin/servicios-tecnicos', {
+                onClick={() => navigate('/solicitar-servicio', {
                   state: {
                     servicio_nombre: service.name,
                     servicio_id: service.id,
@@ -203,7 +203,7 @@ const ServiceDetails = () => {
                 className="w-full relative overflow-hidden border-primary/50 text-primary hover:bg-primary/10 hover:border-primary transition-all duration-300 h-14"
                 size="lg"
               >
-                <ClipboardList className="mr-3 h-6 w-6" />
+                <Smartphone className="mr-3 h-6 w-6" />
                 <span className="text-lg uppercase tracking-wider">Solicitar orden de servicio</span>
               </Button>
             </div>
