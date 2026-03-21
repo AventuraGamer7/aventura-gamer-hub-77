@@ -23,7 +23,6 @@ const Tienda = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { categoria, plataforma } = useParams();
 
-  const PLATFORMS = ['ps5', 'ps4', 'ps3', 'ps2', 'xbox', 'xbox360', 'switch', 'nintendo', 'pc'];
   const navigate = useNavigate();
 
   const { products, loading, error } = useProducts();
@@ -31,12 +30,18 @@ const Tienda = () => {
   const { toast } = useToast();
 
   const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  
+  const dynamicPlatforms = Array.from(new Set(
+    products
+      .filter(p => p.active)
+      .flatMap(p => p.platform || [])
+  )).filter(Boolean).sort((a, b) => a.localeCompare(b));
 
   // Sync platform from URL param
   useEffect(() => {
-    if (plataforma && PLATFORMS.includes(plataforma.toLowerCase())) {
+    if (plataforma) {
       setSelectedPlatform(plataforma.toLowerCase());
-    } else if (!plataforma) {
+    } else {
       // Only reset if no platform in URL
     }
   }, [plataforma]);
@@ -102,11 +107,10 @@ const Tienda = () => {
   }
 
   if (selectedPlatform !== 'all') {
-    filteredProducts = filteredProducts.filter(p => p.platform && p.platform.includes(selectedPlatform));
-  }
-
-  if (selectedPlatform !== 'all') {
-    filteredProducts = filteredProducts.filter(p => p.platform && p.platform.includes(selectedPlatform));
+    filteredProducts = filteredProducts.filter(p => 
+      p.platform && Array.isArray(p.platform) && 
+      p.platform.some(plat => plat.toLowerCase() === selectedPlatform.toLowerCase())
+    );
   }
 
   filteredProducts = [...filteredProducts].sort((a, b) => {
@@ -200,12 +204,12 @@ const Tienda = () => {
             >
               Todas
             </button>
-            {PLATFORMS.map(plat => (
+            {dynamicPlatforms.map(plat => (
               <button
                 key={plat}
-                onClick={() => handlePlatformChange(plat)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium uppercase transition-colors ${
-                  selectedPlatform === plat
+                onClick={() => handlePlatformChange(plat.toLowerCase())}
+                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  selectedPlatform === plat.toLowerCase()
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}

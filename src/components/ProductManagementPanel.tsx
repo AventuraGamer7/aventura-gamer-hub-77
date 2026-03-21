@@ -33,7 +33,7 @@ const QUICK_FILTERS: { key: QuickFilter; label: string; icon: React.ReactNode }[
 ];
 
 const CATEGORIES = ['videojuegos', 'consolas', 'controles', 'accesorios', 'perifericos', 'figuras', 'repuestos', 'otros'];
-const PLATFORMS = ['ps5', 'ps4', 'ps3', 'ps2', 'xbox', 'xbox360', 'switch', 'nintendo', 'pc'];
+const PLATFORMS = ['PS2', 'PS3', 'PS4', 'PS5', 'PS Vita', 'PSP', 'Xbox 360', 'Xbox Series', 'Nintendo DS', 'Nintendo Switch', 'Nintendo Wii', 'GameCube', 'PC', 'Smart TV', 'Streaming', 'Repuestos'];
 
 const ProductManagementPanel = () => {
   const { toast } = useToast();
@@ -561,7 +561,7 @@ const ProductManagementPanel = () => {
                               : 'bg-background text-muted-foreground border-border hover:border-primary/50'
                           }`}
                         >
-                          {p.toUpperCase()}
+                          {p}
                         </button>
                       ))}
                     </div>

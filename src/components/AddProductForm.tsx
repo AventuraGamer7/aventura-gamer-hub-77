@@ -16,7 +16,7 @@ const AddProductForm = () => {
   const { toast } = useToast();
 
   const CATEGORIES = ['videojuegos', 'consolas', 'controles', 'accesorios', 'perifericos', 'figuras', 'repuestos', 'otros'];
-  const PLATFORMS = ['ps5', 'ps4', 'ps3', 'ps2', 'xbox', 'xbox360', 'switch', 'nintendo', 'pc'];
+  const PLATFORMS = ['PS2', 'PS3', 'PS4', 'PS5', 'PS Vita', 'PSP', 'Xbox 360', 'Xbox Series', 'Nintendo DS', 'Nintendo Switch', 'Nintendo Wii', 'GameCube', 'PC', 'Smart TV', 'Streaming', 'Repuestos'];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -132,13 +132,13 @@ const AddProductForm = () => {
                       : 'bg-background text-muted-foreground border-border hover:border-primary/50'
                   }`}
                 >
-                  {p.toUpperCase()}
+                  {p}
                 </button>
               ))}
             </div>
             {formData.platform.length > 0 && (
               <p className="text-[10px] text-muted-foreground mt-1">
-                Seleccionadas: {formData.platform.map(p => p.toUpperCase()).join(', ')}
+                Seleccionadas: {formData.platform.join(', ')}
               </p>
             )}
           </div>
