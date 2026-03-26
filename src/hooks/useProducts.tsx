@@ -10,6 +10,7 @@ interface Product {
   stock: number;
   category: string | null;
   platform: string[] | null;
+  featured?: boolean;
   image: string | null;
   images: string[] | null;
   badge_text: string | null;

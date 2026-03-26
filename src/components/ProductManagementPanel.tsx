@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -134,7 +135,8 @@ const ProductManagementPanel = () => {
           image: editingProduct.image,
           images: editingProduct.images,
           badge_text: editingProduct.badge_text,
-          badge_color: editingProduct.badge_color
+          badge_color: editingProduct.badge_color,
+          featured: editingProduct.featured
         })
         .eq('id', editingProduct.id);
       if (error) throw error;
@@ -597,6 +599,18 @@ const ProductManagementPanel = () => {
                         <option value="outline">Borde</option>
                       </select>
                     </div>
+                  </div>
+
+                  {/* Destacado */}
+                  <div className="flex items-center space-x-2 pt-2 pb-1">
+                    <Switch
+                      id="edit_featured"
+                      checked={editingProduct.featured || false}
+                      onCheckedChange={(checked) => setEditingProduct((prev: any) => ({ ...prev, featured: checked }))}
+                    />
+                    <Label htmlFor="edit_featured" className="text-sm font-medium cursor-pointer">
+                      Destacar en la página de inicio
+                    </Label>
                   </div>
 
                   <div className="flex gap-2 pt-2">

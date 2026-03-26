@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus } from 'lucide-react';
@@ -27,7 +28,8 @@ const AddProductForm = () => {
     platform: [] as string[],
     images: [] as string[],
     badge_text: '',
-    badge_color: 'primary'
+    badge_color: 'primary',
+    featured: false
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -35,7 +37,7 @@ const AddProductForm = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', description: '', price: '', stock: '', category: '', platform: [], images: [], badge_text: '', badge_color: 'primary' });
+    setFormData({ name: '', description: '', price: '', stock: '', category: '', platform: [], images: [], badge_text: '', badge_color: 'primary', featured: false });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +58,8 @@ const AddProductForm = () => {
         image: formData.images[0] || null,
         images: formData.images.length > 0 ? formData.images : null,
         badge_text: formData.badge_text || null,
-        badge_color: formData.badge_color || 'primary'
+        badge_color: formData.badge_color || 'primary',
+        featured: formData.featured
       }]);
       if (error) throw error;
       toast({ title: "¡Producto agregado!", description: "Se agregó exitosamente a la tienda." });
@@ -176,6 +179,18 @@ const AddProductForm = () => {
                 <option value="outline">Borde</option>
               </select>
             </div>
+          </div>
+
+          {/* Destacado */}
+          <div className="flex items-center space-x-2 pt-2 pb-1">
+            <Switch
+              id="featured"
+              checked={formData.featured}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: checked }))}
+            />
+            <Label htmlFor="featured" className="text-sm font-medium cursor-pointer">
+              Destacar en la página de inicio
+            </Label>
           </div>
 
           {/* Botones */}
