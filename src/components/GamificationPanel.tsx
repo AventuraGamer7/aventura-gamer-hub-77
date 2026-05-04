@@ -37,8 +37,8 @@ const GamificationPanel = () => {
     if (!profile) return;
 
     try {
-      const { data, error } = await supabase
-        .from('orders')
+      const { data, error } = await (supabase as any)
+        .from('pedidos')
         .select('id')
         .eq('user_id', profile.id);
 
