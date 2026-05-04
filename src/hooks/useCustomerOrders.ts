@@ -29,8 +29,8 @@ export function useCustomerOrders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('orders')
+      const { data, error } = await (supabase as any)
+        .from('pedidos')
         .select('*')
         .order('created_at', { ascending: false });
 
