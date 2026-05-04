@@ -20,6 +20,8 @@ import { format, isToday, isYesterday, subDays, startOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 type ItemType = 'producto' | 'servicio' | 'curso';
+type ManualType = 'producto' | 'servicio' | 'curso' | 'otro';
+type PaymentMethod = 'efectivo' | 'transferencia' | 'tarjeta';
 interface SelectedItemData { id: string; name: string; price: number; stock: number | null; image: string | null; itemType: ItemType; }
 
 const formatCOP = (price: number) =>
@@ -58,11 +60,20 @@ const SalesManagementPanel = () => {
   const [quantity, setQuantity] = useState(1);
   const [customPrice, setCustomPrice] = useState('');
   const [notes, setNotes] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('efectivo');
   const [submitting, setSubmitting] = useState(false);
   const [salesSearch, setSalesSearch] = useState('');
   const [dateFilter, setDateFilter] = useState<'hoy' | 'ayer' | '7dias' | 'mes' | 'todas'>('hoy');
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
   const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [mode, setMode] = useState<'catalogo' | 'manual'>('catalogo');
+  // Manual sale fields
+  const [manualName, setManualName] = useState('');
+  const [manualPrice, setManualPrice] = useState('');
+  const [manualQty, setManualQty] = useState(1);
+  const [manualType, setManualType] = useState<ManualType>('otro');
+  const [manualNotes, setManualNotes] = useState('');
+  const [manualPayment, setManualPayment] = useState<PaymentMethod>('efectivo');
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
