@@ -211,51 +211,116 @@ const SalesManagementPanel = () => {
           <CardDescription>Registra ventas directas desde el dashboard</CardDescription>
         </CardHeader>
         <CardContent className='space-y-3'>
-          <div className='space-y-1' ref={searchRef}>
-            <Label className='text-xs text-muted-foreground flex items-center gap-1'><Search className='h-3.5 w-3.5' />Buscar ítem</Label>
-            <Input placeholder='Busca productos, servicios o cursos...' value={searchTerm} onChange={e => { setSearchTerm(e.target.value); setShowAutocomplete(Boolean(e.target.value)); }} onFocus={() => setShowAutocomplete(Boolean(searchTerm))} />
-            {showAutocomplete && searchTerm && (
-              <div className='border border-border bg-card rounded-xl max-h-72 overflow-y-auto shadow-lg p-2 space-y-2'>
-                {unifiedResults.length > 0 ? unifiedResults.slice(0, 10).map(item => (
-                  <button key={`${item.itemType}-${item.id}`} onClick={() => { setSelectedItem(item); setCustomPrice(item.price.toString()); setShowAutocomplete(false); }} className='w-full text-left rounded-xl border border-border/40 p-2 bg-background hover:bg-primary/5 grid grid-cols-[auto_1fr] gap-2 items-center'>
-                    <div className='h-10 w-10 rounded-md overflow-hidden bg-muted border border-border flex items-center justify-center text-[10px] text-muted-foreground'>
-                      {item.image ? <img src={item.image} alt={item.name} className='h-full w-full object-cover' /> : 'Img'}
-                    </div>
-                    <div className='text-left min-w-0'>
-                      <div className='flex items-center gap-2'><span className='font-medium text-sm truncate'>{item.name}</span><ItemTypeBadge type={item.itemType} /></div>
-                      <p className='text-[11px] text-muted-foreground truncate'>Precio: {formatCOP(item.price)}</p>
-                      {item.stock !== null && <p className='text-[11px] text-muted-foreground'>Stock: {item.stock}</p>}
-                    </div>
-                  </button>
-                )) : <div className='p-3 text-xs text-muted-foreground'>No hay resultados</div>}
-              </div>
-            )}
-          </div>
-          {selectedItem && (
-            <div className='rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-3'>
-              <div className='flex items-start gap-3'>
-                <div className='w-16 h-16 rounded-lg overflow-hidden bg-muted border border-border flex items-center justify-center'>
-                  {selectedItem.image ? <img src={selectedItem.image} alt={selectedItem.name} className='h-full w-full object-cover' /> : <span className='text-xs text-muted-foreground'>Sin imagen</span>}
-                </div>
-                <div className='flex-1 min-w-0'>
-                  <div className='flex items-center gap-2'>
-                    <p className='font-semibold truncate'>{selectedItem.name}</p>
-                    <ItemTypeBadge type={selectedItem.itemType} />
+          <Tabs value={mode} onValueChange={v => setMode(v as any)}>
+            <TabsList className='grid grid-cols-2 w-full'>
+              <TabsTrigger value='catalogo'><Package className='h-3.5 w-3.5 mr-1' />Desde catálogo</TabsTrigger>
+              <TabsTrigger value='manual'><Pencil className='h-3.5 w-3.5 mr-1' />Venta manual</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value='catalogo' className='space-y-3 mt-3'>
+              <div className='space-y-1' ref={searchRef}>
+                <Label className='text-xs text-muted-foreground flex items-center gap-1'><Search className='h-3.5 w-3.5' />Buscar ítem</Label>
+                <Input placeholder='Busca productos, servicios o cursos...' value={searchTerm} onChange={e => { setSearchTerm(e.target.value); setShowAutocomplete(Boolean(e.target.value)); }} onFocus={() => setShowAutocomplete(Boolean(searchTerm))} />
+                {showAutocomplete && searchTerm && (
+                  <div className='border border-border bg-card rounded-xl max-h-72 overflow-y-auto shadow-lg p-2 space-y-2'>
+                    {unifiedResults.length > 0 ? unifiedResults.slice(0, 10).map(item => (
+                      <button key={`${item.itemType}-${item.id}`} onClick={() => { setSelectedItem(item); setCustomPrice(item.price.toString()); setShowAutocomplete(false); }} className='w-full text-left rounded-xl border border-border/40 p-2 bg-background hover:bg-primary/5 grid grid-cols-[auto_1fr] gap-2 items-center'>
+                        <div className='h-10 w-10 rounded-md overflow-hidden bg-muted border border-border flex items-center justify-center text-[10px] text-muted-foreground'>
+                          {item.image ? <img src={item.image} alt={item.name} className='h-full w-full object-cover' /> : 'Img'}
+                        </div>
+                        <div className='text-left min-w-0'>
+                          <div className='flex items-center gap-2'><span className='font-medium text-sm truncate'>{item.name}</span><ItemTypeBadge type={item.itemType} /></div>
+                          <p className='text-[11px] text-muted-foreground truncate'>Precio: {formatCOP(item.price)}</p>
+                          {item.stock !== null && <p className='text-[11px] text-muted-foreground'>Stock: {item.stock}</p>}
+                        </div>
+                      </button>
+                    )) : <div className='p-3 text-xs text-muted-foreground'>No hay resultados</div>}
                   </div>
-                  <p className='text-xs text-muted-foreground truncate'>Precio base: {formatCOP(selectedItem.price)}</p>
-                  {selectedItem.stock !== null && <Badge variant='outline' className='text-[10px] mt-1'>Stock: {selectedItem.stock}</Badge>}
+                )}
+              </div>
+              {selectedItem && (
+                <div className='rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-3'>
+                  <div className='flex items-start gap-3'>
+                    <div className='w-16 h-16 rounded-lg overflow-hidden bg-muted border border-border flex items-center justify-center'>
+                      {selectedItem.image ? <img src={selectedItem.image} alt={selectedItem.name} className='h-full w-full object-cover' /> : <span className='text-xs text-muted-foreground'>Sin imagen</span>}
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                      <div className='flex items-center gap-2'>
+                        <p className='font-semibold truncate'>{selectedItem.name}</p>
+                        <ItemTypeBadge type={selectedItem.itemType} />
+                      </div>
+                      <p className='text-xs text-muted-foreground truncate'>Precio base: {formatCOP(selectedItem.price)}</p>
+                      {selectedItem.stock !== null && <Badge variant='outline' className='text-[10px] mt-1'>Stock: {selectedItem.stock}</Badge>}
+                    </div>
+                    <Button variant='ghost' size='icon' onClick={() => setSelectedItem(null)}><X className='h-4 w-4' /></Button>
+                  </div>
+                  <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
+                    <div><Label className='text-xs'>Cantidad</Label><Input type='number' min={1} value={quantity} onChange={e => setQuantity(Math.max(1, Number(e.target.value) || 1))} /></div>
+                    <div><Label className='text-xs'>Precio unitario</Label><Input type='number' min={0} value={customPrice} onChange={e => setCustomPrice(e.target.value)} /></div>
+                    <div><Label className='text-xs'>Total</Label><div className='h-10 flex items-center px-2 border border-border rounded-lg font-bold'>{formatCOP(totalVenta())}</div></div>
+                  </div>
+                  <div>
+                    <Label className='text-xs'>Método de pago</Label>
+                    <Select value={paymentMethod} onValueChange={v => setPaymentMethod(v as PaymentMethod)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='efectivo'><span className='flex items-center gap-2'><Banknote className='h-3.5 w-3.5' />Efectivo</span></SelectItem>
+                        <SelectItem value='transferencia'><span className='flex items-center gap-2'><ArrowRightLeft className='h-3.5 w-3.5' />Transferencia</span></SelectItem>
+                        <SelectItem value='tarjeta'><span className='flex items-center gap-2'><CreditCard className='h-3.5 w-3.5' />Tarjeta de crédito</span></SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label className='text-xs'>Notas (opcional)</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} className='h-20' /></div>
                 </div>
-                <Button variant='ghost' size='icon' onClick={() => setSelectedItem(null)}><X className='h-4 w-4' /></Button>
+              )}
+              <Button onClick={handleRegisterSale} disabled={!selectedItem || submitting} className='w-full'>{submitting ? <><Loader2 className='mr-2 h-4 w-4 animate-spin' />Guardando...</> : 'Registrar venta'}</Button>
+            </TabsContent>
+
+            <TabsContent value='manual' className='space-y-3 mt-3'>
+              <div className='rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-3'>
+                <p className='text-xs text-muted-foreground'>Registra una venta sin necesidad de que el ítem esté en el catálogo.</p>
+                <div>
+                  <Label className='text-xs'>Nombre del ítem *</Label>
+                  <Input value={manualName} onChange={e => setManualName(e.target.value)} placeholder='Ej: Reparación express, accesorio especial...' />
+                </div>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
+                  <div><Label className='text-xs'>Valor *</Label><Input type='number' min={0} value={manualPrice} onChange={e => setManualPrice(e.target.value)} /></div>
+                  <div><Label className='text-xs'>Cantidad</Label><Input type='number' min={1} value={manualQty} onChange={e => setManualQty(Math.max(1, Number(e.target.value) || 1))} /></div>
+                  <div><Label className='text-xs'>Total</Label><div className='h-10 flex items-center px-2 border border-border rounded-lg font-bold'>{formatCOP((Number(manualPrice) || 0) * Math.max(1, manualQty))}</div></div>
+                </div>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+                  <div>
+                    <Label className='text-xs'>Tipo</Label>
+                    <Select value={manualType} onValueChange={v => setManualType(v as ManualType)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='producto'>Producto</SelectItem>
+                        <SelectItem value='servicio'>Servicio</SelectItem>
+                        <SelectItem value='curso'>Curso</SelectItem>
+                        <SelectItem value='otro'>Otro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className='text-xs'>Método de pago</Label>
+                    <Select value={manualPayment} onValueChange={v => setManualPayment(v as PaymentMethod)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='efectivo'><span className='flex items-center gap-2'><Banknote className='h-3.5 w-3.5' />Efectivo</span></SelectItem>
+                        <SelectItem value='transferencia'><span className='flex items-center gap-2'><ArrowRightLeft className='h-3.5 w-3.5' />Transferencia</span></SelectItem>
+                        <SelectItem value='tarjeta'><span className='flex items-center gap-2'><CreditCard className='h-3.5 w-3.5' />Tarjeta de crédito</span></SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <Label className='text-xs'>Nota / descripción (opcional)</Label>
+                  <Textarea value={manualNotes} onChange={e => setManualNotes(e.target.value)} className='h-20' />
+                </div>
               </div>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
-                <div><Label className='text-xs'>Cantidad</Label><Input type='number' min={1} value={quantity} onChange={e => setQuantity(Math.max(1, Number(e.target.value) || 1))} /></div>
-                <div><Label className='text-xs'>Precio unitario</Label><Input type='number' min={0} value={customPrice} onChange={e => setCustomPrice(e.target.value)} /></div>
-                <div><Label className='text-xs'>Total</Label><div className='h-10 flex items-center px-2 border border-border rounded-lg font-bold'>{formatCOP(totalVenta())}</div></div>
-              </div>
-              <div className='mt-1'><Label className='text-xs'>Notas (opcional)</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} className='h-20' /></div>
-            </div>
-          )}
-          <Button onClick={handleRegisterSale} disabled={!selectedItem || submitting} className='w-full'>{submitting ? <><Loader2 className='mr-2 h-4 w-4 animate-spin' />Guardando...</> : 'Registrar venta'}</Button>
+              <Button onClick={handleRegisterManual} disabled={submitting} className='w-full'>{submitting ? <><Loader2 className='mr-2 h-4 w-4 animate-spin' />Guardando...</> : 'Registrar venta manual'}</Button>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
       <Card className='card-gaming border-primary/20'>
