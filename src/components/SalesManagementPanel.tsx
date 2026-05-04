@@ -13,7 +13,9 @@ import { useServices } from '@/hooks/useServices';
 import { useCourses } from '@/hooks/useCourses';
 import { useSales } from '@/hooks/useSales';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, ShoppingCart, Search, X, Package, Wrench, GraduationCap, TrendingUp, Clock } from 'lucide-react';
+import { Loader2, ShoppingCart, Search, X, Package, Wrench, GraduationCap, TrendingUp, Clock, Banknote, CreditCard, ArrowRightLeft, Pencil } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { format, isToday, isYesterday, subDays, startOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 
