@@ -119,13 +119,13 @@ const SalesManagementPanel = () => {
         item_type: selectedItem.itemType,
         quantity,
         total_price: totalVenta(),
-        payment_method: 'efectivo',
+        payment_method: paymentMethod,
+        description: notes || (selectedItem.itemType !== 'producto' ? selectedItem.name : null),
       };
       if (selectedItem.itemType === 'producto') {
         payload.item_id = selectedItem.id;
       } else {
-        payload.item_id = null;
-        payload.description = selectedItem.name;
+        payload.item_id = selectedItem.id;
       }
 
       const { error: insertError } = await supabase.from('sales').insert(payload);
@@ -140,6 +140,33 @@ const SalesManagementPanel = () => {
       refetch();
     } catch (e: any) {
       toast({ title: 'Error', description: e.message || 'No se pudo registrar la venta', variant: 'destructive' });
+    } finally { setSubmitting(false); }
+  };
+
+  const handleRegisterManual = async () => {
+    if (!user) return;
+    const price = Number(manualPrice);
+    if (!manualName.trim() || !price || price <= 0) {
+      toast({ title: 'Datos incompletos', description: 'Ingresa nombre y un valor válido', variant: 'destructive' });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const total = price * Math.max(1, manualQty);
+      const { error: insertError } = await supabase.from('sales').insert({
+        item_id: null,
+        item_type: manualType,
+        quantity: Math.max(1, manualQty),
+        total_price: total,
+        payment_method: manualPayment,
+        description: manualNotes ? `${manualName} — ${manualNotes}` : manualName,
+      } as any);
+      if (insertError) throw insertError;
+      toast({ title: 'Venta manual registrada', description: manualName });
+      setManualName(''); setManualPrice(''); setManualQty(1); setManualType('otro'); setManualNotes('');
+      refetch();
+    } catch (e: any) {
+      toast({ title: 'Error', description: e.message || 'No se pudo registrar', variant: 'destructive' });
     } finally { setSubmitting(false); }
   };
 
