@@ -55,61 +55,70 @@ export type Database = {
       }
       catalogo_proveedores: {
         Row: {
-          id: string
-          proveedor: string
+          activo: boolean | null
           categoria: string
-          subcategoria: string | null
+          color_code: string | null
+          colores_disponibles: string[] | null
+          compatibilidad: string | null
+          created_at: string | null
+          emoji: string | null
+          id: string
+          imagen_url: string | null
           nombre: string
-          variante: string | null
+          notas: string | null
           plataforma: string | null
           precio: number
           precio_hasta: number | null
-          tipo_conexion: string | null
-          compatibilidad: string | null
+          proveedor: string
+          subcategoria: string | null
           tiene_microfono: boolean | null
           tiene_rgb: boolean | null
-          emoji: string | null
-          imagen_url: string | null
-          notas: string | null
-          activo: boolean
+          tipo_conexion: string | null
+          variante: string | null
         }
         Insert: {
-          id?: string
-          proveedor: string
+          activo?: boolean | null
           categoria: string
-          subcategoria?: string | null
+          color_code?: string | null
+          colores_disponibles?: string[] | null
+          compatibilidad?: string | null
+          created_at?: string | null
+          emoji?: string | null
+          id?: string
+          imagen_url?: string | null
           nombre: string
-          variante?: string | null
+          notas?: string | null
           plataforma?: string | null
           precio: number
           precio_hasta?: number | null
-          tipo_conexion?: string | null
-          compatibilidad?: string | null
+          proveedor: string
+          subcategoria?: string | null
           tiene_microfono?: boolean | null
           tiene_rgb?: boolean | null
-          emoji?: string | null
-          imagen_url?: string | null
-          notas?: string | null
-          activo?: boolean
+          tipo_conexion?: string | null
+          variante?: string | null
         }
         Update: {
-          id?: string
-          proveedor?: string
+          activo?: boolean | null
           categoria?: string
-          subcategoria?: string | null
+          color_code?: string | null
+          colores_disponibles?: string[] | null
+          compatibilidad?: string | null
+          created_at?: string | null
+          emoji?: string | null
+          id?: string
+          imagen_url?: string | null
           nombre?: string
-          variante?: string | null
+          notas?: string | null
           plataforma?: string | null
           precio?: number
           precio_hasta?: number | null
-          tipo_conexion?: string | null
-          compatibilidad?: string | null
+          proveedor?: string
+          subcategoria?: string | null
           tiene_microfono?: boolean | null
           tiene_rgb?: boolean | null
-          emoji?: string | null
-          imagen_url?: string | null
-          notas?: string | null
-          activo?: boolean
+          tipo_conexion?: string | null
+          variante?: string | null
         }
         Relationships: []
       }
@@ -176,42 +185,6 @@ export type Database = {
           problem?: string | null
           status?: string | null
           value?: number | null
-        }
-        Relationships: []
-      }
-      conversions: {
-        Row: {
-          canal: string | null
-          convirtio: boolean | null
-          created_at: string | null
-          id: string
-          mensaje: string | null
-          monto: number | null
-          origen: string | null
-          producto_vendido: string | null
-          session_id: string | null
-        }
-        Insert: {
-          canal?: string | null
-          convirtio?: boolean | null
-          created_at?: string | null
-          id?: string
-          mensaje?: string | null
-          monto?: number | null
-          origen?: string | null
-          producto_vendido?: string | null
-          session_id?: string | null
-        }
-        Update: {
-          canal?: string | null
-          convirtio?: boolean | null
-          created_at?: string | null
-          id?: string
-          mensaje?: string | null
-          monto?: number | null
-          origen?: string | null
-          producto_vendido?: string | null
-          session_id?: string | null
         }
         Relationships: []
       }
@@ -374,69 +347,81 @@ export type Database = {
         }
         Relationships: []
       }
-      manual_orders: {
+      media_library: {
         Row: {
-          created_at: string
-          description: string
+          assigned: boolean | null
+          created_at: string | null
+          filename: string
           id: string
-          payment_method: string
-          receipt_url: string | null
-          status: string
-          total_value: number
-          updated_at: string
-          user_id: string
+          nota: string | null
+          product_id: string | null
+          uploaded_by: string | null
+          url: string
         }
         Insert: {
-          created_at?: string
-          description: string
+          assigned?: boolean | null
+          created_at?: string | null
+          filename: string
           id?: string
-          payment_method?: string
-          receipt_url?: string | null
-          status?: string
-          total_value: number
-          updated_at?: string
-          user_id: string
+          nota?: string | null
+          product_id?: string | null
+          uploaded_by?: string | null
+          url: string
         }
         Update: {
-          created_at?: string
-          description?: string
+          assigned?: boolean | null
+          created_at?: string | null
+          filename?: string
           id?: string
-          payment_method?: string
-          receipt_url?: string | null
-          status?: string
-          total_value?: number
-          updated_at?: string
-          user_id?: string
+          nota?: string | null
+          product_id?: string | null
+          uploaded_by?: string | null
+          url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "media_library_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_library_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ordenes_proveedores: {
         Row: {
-          id: string
-          proveedor: string
+          estado: string
           fecha_creacion: string
           fecha_recepcion: string | null
-          estado: string
-          total_orden: number
+          id: string
           items: Json
+          proveedor: string
+          total_orden: number
         }
         Insert: {
-          id?: string
-          proveedor: string
+          estado?: string
           fecha_creacion?: string
           fecha_recepcion?: string | null
-          estado?: string
-          total_orden: number
+          id?: string
           items: Json
+          proveedor: string
+          total_orden: number
         }
         Update: {
-          id?: string
-          proveedor?: string
+          estado?: string
           fecha_creacion?: string
           fecha_recepcion?: string | null
-          estado?: string
-          total_orden?: number
+          id?: string
           items?: Json
+          proveedor?: string
+          total_orden?: number
         }
         Relationships: []
       }
@@ -444,85 +429,100 @@ export type Database = {
         Row: {
           admin_descripcion: string | null
           admin_imagenes: string[] | null
+          cliente_nombre: string | null
+          cliente_telefono: string | null
+          cotizacion_enviada: boolean | null
           created_at: string
           descripcion: string
+          dispositivo: string | null
           estado: string
           id: string
+          imagenes_entrada: string[] | null
+          notas_riesgo: string | null
+          numero_orden: string | null
+          precio_cotizacion: number | null
+          precio_servicio: number | null
+          tecnico_nombre: string | null
+          trabajo_realizado: string | null
           updated_at: string
           usuario_id: string
         }
         Insert: {
           admin_descripcion?: string | null
           admin_imagenes?: string[] | null
+          cliente_nombre?: string | null
+          cliente_telefono?: string | null
+          cotizacion_enviada?: boolean | null
           created_at?: string
           descripcion: string
+          dispositivo?: string | null
           estado?: string
           id?: string
+          imagenes_entrada?: string[] | null
+          notas_riesgo?: string | null
+          numero_orden?: string | null
+          precio_cotizacion?: number | null
+          precio_servicio?: number | null
+          tecnico_nombre?: string | null
+          trabajo_realizado?: string | null
           updated_at?: string
           usuario_id: string
         }
         Update: {
           admin_descripcion?: string | null
           admin_imagenes?: string[] | null
+          cliente_nombre?: string | null
+          cliente_telefono?: string | null
+          cotizacion_enviada?: boolean | null
           created_at?: string
           descripcion?: string
+          dispositivo?: string | null
           estado?: string
           id?: string
+          imagenes_entrada?: string[] | null
+          notas_riesgo?: string | null
+          numero_orden?: string | null
+          precio_cotizacion?: number | null
+          precio_servicio?: number | null
+          tecnico_nombre?: string | null
+          trabajo_realizado?: string | null
           updated_at?: string
           usuario_id?: string
         }
         Relationships: []
       }
-      orders: {
+      pedidos: {
         Row: {
           created_at: string
-          delivered_at: string | null
-          estimated_delivery: string | null
           id: string
-          item_id: string
-          item_type: string
-          quantity: number
-          shipped_at: string | null
-          shipping_address: string | null
-          shipping_status:
-            | Database["public"]["Enums"]["shipping_status_enum"]
-            | null
-          total_price: number
-          tracking_number: string | null
+          payment_method: string
+          price: number
+          product_id: string | null
+          product_name: string
+          status: string
+          updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          delivered_at?: string | null
-          estimated_delivery?: string | null
           id?: string
-          item_id: string
-          item_type: string
-          quantity?: number
-          shipped_at?: string | null
-          shipping_address?: string | null
-          shipping_status?:
-            | Database["public"]["Enums"]["shipping_status_enum"]
-            | null
-          total_price: number
-          tracking_number?: string | null
+          payment_method?: string
+          price: number
+          product_id?: string | null
+          product_name: string
+          status?: string
+          updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
-          delivered_at?: string | null
-          estimated_delivery?: string | null
           id?: string
-          item_id?: string
-          item_type?: string
-          quantity?: number
-          shipped_at?: string | null
-          shipping_address?: string | null
-          shipping_status?:
-            | Database["public"]["Enums"]["shipping_status_enum"]
-            | null
-          total_price?: number
-          tracking_number?: string | null
+          payment_method?: string
+          price?: number
+          product_id?: string | null
+          product_name?: string
+          status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -624,6 +624,7 @@ export type Database = {
           badge_color: string | null
           badge_text: string | null
           category: string | null
+          costo_unidad: number | null
           created_at: string
           description: string | null
           featured: boolean | null
@@ -642,6 +643,7 @@ export type Database = {
           badge_color?: string | null
           badge_text?: string | null
           category?: string | null
+          costo_unidad?: number | null
           created_at?: string
           description?: string | null
           featured?: boolean | null
@@ -660,6 +662,7 @@ export type Database = {
           badge_color?: string | null
           badge_text?: string | null
           category?: string | null
+          costo_unidad?: number | null
           created_at?: string
           description?: string | null
           featured?: boolean | null
@@ -705,36 +708,6 @@ export type Database = {
         }
         Relationships: []
       }
-      repairs: {
-        Row: {
-          client_name: string | null
-          created_at: string | null
-          device: string | null
-          estimated_time: string | null
-          id: string
-          problem: string | null
-          status: string | null
-        }
-        Insert: {
-          client_name?: string | null
-          created_at?: string | null
-          device?: string | null
-          estimated_time?: string | null
-          id?: string
-          problem?: string | null
-          status?: string | null
-        }
-        Update: {
-          client_name?: string | null
-          created_at?: string | null
-          device?: string | null
-          estimated_time?: string | null
-          id?: string
-          problem?: string | null
-          status?: string | null
-        }
-        Relationships: []
-      }
       rewards: {
         Row: {
           created_at: string
@@ -771,27 +744,33 @@ export type Database = {
       sales: {
         Row: {
           created_at: string
+          description: string | null
           id: string
+          item_id: string | null
           item_type: string
-          product_id: string
+          payment_method: string | null
           quantity: number
           sold_by: string
           total_price: number
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: string
+          item_id?: string | null
           item_type?: string
-          product_id: string
+          payment_method?: string | null
           quantity: number
-          sold_by: string
+          sold_by?: string
           total_price: number
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: string
+          item_id?: string | null
           item_type?: string
-          product_id?: string
+          payment_method?: string | null
           quantity?: number
           sold_by?: string
           total_price?: number
@@ -800,31 +779,61 @@ export type Database = {
       }
       services: {
         Row: {
+          active: boolean | null
           created_at: string
           description: string | null
           id: string
           image: string | null
           name: string
-          price: number
+          platform: string[] | null
+          price: number | null
           updated_at: string
         }
         Insert: {
+          active?: boolean | null
           created_at?: string
           description?: string | null
           id?: string
           image?: string | null
           name: string
-          price: number
+          platform?: string[] | null
+          price?: number | null
           updated_at?: string
         }
         Update: {
+          active?: boolean | null
           created_at?: string
           description?: string | null
           id?: string
           image?: string | null
           name?: string
-          price?: number
+          platform?: string[] | null
+          price?: number | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      tareas: {
+        Row: {
+          created_at: string | null
+          descripcion: string | null
+          estado: string | null
+          id: number
+          titulo: string
+        }
+        Insert: {
+          created_at?: string | null
+          descripcion?: string | null
+          estado?: string | null
+          id?: number
+          titulo: string
+        }
+        Update: {
+          created_at?: string | null
+          descripcion?: string | null
+          estado?: string | null
+          id?: number
+          titulo?: string
         }
         Relationships: []
       }
@@ -905,18 +914,48 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      all_sales_unified: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string | null
+          item_id: string | null
+          item_type: string | null
+          payment_method: string | null
+          product_category: string | null
+          product_image: string | null
+          product_name: string | null
+          product_price: number | null
+          quantity: number | null
+          seller_name: string | null
+          sold_by: string | null
+          total_price: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      buscar_referencia_producto: {
-        Args: { p_termino: string }
-        Returns: Json
-      }
+      buscar_referencia_producto: { Args: { p_termino: string }; Returns: Json }
+      confirmar_llegada_orden: { Args: { p_orden_id: string }; Returns: Json }
       generate_slug: { Args: { input_text: string }; Returns: string }
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      procesar_imagen_masiva:
+        | {
+            Args: { p_filename: string; p_product_id?: string; p_url: string }
+            Returns: Json
+          }
+        | {
+            Args: {
+              p_filename: string
+              p_nota?: string
+              p_product_id?: string
+              p_url: string
+            }
+            Returns: Json
+          }
     }
     Enums: {
       shipping_status_enum:
