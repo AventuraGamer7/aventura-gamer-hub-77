@@ -208,32 +208,6 @@ const ServiceDetails = () => {
               </Button>
             </div>
 
-            {/* Service Benefits */}
-            <Card className="bg-muted/30 border-primary/10">
-              <CardContent className="p-5">
-                <h3 className="font-semibold mb-4 text-glow-sm">Nuestra Garantía Aventurera</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/20 p-2 rounded-full">
-                      <Shield className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="text-sm font-medium">Reparaciones garantizadas</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-secondary/20 p-2 rounded-full">
-                      <Star className="h-5 w-5 text-secondary" />
-                    </div>
-                    <span className="text-sm font-medium">Diagnóstico gratuito</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-gaming-orange/20 p-2 rounded-full">
-                      <Clock className="h-5 w-5 text-gaming-orange" />
-                    </div>
-                    <span className="text-sm font-medium">Servicio rápido</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </main>
