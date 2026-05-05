@@ -450,7 +450,7 @@ const ProductDetails = () => {
               <CardContent className="p-0">
                 <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
                   <DialogTrigger asChild>
-                    <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors group">
+                    <div className="relative h-[28rem] md:h-[32rem] bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors group">
                       <img
                         key={selectedImageIndex}
                         src={images[selectedImageIndex]}
