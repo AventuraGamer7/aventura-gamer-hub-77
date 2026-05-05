@@ -844,30 +844,6 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* Product Benefits */}
-            <Card className="bg-muted/30">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Beneficios incluidos:</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <span>Garantía incluida</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Truck className="h-4 w-4 text-primary" />
-                    <span>Envío rápido a toda Colombia</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CreditCard className="h-4 w-4 text-primary" />
-                    <span>Múltiples métodos de pago</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Package className="h-4 w-4 text-primary" />
-                    <span>Producto 100% original</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
