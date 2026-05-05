@@ -452,9 +452,10 @@ const ProductDetails = () => {
                   <DialogTrigger asChild>
                     <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors group">
                       <img
+                        key={selectedImageIndex}
                         src={images[selectedImageIndex]}
                         alt={product.name}
-                        className="max-w-full max-h-full object-scale-down"
+                        className="max-w-full max-h-full object-scale-down animate-scale-in"
                       />
                       
                       {/* Navigation Arrows for Main Image */}
