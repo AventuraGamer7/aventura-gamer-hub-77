@@ -450,11 +450,12 @@ const ProductDetails = () => {
               <CardContent className="p-0">
                 <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
                   <DialogTrigger asChild>
-                    <div className="relative h-96 bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors group">
+                    <div className="relative h-[28rem] md:h-[32rem] bg-muted/20 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors group">
                       <img
+                        key={selectedImageIndex}
                         src={images[selectedImageIndex]}
                         alt={product.name}
-                        className="max-w-full max-h-full object-scale-down"
+                        className="max-w-full max-h-full object-scale-down animate-scale-in"
                       />
                       
                       {/* Navigation Arrows for Main Image */}
@@ -844,30 +845,6 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* Product Benefits */}
-            <Card className="bg-muted/30">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Beneficios incluidos:</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <span>Garantía incluida</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Truck className="h-4 w-4 text-primary" />
-                    <span>Envío rápido a toda Colombia</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CreditCard className="h-4 w-4 text-primary" />
-                    <span>Múltiples métodos de pago</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Package className="h-4 w-4 text-primary" />
-                    <span>Producto 100% original</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 

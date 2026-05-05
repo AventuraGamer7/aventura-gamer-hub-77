@@ -127,15 +127,16 @@ const ServiceDetails = () => {
           <div className="space-y-4">
             <Card className="overflow-hidden border-border/50">
               <CardContent className="p-0">
-                <div className="relative h-96 bg-muted/20 flex flex-col items-center justify-center p-6 group">
+                <div className="relative h-[28rem] md:h-[32rem] bg-muted/20 flex flex-col items-center justify-center p-6 group">
                   {service.image ? (
                     <img
+                      key={service.id}
                       src={service.image}
                       alt={service.name}
-                      className="max-w-full max-h-full object-contain rounded-md transition-transform duration-500 group-hover:scale-105"
+                      className="max-w-full max-h-full object-contain rounded-md animate-scale-in transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-full h-full flex items-center justify-center animate-fade-in">
                       <Wrench className="h-24 w-24 text-primary/20 transition-transform duration-500 group-hover:scale-110" />
                     </div>
                   )}
@@ -208,32 +209,6 @@ const ServiceDetails = () => {
               </Button>
             </div>
 
-            {/* Service Benefits */}
-            <Card className="bg-muted/30 border-primary/10">
-              <CardContent className="p-5">
-                <h3 className="font-semibold mb-4 text-glow-sm">Nuestra Garantía Aventurera</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/20 p-2 rounded-full">
-                      <Shield className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="text-sm font-medium">Reparaciones garantizadas</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-secondary/20 p-2 rounded-full">
-                      <Star className="h-5 w-5 text-secondary" />
-                    </div>
-                    <span className="text-sm font-medium">Diagnóstico gratuito</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-gaming-orange/20 p-2 rounded-full">
-                      <Clock className="h-5 w-5 text-gaming-orange" />
-                    </div>
-                    <span className="text-sm font-medium">Servicio rápido</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </main>
