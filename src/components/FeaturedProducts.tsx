@@ -99,7 +99,7 @@ const FeaturedProducts = () => {
                     {product.name}
                   </h3>
                   {product.description && (
-                    <p className="text-[11px] text-muted-foreground line-clamp-1 mb-2 hidden sm:block">
+                    <p className="text-[11px] text-muted-foreground hidden sm:block overflow-hidden max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 group-hover:mb-2 line-clamp-3 transition-all duration-300 ease-out">
                       {product.description}
                     </p>
                   )}
