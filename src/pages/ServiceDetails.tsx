@@ -127,15 +127,16 @@ const ServiceDetails = () => {
           <div className="space-y-4">
             <Card className="overflow-hidden border-border/50">
               <CardContent className="p-0">
-                <div className="relative h-96 bg-muted/20 flex flex-col items-center justify-center p-6 group">
+                <div className="relative h-[28rem] md:h-[32rem] bg-muted/20 flex flex-col items-center justify-center p-6 group">
                   {service.image ? (
                     <img
+                      key={service.id}
                       src={service.image}
                       alt={service.name}
-                      className="max-w-full max-h-full object-contain rounded-md transition-transform duration-500 group-hover:scale-105"
+                      className="max-w-full max-h-full object-contain rounded-md animate-scale-in transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-full h-full flex items-center justify-center animate-fade-in">
                       <Wrench className="h-24 w-24 text-primary/20 transition-transform duration-500 group-hover:scale-110" />
                     </div>
                   )}
