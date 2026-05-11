@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const FeaturedProducts = () => {
   const { products, loading } = useProducts();
