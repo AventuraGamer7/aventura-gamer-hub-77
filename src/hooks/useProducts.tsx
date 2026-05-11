@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Product {
@@ -20,57 +21,45 @@ interface Product {
   updated_at: string;
 }
 
+const fetchProducts = async (): Promise<Product[]> => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+};
+
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5, // 5 min — fresh enough for a catalog
+    gcTime: 1000 * 60 * 30, // keep in cache 30 min
+    refetchOnWindowFocus: false,
+  });
 
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        throw error;
-      }
-
-      setProducts(data || []);
-    } catch (err: any) {
-      console.error('Error fetching products:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Realtime invalidation — replaces previous full re-fetch on every change
   useEffect(() => {
-    fetchProducts();
-
-    // Set up real-time subscription for product changes
     const subscription = supabase
       .channel('products_changes')
       .on(
         'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'products'
-        },
-        () => {
-          fetchProducts();
-        }
+        { event: '*', schema: 'public', table: 'products' },
+        () => queryClient.invalidateQueries({ queryKey: ['products'] }),
       )
       .subscribe();
-
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [queryClient]);
 
-  return { products, loading, error, refetch: fetchProducts };
+  return {
+    products: data ?? [],
+    loading: isLoading,
+    error: error ? (error as Error).message : null,
+    refetch,
+  };
 };
