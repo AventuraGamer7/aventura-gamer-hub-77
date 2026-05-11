@@ -201,7 +201,7 @@ const SubidaMasivaImagenes = () => {
         // 1) subir al bucket
         const { error: uploadError } = await supabase.storage
           .from('imagenes')
-          .upload(filename, file, { upsert: false });
+          .upload(filename, file, { cacheControl: '31536000, immutable', contentType: file.type, upsert: false });
 
         if (uploadError) throw uploadError;
 

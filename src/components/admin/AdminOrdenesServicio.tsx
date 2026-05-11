@@ -126,7 +126,7 @@ const AdminOrdenesServicio: React.FC = () => {
 
     const { data, error } = await supabase.storage
       .from('imagenes')
-      .upload(path, file);
+      .upload(path, file, { cacheControl: '31536000, immutable', contentType: file.type, upsert: false });
 
     if (error) {
       console.error('Error uploading admin image:', error);
