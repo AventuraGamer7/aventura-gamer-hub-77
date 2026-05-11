@@ -174,7 +174,7 @@ export const useOrdenesServicio = () => {
       
       const { data, error } = await supabase.storage
         .from('service-orders')
-        .upload(fileName, file);
+        .upload(fileName, file, { cacheControl: '31536000, immutable', contentType: file.type, upsert: false });
 
       if (error) throw error;
 

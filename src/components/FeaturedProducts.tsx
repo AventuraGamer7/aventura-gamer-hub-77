@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const FeaturedProducts = () => {
   const { products, loading } = useProducts();
@@ -61,11 +62,12 @@ const FeaturedProducts = () => {
               <Link to={`/producto/${product.slug || product.id}`} className="block">
                 <div className="relative aspect-square bg-muted/10 overflow-hidden">
                   {product.image ? (
-                    <img
+                    <OptimizedImage
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                      fit="contain"
+                      className="p-2 group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">

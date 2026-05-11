@@ -71,7 +71,11 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
 
     const { error } = await supabase.storage
       .from('product-images')
-      .upload(filePath, file);
+      .upload(filePath, file, {
+        cacheControl: '31536000, immutable',
+        contentType: file.type,
+        upsert: false,
+      });
 
     if (error) {
       console.error('Upload error:', error);

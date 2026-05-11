@@ -82,7 +82,7 @@ const SolicitarServicio = () => {
       
       const { data, error } = await supabase.storage
         .from('imagenes')
-        .upload(path, image);
+        .upload(path, image, { cacheControl: '31536000, immutable', contentType: image.type, upsert: false });
         
       if (error) {
         console.error('Error uploading image:', error);
