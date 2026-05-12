@@ -300,22 +300,6 @@ const Dashboard = () => {
     // Customer view
     if (profile?.role === 'cliente') {
       switch (activeSection) {
-        case 'orders':
-          return (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-glow">Mis Pedidos</h2>
-                <p className="text-muted-foreground">Seguimiento de tus compras y envíos</p>
-              </div>
-              {ordersLoading ? (
-                <div className="flex items-center justify-center p-8">
-                  <Loader2 className="h-8 w-8 animate-spin" />
-                </div>
-              ) : (
-                <CustomerOrders orders={orders} />
-              )}
-            </div>
-          );
         case 'manual-orders':
           return (
             <div className="space-y-6">
@@ -324,16 +308,6 @@ const Dashboard = () => {
                 <p className="text-muted-foreground">Registra compras externas y gana puntos</p>
               </div>
               <ManualOrderForm />
-            </div>
-          );
-        case 'services':
-          return (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-glow">Mis Servicios</h2>
-                <p className="text-muted-foreground">Estado de tus órdenes de servicio técnico</p>
-              </div>
-              <OrdenesCliente />
             </div>
           );
         case 'profile':
