@@ -123,7 +123,8 @@ const Dashboard = () => {
   const { products } = useProducts();
   const { courses } = useCourses();
   const { services } = useServices();
-  const { orders, loading: ordersLoading } = useCustomerOrders();
+  const orders: Array<{ id: string; created_at: string; shipping_status: string }> = [];
+  const ordersLoading = false;
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('dashboard');
 
