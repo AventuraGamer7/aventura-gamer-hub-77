@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
 import { Wrench, ChevronRight } from 'lucide-react';
 import GamingSectionTitle from '@/components/GamingSectionTitle';
+import OptimizedImage from '@/components/OptimizedImage';
 import { Button } from '@/components/ui/button';
 
 const FeaturedServices = () => {
