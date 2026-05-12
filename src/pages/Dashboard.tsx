@@ -36,16 +36,10 @@ import CourseManagementPanel from '@/components/CourseManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import GestionUsuarios from '@/components/GestionUsuarios';
 import { AppSidebar } from '@/components/AppSidebar';
-import { CustomerOrders } from '@/components/CustomerOrders';
-import OrdenesCliente from '@/components/OrdenesCliente';
 import SalesManagementPanel from '@/components/SalesManagementPanel';
 import ManualOrderForm from '@/components/ManualOrderForm';
 import ManualOrdersAdmin from '@/components/ManualOrdersAdmin';
-import CatalogoProveedores from '@/components/admin/CatalogoProveedores';
-import AdminOrdenesServicio from '@/components/admin/AdminOrdenesServicio';
 import SubidaMasivaImagenes from '@/components/SubidaMasivaImagenes';
-// Import customer orders hook
-import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
   LogOut, 
   User, 
@@ -129,7 +123,8 @@ const Dashboard = () => {
   const { products } = useProducts();
   const { courses } = useCourses();
   const { services } = useServices();
-  const { orders, loading: ordersLoading } = useCustomerOrders();
+  const orders: Array<{ id: string; created_at: string; shipping_status: string }> = [];
+  const ordersLoading = false;
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('dashboard');
 
@@ -159,21 +154,9 @@ const Dashboard = () => {
       section: 'Principal'
     },
     {
-      id: 'orders',
-      title: 'Mis Pedidos',
-      icon: <Package className="h-5 w-5" />,
-      section: 'Principal'
-    },
-    {
       id: 'manual-orders',
       title: 'Mis Compras',
       icon: <ClipboardList className="h-5 w-5" />,
-      section: 'Principal'
-    },
-    {
-      id: 'services',
-      title: 'Mis Servicios',
-      icon: <Wrench className="h-5 w-5" />,
       section: 'Principal'
     },
     {
@@ -220,21 +203,9 @@ const Dashboard = () => {
       section: 'Gestión Principal'
     }] : []),
     ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
-      id: 'catalogo-proveedores',
-      title: 'Catálogo Proveedores',
-      icon: <Store className="h-5 w-5" />,
-      section: 'Gestión Principal'
-    }] : []),
-    ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
       id: 'subida-imagenes',
       title: 'Subida Masiva',
       icon: <ImagePlus className="h-5 w-5" />,
-      section: 'Gestión Principal'
-    }] : []),
-    ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
-      id: 'ordenes-servicio',
-      title: 'Órdenes Servicio',
-      icon: <ClipboardList className="h-5 w-5" />,
       section: 'Gestión Principal'
     }] : []),
     // Solo mostrar usuarios para roles administrativos
@@ -329,22 +300,6 @@ const Dashboard = () => {
     // Customer view
     if (profile?.role === 'cliente') {
       switch (activeSection) {
-        case 'orders':
-          return (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-glow">Mis Pedidos</h2>
-                <p className="text-muted-foreground">Seguimiento de tus compras y envíos</p>
-              </div>
-              {ordersLoading ? (
-                <div className="flex items-center justify-center p-8">
-                  <Loader2 className="h-8 w-8 animate-spin" />
-                </div>
-              ) : (
-                <CustomerOrders orders={orders} />
-              )}
-            </div>
-          );
         case 'manual-orders':
           return (
             <div className="space-y-6">
@@ -353,16 +308,6 @@ const Dashboard = () => {
                 <p className="text-muted-foreground">Registra compras externas y gana puntos</p>
               </div>
               <ManualOrderForm />
-            </div>
-          );
-        case 'services':
-          return (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-glow">Mis Servicios</h2>
-                <p className="text-muted-foreground">Estado de tus órdenes de servicio técnico</p>
-              </div>
-              <OrdenesCliente />
             </div>
           );
         case 'profile':
@@ -546,12 +491,6 @@ const Dashboard = () => {
             <SalesManagementPanel />
           </div>
         );
-      case 'catalogo-proveedores':
-        return (
-          <div className="space-y-4">
-            <CatalogoProveedores />
-          </div>
-        );
       case 'subida-imagenes':
         return (
           <div className="space-y-6">
@@ -560,12 +499,6 @@ const Dashboard = () => {
               <p className="text-muted-foreground">Sube múltiples imágenes y asígnalas a productos</p>
             </div>
             <SubidaMasivaImagenes />
-          </div>
-        );
-      case 'ordenes-servicio':
-        return (
-          <div className="space-y-4">
-            <AdminOrdenesServicio />
           </div>
         );
       case 'users':

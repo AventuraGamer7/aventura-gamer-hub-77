@@ -15,6 +15,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import SEOHead from '@/components/SEO/SEOHead';
+import OptimizedImage from '@/components/OptimizedImage';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { useProductVariants } from '@/hooks/useProductVariants';
@@ -575,10 +576,12 @@ const ProductDetails = () => {
                                   : 'border-border hover:border-primary/50 hover:scale-105'
                               }`}
                             >
-                              <img
+                              <OptimizedImage
                                 src={image}
                                 alt={`${product.name} - Miniatura ${index + 1}`}
                                 className="w-full h-full object-cover"
+                                width={160}
+                                height={160}
                               />
                             </button>
                           ))}
@@ -612,10 +615,12 @@ const ProductDetails = () => {
                         : 'border-border hover:border-primary/50'
                     }`}
                   >
-                    <img
+                    <OptimizedImage
                       src={image}
                       alt={`${product.name} - Vista ${index + 1}`}
                       className="w-full h-full object-cover"
+                      width={160}
+                      height={160}
                     />
                   </button>
                 ))}
@@ -697,10 +702,12 @@ const ProductDetails = () => {
                       }`}
                     >
                       <div className="aspect-square bg-muted/20 flex items-center justify-center p-2">
-                        <img
+                        <OptimizedImage
                           src={variant.image_url}
                           alt={variant.name}
                           className="w-full h-full object-cover rounded"
+                          width={160}
+                          height={160}
                         />
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
@@ -864,10 +871,12 @@ const ProductDetails = () => {
                 >
                   <CardContent className="p-3">
                     <div className="aspect-square bg-muted/20 rounded-md overflow-hidden mb-3 flex items-center justify-center">
-                      <img
+                      <OptimizedImage
                         src={rp.images?.[0] || rp.image || '/placeholder.svg'}
                         alt={rp.name}
                         className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform"
+                        width={300}
+                        height={300}
                       />
                     </div>
                     <h3 className="text-sm font-medium line-clamp-2 mb-1">{rp.name}</h3>

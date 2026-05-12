@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import Header from '@/components/Header';
+import OptimizedImage from '@/components/OptimizedImage';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { useProducts } from '@/hooks/useProducts';
@@ -275,11 +276,12 @@ const Tienda = () => {
                     {/* Image */}
                     <div className="relative aspect-square bg-muted/20 overflow-hidden">
                       {(product.images?.[0] || product.image) ? (
-                        <img
+                        <OptimizedImage
                           src={product.images?.[0] || product.image || ''}
                           alt={product.name}
                           className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
+                          width={400}
+                          height={400}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

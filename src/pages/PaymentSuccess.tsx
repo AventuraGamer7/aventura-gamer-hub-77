@@ -27,19 +27,21 @@ const PaymentSuccess = () => {
       if (!user) return;
 
       try {
-        // Get the most recent order for this user
+        // Get the most recent manual order for this user
         const { data: recentOrder, error } = await (supabase as any)
-          .from('pedidos')
-          .select('price, created_at')
+          .from('manual_orders')
+          .select('total_value, created_at')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (error || !recentOrder) return;
 
+        const orderPrice = recentOrder.total_value ?? 0;
+
         // Calculate points earned (1 point per $1000 COP)
-        const points = Math.floor((recentOrder.price ?? 0) / 1000);
+        const points = Math.floor(orderPrice / 1000);
         setPointsEarned(points);
 
         // Check if user leveled up

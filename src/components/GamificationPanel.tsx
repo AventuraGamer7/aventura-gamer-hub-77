@@ -38,7 +38,7 @@ const GamificationPanel = () => {
 
     try {
       const { data, error } = await (supabase as any)
-        .from('pedidos')
+        .from('manual_orders')
         .select('id')
         .eq('user_id', profile.id);
 

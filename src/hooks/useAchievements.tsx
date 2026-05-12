@@ -26,7 +26,7 @@ export const useAchievements = () => {
       setLoading(true);
       setError(null);
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('achievements')
         .select('*')
         .order('created_at', { ascending: false });
@@ -43,7 +43,7 @@ export const useAchievements = () => {
 
   const createAchievement = async (achievementData: Omit<Achievement, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('achievements')
         .insert([achievementData])
         .select()
@@ -70,7 +70,7 @@ export const useAchievements = () => {
 
   const updateAchievement = async (id: string, updates: Partial<Achievement>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('achievements')
         .update(updates)
         .eq('id', id)
@@ -98,7 +98,7 @@ export const useAchievements = () => {
 
   const deleteAchievement = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('achievements')
         .delete()
         .eq('id', id);

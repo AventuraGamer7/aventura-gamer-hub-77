@@ -24,7 +24,7 @@ export const useRewards = () => {
       setLoading(true);
       setError(null);
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('rewards')
         .select('*')
         .order('created_at', { ascending: false });
@@ -41,7 +41,7 @@ export const useRewards = () => {
 
   const createReward = async (rewardData: Omit<Reward, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('rewards')
         .insert([rewardData])
         .select()
@@ -68,7 +68,7 @@ export const useRewards = () => {
 
   const updateReward = async (id: string, updates: Partial<Reward>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('rewards')
         .update(updates)
         .eq('id', id)
@@ -96,7 +96,7 @@ export const useRewards = () => {
 
   const deleteReward = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('rewards')
         .delete()
         .eq('id', id);
