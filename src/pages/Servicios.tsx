@@ -545,8 +545,6 @@ const Servicios = () => {
         </div>
       </section>
 
-      {/* Órdenes de Servicio del Cliente */}
-      <OrdenesCliente />
 
       <Footer />
     </div>;
