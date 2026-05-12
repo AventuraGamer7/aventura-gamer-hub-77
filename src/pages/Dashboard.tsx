@@ -491,12 +491,6 @@ const Dashboard = () => {
             <SalesManagementPanel />
           </div>
         );
-      case 'catalogo-proveedores':
-        return (
-          <div className="space-y-4">
-            <CatalogoProveedores />
-          </div>
-        );
       case 'subida-imagenes':
         return (
           <div className="space-y-6">
@@ -505,12 +499,6 @@ const Dashboard = () => {
               <p className="text-muted-foreground">Sube múltiples imágenes y asígnalas a productos</p>
             </div>
             <SubidaMasivaImagenes />
-          </div>
-        );
-      case 'ordenes-servicio':
-        return (
-          <div className="space-y-4">
-            <AdminOrdenesServicio />
           </div>
         );
       case 'users':
