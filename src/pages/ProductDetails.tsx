@@ -871,10 +871,12 @@ const ProductDetails = () => {
                 >
                   <CardContent className="p-3">
                     <div className="aspect-square bg-muted/20 rounded-md overflow-hidden mb-3 flex items-center justify-center">
-                      <img
+                      <OptimizedImage
                         src={rp.images?.[0] || rp.image || '/placeholder.svg'}
                         alt={rp.name}
                         className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform"
+                        width={300}
+                        height={300}
                       />
                     </div>
                     <h3 className="text-sm font-medium line-clamp-2 mb-1">{rp.name}</h3>
