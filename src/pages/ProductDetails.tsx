@@ -615,10 +615,12 @@ const ProductDetails = () => {
                         : 'border-border hover:border-primary/50'
                     }`}
                   >
-                    <img
+                    <OptimizedImage
                       src={image}
                       alt={`${product.name} - Vista ${index + 1}`}
                       className="w-full h-full object-cover"
+                      width={160}
+                      height={160}
                     />
                   </button>
                 ))}
