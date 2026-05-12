@@ -154,21 +154,9 @@ const Dashboard = () => {
       section: 'Principal'
     },
     {
-      id: 'orders',
-      title: 'Mis Pedidos',
-      icon: <Package className="h-5 w-5" />,
-      section: 'Principal'
-    },
-    {
       id: 'manual-orders',
       title: 'Mis Compras',
       icon: <ClipboardList className="h-5 w-5" />,
-      section: 'Principal'
-    },
-    {
-      id: 'services',
-      title: 'Mis Servicios',
-      icon: <Wrench className="h-5 w-5" />,
       section: 'Principal'
     },
     {
