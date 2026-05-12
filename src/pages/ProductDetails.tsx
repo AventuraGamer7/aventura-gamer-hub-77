@@ -702,10 +702,12 @@ const ProductDetails = () => {
                       }`}
                     >
                       <div className="aspect-square bg-muted/20 flex items-center justify-center p-2">
-                        <img
+                        <OptimizedImage
                           src={variant.image_url}
                           alt={variant.name}
                           className="w-full h-full object-cover rounded"
+                          width={160}
+                          height={160}
                         />
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
