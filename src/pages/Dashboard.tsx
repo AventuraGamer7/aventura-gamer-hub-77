@@ -203,21 +203,9 @@ const Dashboard = () => {
       section: 'Gestión Principal'
     }] : []),
     ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
-      id: 'catalogo-proveedores',
-      title: 'Catálogo Proveedores',
-      icon: <Store className="h-5 w-5" />,
-      section: 'Gestión Principal'
-    }] : []),
-    ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
       id: 'subida-imagenes',
       title: 'Subida Masiva',
       icon: <ImagePlus className="h-5 w-5" />,
-      section: 'Gestión Principal'
-    }] : []),
-    ...(profile && ['admin', 'superadmin', 'employee', 'manager'].includes(profile.role) ? [{
-      id: 'ordenes-servicio',
-      title: 'Órdenes Servicio',
-      icon: <ClipboardList className="h-5 w-5" />,
       section: 'Gestión Principal'
     }] : []),
     // Solo mostrar usuarios para roles administrativos
