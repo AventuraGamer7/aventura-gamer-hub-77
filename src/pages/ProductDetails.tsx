@@ -576,10 +576,12 @@ const ProductDetails = () => {
                                   : 'border-border hover:border-primary/50 hover:scale-105'
                               }`}
                             >
-                              <img
+                              <OptimizedImage
                                 src={image}
                                 alt={`${product.name} - Miniatura ${index + 1}`}
                                 className="w-full h-full object-cover"
+                                width={160}
+                                height={160}
                               />
                             </button>
                           ))}
