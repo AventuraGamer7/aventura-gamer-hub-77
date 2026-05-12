@@ -36,16 +36,10 @@ import CourseManagementPanel from '@/components/CourseManagementPanel';
 import HeroManagementPanel from '@/components/HeroManagementPanel';
 import GestionUsuarios from '@/components/GestionUsuarios';
 import { AppSidebar } from '@/components/AppSidebar';
-import { CustomerOrders } from '@/components/CustomerOrders';
-import OrdenesCliente from '@/components/OrdenesCliente';
 import SalesManagementPanel from '@/components/SalesManagementPanel';
 import ManualOrderForm from '@/components/ManualOrderForm';
 import ManualOrdersAdmin from '@/components/ManualOrdersAdmin';
-import CatalogoProveedores from '@/components/admin/CatalogoProveedores';
-import AdminOrdenesServicio from '@/components/admin/AdminOrdenesServicio';
 import SubidaMasivaImagenes from '@/components/SubidaMasivaImagenes';
-// Import customer orders hook
-import { useCustomerOrders } from '@/hooks/useCustomerOrders';
 import { 
   LogOut, 
   User, 
