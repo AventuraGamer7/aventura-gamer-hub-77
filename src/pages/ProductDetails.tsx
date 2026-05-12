@@ -15,6 +15,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import SEOHead from '@/components/SEO/SEOHead';
+import OptimizedImage from '@/components/OptimizedImage';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import { useProductVariants } from '@/hooks/useProductVariants';
