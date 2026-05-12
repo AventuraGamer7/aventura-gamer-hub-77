@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import OrdenesCliente from '@/components/OrdenesCliente';
+
 import SEOHead from '@/components/SEO/SEOHead';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
