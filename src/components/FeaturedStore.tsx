@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 import GamingSectionTitle from '@/components/GamingSectionTitle';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const FeaturedStore = () => {
   const { products, loading } = useProducts();
