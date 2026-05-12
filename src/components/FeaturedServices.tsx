@@ -54,11 +54,12 @@ const FeaturedServices = () => {
             >
               <div className="relative aspect-square bg-muted/10 overflow-hidden">
                 {service.image ? (
-                  <img
+                  <OptimizedImage
                     src={service.image}
                     alt={service.name}
                     className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
+                    width={400}
+                    height={400}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-accent/5">
