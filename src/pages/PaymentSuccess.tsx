@@ -41,7 +41,7 @@ const PaymentSuccess = () => {
         const orderPrice = recentOrder.total_value ?? 0;
 
         // Calculate points earned (1 point per $1000 COP)
-        const points = Math.floor((recentOrder.price ?? 0) / 1000);
+        const points = Math.floor(orderPrice / 1000);
         setPointsEarned(points);
 
         // Check if user leveled up
