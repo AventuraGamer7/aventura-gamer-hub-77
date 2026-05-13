@@ -14,7 +14,7 @@ const FeaturedProducts = () => {
   const { addItem } = useCart();
   const { toast } = useToast();
 
-  const featuredProducts = products.filter(p => p.active && p.featured).slice(0, 6);
+  const featuredProducts = products.filter(p => p.active && p.featured).slice(0, 10);
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(price);
