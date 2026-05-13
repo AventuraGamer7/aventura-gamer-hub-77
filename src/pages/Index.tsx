@@ -88,28 +88,6 @@ const Index = () => {
           </div>
         </motion.section>
 
-        {/* Manual Purchase CTA */}
-        <motion.section className="py-6 bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Star className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">¿Compraste por transferencia o contra entrega?</p>
-                  <p className="text-xs text-muted-foreground">Regístrala y gana puntos canjeables por premios</p>
-                </div>
-              </div>
-              <Button onClick={() => navigate(user ? '/dashboard' : '/auth')} className="gap-2 shrink-0">
-                <Star className="h-4 w-4" />
-                Registrar compra y ganar puntos
-                <Gift className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </motion.section>
-
         {/* Featured Services */}
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-50px' }}>
           <FeaturedServices />
