@@ -57,13 +57,15 @@ const ProductManagementPanel = () => {
     const stats: Record<string, { totalQty: number; totalRevenue: number; lastSaleDate: string | null }> = {};
     if (!sales) return stats;
     for (const sale of sales) {
-      if (!stats[sale.product_id]) {
-        stats[sale.product_id] = { totalQty: 0, totalRevenue: 0, lastSaleDate: null };
+      const pid = (sale as any).item_id;
+      if (!pid) continue;
+      if (!stats[pid]) {
+        stats[pid] = { totalQty: 0, totalRevenue: 0, lastSaleDate: null };
       }
-      stats[sale.product_id].totalQty += sale.quantity;
-      stats[sale.product_id].totalRevenue += sale.total_price;
-      if (!stats[sale.product_id].lastSaleDate || sale.created_at > stats[sale.product_id].lastSaleDate!) {
-        stats[sale.product_id].lastSaleDate = sale.created_at;
+      stats[pid].totalQty += sale.quantity;
+      stats[pid].totalRevenue += sale.total_price;
+      if (!stats[pid].lastSaleDate || sale.created_at > stats[pid].lastSaleDate!) {
+        stats[pid].lastSaleDate = sale.created_at;
       }
     }
     return stats;
