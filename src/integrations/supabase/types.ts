@@ -171,6 +171,7 @@ export type Database = {
           is_primary: boolean | null
           product_id: string
           updated_at: string
+          variants: Json | null
         }
         Insert: {
           alt_text?: string | null
@@ -181,6 +182,7 @@ export type Database = {
           is_primary?: boolean | null
           product_id: string
           updated_at?: string
+          variants?: Json | null
         }
         Update: {
           alt_text?: string | null
@@ -191,6 +193,7 @@ export type Database = {
           is_primary?: boolean | null
           product_id?: string
           updated_at?: string
+          variants?: Json | null
         }
         Relationships: [
           {
@@ -264,6 +267,7 @@ export type Database = {
           featured: boolean | null
           id: string
           image: string | null
+          image_variants: Json | null
           images: string[] | null
           name: string
           platform: string[] | null
@@ -283,6 +287,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image?: string | null
+          image_variants?: Json | null
           images?: string[] | null
           name: string
           platform?: string[] | null
@@ -302,6 +307,7 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image?: string | null
+          image_variants?: Json | null
           images?: string[] | null
           name?: string
           platform?: string[] | null
