@@ -1,88 +1,87 @@
 /**
- * Supabase Storage image optimization helpers.
+ * Image URL helpers.
  *
- * Goals:
- *  - Reduce Cached Egress by serving small, transformed (WebP) images per breakpoint.
- *  - Provide a single helper used by <OptimizedImage /> and any code that builds <img> tags.
+ * IMPORTANTE: Ya NO usamos `supabase.storage.getPublicUrl({ transform })`
+ * porque consume cuota de "Image Transformations" del plan Pro de Supabase.
+ * En su lugar generamos variantes estáticas (thumb/medium/large) al momento
+ * de subir la imagen, y este módulo solo elige cuál servir.
  *
- * Recommended bucket structure:
- *   product-images/products/<id>/<file>
- *   product-images/banners/<file>
- *   course-covers/courses/<id>/<file>
- *   service-images/services/<id>/<file>
- *
- * Recommended upload options (admin):
- *   supabase.storage.from(bucket).upload(path, file, {
- *     cacheControl: '31536000, immutable',
- *     contentType: file.type,
- *     upsert: false,
- *   })
+ * Estructura recomendada en Storage:
+ *   product-images/products/<timestamp>-<rand>.webp           (medium, default)
+ *   product-images/products/<timestamp>-<rand>__thumb.webp
+ *   product-images/products/<timestamp>-<rand>__large.webp
+ *   product-images/products/<timestamp>-<rand>__original.<ext>
  */
 
 import { supabase } from '@/integrations/supabase/client';
 
 export const IMAGE_CACHE_CONTROL = '31536000, immutable';
 
-export type ImageFormat = 'webp' | 'origin';
+export interface ImageVariants {
+  original: string;
+  thumb: string;
+  medium: string;
+  large: string;
+}
 
 export interface OptimizedImageOptions {
   width?: number;
   height?: number;
-  quality?: number; // 20-100
-  resize?: 'cover' | 'contain' | 'fill';
-  format?: ImageFormat;
+  quality?: number;
 }
 
 /**
- * Detect a Supabase Storage public URL and return its `bucket` + `path`.
- * Returns null for any non-Supabase URL (external CDN, placeholder, blob:, etc.).
+ * Devuelve la URL "tal cual" para imágenes que no tienen variantes pre-generadas.
+ * (Ya no aplicamos transformaciones de Supabase.)
  */
-function parseSupabasePublicUrl(url: string): { bucket: string; path: string } | null {
-  if (!url) return null;
-  const marker = '/storage/v1/object/public/';
-  const idx = url.indexOf(marker);
-  if (idx === -1) return null;
-  const tail = url.slice(idx + marker.length);
-  const slash = tail.indexOf('/');
-  if (slash === -1) return null;
-  return {
-    bucket: decodeURIComponent(tail.slice(0, slash)),
-    path: decodeURIComponent(tail.slice(slash + 1).split('?')[0]),
-  };
+export function getOptimizedImageUrl(url: string | null | undefined, _opts: OptimizedImageOptions = {}): string {
+  return url || '';
 }
 
 /**
- * Returns a transformed (and cacheable) image URL when possible.
- * Falls back to the original URL for non-Supabase sources.
+ * Elige la variante adecuada según el ancho objetivo.
  */
-export function getOptimizedImageUrl(url: string | null | undefined, opts: OptimizedImageOptions = {}): string {
-  if (!url) return '';
-  const parsed = parseSupabasePublicUrl(url);
-  if (!parsed) return url; // external / unknown
+export function pickVariant(variants: ImageVariants | null | undefined, targetWidth?: number): string | null {
+  if (!variants) return null;
+  const w = targetWidth ?? 640;
+  if (w <= 320) return variants.thumb || variants.medium || variants.large || variants.original;
+  if (w <= 800) return variants.medium || variants.large || variants.original;
+  return variants.large || variants.original || variants.medium;
+}
 
-  const { width, height, quality = 75, resize = 'contain', format = 'webp' } = opts;
+/**
+ * Construye un srcset desde variantes pre-generadas.
+ */
+export function buildSrcSetFromVariants(variants: ImageVariants | null | undefined): string {
+  if (!variants) return '';
+  const parts: string[] = [];
+  if (variants.thumb) parts.push(`${variants.thumb} 240w`);
+  if (variants.medium) parts.push(`${variants.medium} 640w`);
+  if (variants.large) parts.push(`${variants.large} 1280w`);
+  return parts.join(', ');
+}
 
-  const { data } = supabase.storage.from(parsed.bucket).getPublicUrl(parsed.path, {
-    transform: {
-      width,
-      height,
-      quality,
-      resize,
-      format: format === 'origin' ? 'origin' : undefined, // 'webp' is the default served by transform
-    },
+/** Sube un Blob al bucket indicado con cache largo + immutable. */
+export async function uploadImageBlob(
+  bucket: string,
+  path: string,
+  blob: Blob,
+  contentType = 'image/webp',
+): Promise<string> {
+  const { error } = await supabase.storage.from(bucket).upload(path, blob, {
+    cacheControl: IMAGE_CACHE_CONTROL,
+    contentType,
+    upsert: false,
   });
-
+  if (error) throw error;
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
 }
 
-/**
- * Build a srcset string for responsive images.
- */
-export function buildSrcSet(url: string, widths: number[], opts: Omit<OptimizedImageOptions, 'width'> = {}): string {
-  return widths
-    .map((w) => `${getOptimizedImageUrl(url, { ...opts, width: w })} ${w}w`)
-    .join(', ');
-}
+/** Compat: anchos por defecto (no se usan para transformación, solo como hint). */
+export const DEFAULT_WIDTHS = [320, 640, 1280];
 
-/** Default responsive widths for product cards / thumbs. */
-export const DEFAULT_WIDTHS = [160, 240, 320, 480, 640, 960];
+/** Compat: srcset legacy — devuelve solo la url original (sin transformar). */
+export function buildSrcSet(url: string, _widths: number[] = DEFAULT_WIDTHS): string {
+  return url;
+}

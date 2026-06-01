@@ -630,14 +630,20 @@ const ProductManagementPanel = () => {
                 <div className="py-2">
                   <ProductImageUploader
                     images={editingProduct.images || []}
+                    variants={editingProduct.image_variants || []}
                     onChange={(images) => setEditingProduct((prev: any) => ({ ...prev, images, image: images[0] || prev.image }))}
+                    onVariantsChange={(image_variants) => setEditingProduct((prev: any) => ({ ...prev, image_variants }))}
                   />
                   <div className="flex justify-end mt-4">
                     <Button variant="gaming" onClick={async () => {
                       try {
                         const { error } = await supabase
                           .from('products')
-                          .update({ images: editingProduct.images, image: editingProduct.images?.[0] || editingProduct.image })
+                          .update({
+                            images: editingProduct.images,
+                            image: editingProduct.images?.[0] || editingProduct.image,
+                            image_variants: editingProduct.image_variants || [],
+                          })
                           .eq('id', editingProduct.id);
                         if (error) throw error;
                         toast({ title: 'Imágenes actualizadas', description: 'Los cambios se guardaron.' });

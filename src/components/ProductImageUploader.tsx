@@ -4,14 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { processImageVariants } from '@/lib/imageProcessing';
+import { uploadImageBlob, ImageVariants } from '@/lib/supabaseImage';
 import {
-  Link, Upload, Trash2, GripVertical, ChevronUp, ChevronDown,
+  Link, Upload, Trash2, ChevronUp, ChevronDown,
   Loader2, ImagePlus, AlertCircle, Crown
 } from 'lucide-react';
 
 interface ProductImageUploaderProps {
   images: string[];
+  /** Variantes alineadas por índice con `images`. Puede tener `null` para imágenes legacy/URL externa. */
+  variants?: (ImageVariants | null)[];
   onChange: (images: string[]) => void;
+  onVariantsChange?: (variants: (ImageVariants | null)[]) => void;
 }
 
 const isValidUrl = (str: string) => {
@@ -23,7 +28,9 @@ const isValidUrl = (str: string) => {
   }
 };
 
-const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) => {
+const BUCKET = 'product-images';
+
+const ProductImageUploader = ({ images, variants = [], onChange, onVariantsChange }: ProductImageUploaderProps) => {
   const { toast } = useToast();
   const [urlInput, setUrlInput] = useState('');
   const [urlError, setUrlError] = useState('');
@@ -32,62 +39,56 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const addImageUrl = useCallback(() => {
-    const trimmed = urlInput.trim();
-    if (!trimmed) {
-      setUrlError('Ingresa una URL');
-      return;
-    }
-    if (!isValidUrl(trimmed)) {
-      setUrlError('URL no válida. Debe empezar con http:// o https://');
-      return;
-    }
-    if (images.includes(trimmed)) {
-      setUrlError('Esta imagen ya fue agregada');
-      return;
-    }
-    setUrlError('');
-    onChange([...images, trimmed]);
-    setUrlInput('');
-    setShowUrlInput(false);
-  }, [urlInput, images, onChange]);
-
-  const handleUrlKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addImageUrl();
-    }
-    if (e.key === 'Escape') {
-      setShowUrlInput(false);
-      setUrlInput('');
-      setUrlError('');
-    }
+  const emit = (nextImages: string[], nextVariants: (ImageVariants | null)[]) => {
+    onChange(nextImages);
+    onVariantsChange?.(nextVariants);
   };
 
-  const uploadFile = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    const filePath = `products/${fileName}`;
+  const addImageUrl = useCallback(() => {
+    const trimmed = urlInput.trim();
+    if (!trimmed) { setUrlError('Ingresa una URL'); return; }
+    if (!isValidUrl(trimmed)) { setUrlError('URL no válida. Debe empezar con http:// o https://'); return; }
+    if (images.includes(trimmed)) { setUrlError('Esta imagen ya fue agregada'); return; }
+    setUrlError('');
+    emit([...images, trimmed], [...variants, null]);
+    setUrlInput('');
+    setShowUrlInput(false);
+  }, [urlInput, images, variants, onChange, onVariantsChange]);
 
-    const { error } = await supabase.storage
-      .from('product-images')
-      .upload(filePath, file, {
-        cacheControl: '31536000, immutable',
-        contentType: file.type,
-        upsert: false,
-      });
+  const handleUrlKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') { e.preventDefault(); addImageUrl(); }
+    if (e.key === 'Escape') { setShowUrlInput(false); setUrlInput(''); setUrlError(''); }
+  };
 
-    if (error) {
-      console.error('Upload error:', error);
-      toast({ title: 'Error', description: 'No se pudo subir la imagen', variant: 'destructive' });
+  /**
+   * Sube un archivo generando 4 versiones estáticas:
+   *   <base>__original.<ext>  (archivo original tal cual subido)
+   *   <base>__thumb.webp      (240px de ancho)
+   *   <base>__medium.webp     (640px) ← URL principal usada en la app
+   *   <base>__large.webp      (1280px)
+   *
+   * Devuelve el objeto ImageVariants. La "URL principal" para listas legacy
+   * (campos `image` / `images[]`) es `medium`.
+   */
+  const uploadFileWithVariants = async (file: File): Promise<ImageVariants | null> => {
+    try {
+      const processed = await processImageVariants(file);
+      const ext = file.name.split('.').pop() || 'jpg';
+      const base = `products/${Date.now()}-${Math.random().toString(36).substring(7)}`;
+
+      const [original, thumb, medium, large] = await Promise.all([
+        uploadImageBlob(BUCKET, `${base}__original.${ext}`, processed.original, file.type || 'image/jpeg'),
+        uploadImageBlob(BUCKET, `${base}__thumb.webp`, processed.thumb, 'image/webp'),
+        uploadImageBlob(BUCKET, `${base}__medium.webp`, processed.medium, 'image/webp'),
+        uploadImageBlob(BUCKET, `${base}__large.webp`, processed.large, 'image/webp'),
+      ]);
+
+      return { original, thumb, medium, large };
+    } catch (err) {
+      console.error('Upload/processing error:', err);
+      toast({ title: 'Error', description: 'No se pudo procesar/subir la imagen', variant: 'destructive' });
       return null;
     }
-
-    const { data: urlData } = supabase.storage
-      .from('product-images')
-      .getPublicUrl(filePath);
-
-    return urlData.publicUrl;
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,30 +96,34 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
     if (!files || files.length === 0) return;
 
     setUploading(true);
-    const newImages = [...images];
+    const nextImages = [...images];
+    const nextVariants = [...variants];
 
     for (const file of Array.from(files)) {
-      const url = await uploadFile(file);
-      if (url && !newImages.includes(url)) {
-        newImages.push(url);
+      const v = await uploadFileWithVariants(file);
+      if (v && !nextImages.includes(v.medium)) {
+        nextImages.push(v.medium);
+        nextVariants.push(v);
       }
     }
 
-    onChange(newImages);
+    emit(nextImages, nextVariants);
     setUploading(false);
     if (fileRef.current) fileRef.current.value = '';
   };
 
   const removeImage = (index: number) => {
-    onChange(images.filter((_, i) => i !== index));
+    emit(images.filter((_, i) => i !== index), variants.filter((_, i) => i !== index));
   };
 
   const moveImage = (index: number, direction: 'up' | 'down') => {
-    const newImages = [...images];
+    const nextImages = [...images];
+    const nextVariants = [...variants];
     const target = direction === 'up' ? index - 1 : index + 1;
-    if (target < 0 || target >= newImages.length) return;
-    [newImages[index], newImages[target]] = [newImages[target], newImages[index]];
-    onChange(newImages);
+    if (target < 0 || target >= nextImages.length) return;
+    [nextImages[index], nextImages[target]] = [nextImages[target], nextImages[index]];
+    [nextVariants[index], nextVariants[target]] = [nextVariants[target], nextVariants[index]];
+    emit(nextImages, nextVariants);
   };
 
   const getImageLabel = (index: number) => {
@@ -126,7 +131,6 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
     if (index <= 2) return 'Destacada';
     return 'Galería';
   };
-
   const getLabelColor = (index: number) => {
     if (index === 0) return 'bg-primary text-primary-foreground';
     if (index <= 2) return 'bg-accent/20 text-accent-foreground';
@@ -139,12 +143,16 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
         <Label className="text-xs text-muted-foreground">
           Imágenes del producto ({images.length})
         </Label>
+        {uploading && (
+          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Procesando variantes WebP…
+          </span>
+        )}
       </div>
 
-      {/* Image previews */}
       {images.length > 0 && (
         <div className="space-y-2">
-          {/* Main image preview */}
           {images[0] && (
             <div className="relative rounded-lg border-2 border-primary/40 overflow-hidden bg-muted/20">
               <div className="flex items-start gap-3 p-2">
@@ -167,6 +175,11 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
                     <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${getLabelColor(0)}`}>
                       {getImageLabel(0)}
                     </span>
+                    {variants[0] && (
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/15 text-emerald-600 font-medium">
+                        WebP ×3
+                      </span>
+                    )}
                   </div>
                   <p className="text-[10px] text-muted-foreground truncate">{images[0]}</p>
                 </div>
@@ -184,16 +197,12 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
             </div>
           )}
 
-          {/* Thumbnails grid for rest */}
           {images.length > 1 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {images.slice(1).map((img, rawIdx) => {
                 const index = rawIdx + 1;
                 return (
-                  <div
-                    key={`${img}-${index}`}
-                    className="relative group rounded-lg border border-border overflow-hidden bg-muted/20"
-                  >
+                  <div key={`${img}-${index}`} className="relative group rounded-lg border border-border overflow-hidden bg-muted/20">
                     <div className="aspect-square relative">
                       <img
                         src={img}
@@ -210,7 +219,6 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
                         {getImageLabel(index)}
                       </span>
                     </div>
-                    {/* Hover controls */}
                     <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                       <Button type="button" variant="outline" size="icon" className="h-6 w-6" onClick={() => moveImage(index, 'up')} disabled={index === 0}>
                         <ChevronUp className="h-3 w-3" />
@@ -232,7 +240,6 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
         </div>
       )}
 
-      {/* Empty state */}
       {images.length === 0 && !showUrlInput && (
         <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
           <ImagePlus className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
@@ -241,7 +248,6 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
         </div>
       )}
 
-      {/* URL input (shown on click) */}
       {showUrlInput && (
         <div className="space-y-1.5">
           <div className="flex gap-2">
@@ -254,12 +260,8 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
               className="h-9 text-sm"
               autoFocus
             />
-            <Button type="button" variant="gaming" size="sm" className="h-9 shrink-0" onClick={addImageUrl}>
-              Agregar
-            </Button>
-            <Button type="button" variant="ghost" size="sm" className="h-9 shrink-0" onClick={() => { setShowUrlInput(false); setUrlInput(''); setUrlError(''); }}>
-              Cancelar
-            </Button>
+            <Button type="button" variant="gaming" size="sm" className="h-9 shrink-0" onClick={addImageUrl}>Agregar</Button>
+            <Button type="button" variant="ghost" size="sm" className="h-9 shrink-0" onClick={() => { setShowUrlInput(false); setUrlInput(''); setUrlError(''); }}>Cancelar</Button>
           </div>
           {urlError && (
             <p className="text-xs text-destructive flex items-center gap-1">
@@ -269,37 +271,21 @@ const ProductImageUploader = ({ images, onChange }: ProductImageUploaderProps) =
         </div>
       )}
 
-      {/* Action buttons */}
       <div className="flex gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="h-9 gap-1.5 flex-1"
-          onClick={() => setShowUrlInput(true)}
-          disabled={showUrlInput}
-        >
+        <Button type="button" variant="outline" size="sm" className="h-9 gap-1.5 flex-1" onClick={() => setShowUrlInput(true)} disabled={showUrlInput}>
           <Link className="h-3.5 w-3.5" />
           + Agregar imagen por URL
         </Button>
 
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileUpload} />
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-9 gap-1.5 text-muted-foreground"
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-        >
+        <Button type="button" variant="ghost" size="sm" className="h-9 gap-1.5 text-muted-foreground" onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
           Subir archivo
         </Button>
       </div>
 
-      {/* Help text */}
       <p className="text-[10px] text-muted-foreground">
-        Imagen 1 = portada · Imágenes 2-3 = galería destacada · Resto = galería extendida
+        Al subir un archivo se generan 3 variantes WebP (240/640/1280px) para evitar consumir cuota de transformaciones de Supabase.
       </p>
     </div>
   );
