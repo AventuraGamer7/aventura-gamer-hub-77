@@ -39,7 +39,7 @@ const AddProductForm = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', description: '', price: '', stock: '', category: '', platform: [], images: [], badge_text: '', badge_color: 'primary', featured: false });
+    setFormData({ name: '', description: '', price: '', stock: '', category: '', platform: [], images: [], image_variants: [], badge_text: '', badge_color: 'primary', featured: false });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,6 +59,7 @@ const AddProductForm = () => {
         platform: formData.platform.length > 0 ? formData.platform : null,
         image: formData.images[0] || null,
         images: formData.images.length > 0 ? formData.images : null,
+        image_variants: formData.image_variants.length > 0 ? (formData.image_variants as any) : [],
         badge_text: formData.badge_text || null,
         badge_color: formData.badge_color || 'primary',
         featured: formData.featured
@@ -157,7 +158,9 @@ const AddProductForm = () => {
           {/* Imágenes - Componente unificado */}
           <ProductImageUploader
             images={formData.images}
+            variants={formData.image_variants}
             onChange={(images) => setFormData(prev => ({ ...prev, images }))}
+            onVariantsChange={(image_variants) => setFormData(prev => ({ ...prev, image_variants }))}
           />
 
           {/* Badge */}
