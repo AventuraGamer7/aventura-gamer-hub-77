@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Plus } from 'lucide-react';
 import ProductImageUploader from './ProductImageUploader';
 import CategoryCombobox from './CategoryCombobox';
+import type { ImageVariants } from '@/lib/supabaseImage';
 
 const AddProductForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,7 @@ const AddProductForm = () => {
     category: '',
     platform: [] as string[],
     images: [] as string[],
+    image_variants: [] as (ImageVariants | null)[],
     badge_text: '',
     badge_color: 'primary',
     featured: false
