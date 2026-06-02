@@ -21,7 +21,7 @@ import { Edit, Trash2, Package, Eye, Search, EyeOff, Filter, LayoutGrid, List, T
 import { useNavigate } from 'react-router-dom';
 
 type QuickFilter = 'top_sellers' | 'low_sellers' | 'low_stock' | 'out_of_stock' | 'new_products' | 'no_movement' | 'high_stock';
-type SortOption = 'top_sellers' | 'low_sellers' | 'stock_asc' | 'stock_desc' | 'last_sale' | 'newest' | 'highest_revenue';
+type SortOption = 'top_sellers' | 'low_sellers' | 'stock_asc' | 'stock_desc' | 'last_sale' | 'newest' | 'highest_revenue' | 'name_asc' | 'name_desc';
 
 const QUICK_FILTERS: { key: QuickFilter; label: string; icon: React.ReactNode }[] = [
   { key: 'top_sellers', label: 'Más vendidos', icon: <TrendingUp className="h-3 w-3" /> },
@@ -214,6 +214,8 @@ const ProductManagementPanel = () => {
         }
         case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         case 'highest_revenue': return (statB?.totalRevenue || 0) - (statA?.totalRevenue || 0);
+        case 'name_asc': return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });
+        case 'name_desc': return b.name.localeCompare(a.name, 'es', { sensitivity: 'base' });
         default: return 0;
       }
     });
@@ -329,6 +331,8 @@ const ProductManagementPanel = () => {
             className="h-8 px-2 pr-6 border border-input bg-background rounded-md text-xs appearance-none cursor-pointer"
           >
             <option value="newest">Más recientes</option>
+            <option value="name_asc">Nombre A-Z</option>
+            <option value="name_desc">Nombre Z-A</option>
             <option value="top_sellers">Más vendidos</option>
             <option value="low_sellers">Menos vendidos</option>
             <option value="stock_asc">Stock ascendente</option>
