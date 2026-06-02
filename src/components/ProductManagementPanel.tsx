@@ -214,6 +214,8 @@ const ProductManagementPanel = () => {
         }
         case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         case 'highest_revenue': return (statB?.totalRevenue || 0) - (statA?.totalRevenue || 0);
+        case 'name_asc': return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });
+        case 'name_desc': return b.name.localeCompare(a.name, 'es', { sensitivity: 'base' });
         default: return 0;
       }
     });
