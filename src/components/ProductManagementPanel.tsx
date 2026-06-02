@@ -331,6 +331,8 @@ const ProductManagementPanel = () => {
             className="h-8 px-2 pr-6 border border-input bg-background rounded-md text-xs appearance-none cursor-pointer"
           >
             <option value="newest">Más recientes</option>
+            <option value="name_asc">Nombre A-Z</option>
+            <option value="name_desc">Nombre Z-A</option>
             <option value="top_sellers">Más vendidos</option>
             <option value="low_sellers">Menos vendidos</option>
             <option value="stock_asc">Stock ascendente</option>
