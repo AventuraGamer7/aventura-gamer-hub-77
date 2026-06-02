@@ -21,7 +21,7 @@ import { Edit, Trash2, Package, Eye, Search, EyeOff, Filter, LayoutGrid, List, T
 import { useNavigate } from 'react-router-dom';
 
 type QuickFilter = 'top_sellers' | 'low_sellers' | 'low_stock' | 'out_of_stock' | 'new_products' | 'no_movement' | 'high_stock';
-type SortOption = 'top_sellers' | 'low_sellers' | 'stock_asc' | 'stock_desc' | 'last_sale' | 'newest' | 'highest_revenue';
+type SortOption = 'top_sellers' | 'low_sellers' | 'stock_asc' | 'stock_desc' | 'last_sale' | 'newest' | 'highest_revenue' | 'name_asc' | 'name_desc';
 
 const QUICK_FILTERS: { key: QuickFilter; label: string; icon: React.ReactNode }[] = [
   { key: 'top_sellers', label: 'Más vendidos', icon: <TrendingUp className="h-3 w-3" /> },
