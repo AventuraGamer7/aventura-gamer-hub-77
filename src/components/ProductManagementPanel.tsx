@@ -136,6 +136,7 @@ const ProductManagementPanel = () => {
           platform: editingProduct.platform?.length > 0 ? editingProduct.platform : null,
           image: editingProduct.image,
           images: editingProduct.images,
+          image_variants: editingProduct.image_variants || [],
           badge_text: editingProduct.badge_text,
           badge_color: editingProduct.badge_color,
           featured: editingProduct.featured
