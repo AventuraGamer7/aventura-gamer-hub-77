@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
+import { processImageVariants } from '@/lib/imageProcessing';
+import { uploadImageBlob } from '@/lib/supabaseImage';
 import {
   ImagePlus, Upload, Search, CheckCircle, X, Loader2,
   Package, AlertCircle, Trash2, ArrowRight
@@ -195,27 +197,32 @@ const SubidaMasivaImagenes = () => {
 
     for (let i = 0; i < archivos.length; i++) {
       const file = archivos[i];
-      const filename = `${Date.now()}_${file.name}`;
 
       try {
-        // 1) subir al bucket
-        const { error: uploadError } = await supabase.storage
-          .from('imagenes')
-          .upload(filename, file, { cacheControl: '31536000, immutable', contentType: file.type, upsert: false });
+        // 0) Validación de tamaño (max 15 MB antes de comprimir)
+        if (file.size > 15 * 1024 * 1024) {
+          throw new Error(`Archivo muy grande (${(file.size / 1024 / 1024).toFixed(1)} MB). Máximo 15 MB.`);
+        }
 
-        if (uploadError) throw uploadError;
+        // 1) Comprimir client-side a WebP (thumb/medium/large) para NO subir el original crudo.
+        //    Esto reemplaza el flujo antiguo que subía JPG/PNG sin comprimir al bucket 'imagenes'.
+        const processed = await processImageVariants(file);
+        const base = `products/${Date.now()}-${Math.random().toString(36).substring(7)}`;
+        const mediumPath = `${base}__medium.webp`;
 
-        // 2) obtener URL pública
-        const { data: urlData } = supabase.storage
-          .from('imagenes')
-          .getPublicUrl(filename);
+        // 2) Subir sólo la variante MEDIUM (640px, ~50-150 KB) al bucket product-images.
+        //    Se usa como URL principal; la galería puede subir large/thumb después si hace falta.
+        const publicUrl = await uploadImageBlob(
+          'product-images',
+          mediumPath,
+          processed.medium,
+          'image/webp',
+        );
 
-        const publicUrl = urlData.publicUrl;
-
-        // 3) llamar RPC con nota
+        // 3) llamar RPC con nota (misma firma; sólo cambian bucket/URL de origen)
         const { data: rpcData, error: rpcError } = await supabase.rpc('procesar_imagen_masiva', {
           p_url: publicUrl,
-          p_filename: filename,
+          p_filename: mediumPath,
           p_product_id: productosSeleccionados[i]?.id || null,
           p_nota: notas[i] || null,
         });
