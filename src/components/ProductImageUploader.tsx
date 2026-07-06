@@ -61,29 +61,37 @@ const ProductImageUploader = ({ images, variants = [], onChange, onVariantsChang
   };
 
   /**
-   * Sube un archivo generando 4 versiones estáticas:
-   *   <base>__original.<ext>  (archivo original tal cual subido)
-   *   <base>__thumb.webp      (240px de ancho)
-   *   <base>__medium.webp     (640px) ← URL principal usada en la app
-   *   <base>__large.webp      (1280px)
+   * Sube un archivo generando 3 versiones WebP estáticas:
+   *   <base>__thumb.webp   (240px)
+   *   <base>__medium.webp  (640px) ← URL principal usada en la app
+   *   <base>__large.webp   (1280px)
    *
-   * Devuelve el objeto ImageVariants. La "URL principal" para listas legacy
-   * (campos `image` / `images[]`) es `medium`.
+   * NOTA: Ya NO subimos el archivo original — ahorra ~60% de storage
+   * y las variantes WebP cubren todos los usos de la UI.
    */
   const uploadFileWithVariants = async (file: File): Promise<ImageVariants | null> => {
     try {
+      // Validación de tamaño de entrada (max 15 MB antes de comprimir)
+      if (file.size > 15 * 1024 * 1024) {
+        toast({
+          title: 'Archivo muy grande',
+          description: `${file.name} pesa ${(file.size / 1024 / 1024).toFixed(1)} MB. Máximo 15 MB.`,
+          variant: 'destructive',
+        });
+        return null;
+      }
+
       const processed = await processImageVariants(file);
-      const ext = file.name.split('.').pop() || 'jpg';
       const base = `products/${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
-      const [original, thumb, medium, large] = await Promise.all([
-        uploadImageBlob(BUCKET, `${base}__original.${ext}`, processed.original, file.type || 'image/jpeg'),
+      const [thumb, medium, large] = await Promise.all([
         uploadImageBlob(BUCKET, `${base}__thumb.webp`, processed.thumb, 'image/webp'),
         uploadImageBlob(BUCKET, `${base}__medium.webp`, processed.medium, 'image/webp'),
         uploadImageBlob(BUCKET, `${base}__large.webp`, processed.large, 'image/webp'),
       ]);
 
-      return { original, thumb, medium, large };
+      // `original` apunta a `large` para compatibilidad con el tipo ImageVariants.
+      return { original: large, thumb, medium, large };
     } catch (err) {
       console.error('Upload/processing error:', err);
       toast({ title: 'Error', description: 'No se pudo procesar/subir la imagen', variant: 'destructive' });
