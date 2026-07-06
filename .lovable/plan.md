@@ -1,76 +1,38 @@
-## Estado de Fase 1 y Fase 2
+## Cambios
 
-Sí, ambas fases ya están implementadas:
+### 1. `public/robots.txt` — desbloquear sitemap
+Quitar la línea `Disallow: /*.xml$` que estaba bloqueando `/sitemap.xml` a los crawlers. Se mantiene `Disallow: /*.json$` y el resto.
 
-- **Fase 1 (mitigación)**: `getOptimizedImageUrl` en `src/lib/supabaseImage.ts` ya no llama a `supabase.storage.getPublicUrl({ transform })`. Devuelve URLs estáticas. Esto ya detuvo el consumo de cuota de Image Transformations.
-- **Fase 2 (definitiva)**: `src/lib/imageProcessing.ts` genera 3 variantes WebP (240/640/1280) en el navegador con Canvas. `ProductImageUploader` sube las 4 versiones (original + thumb + medium + large) al bucket con `cacheControl: '31536000, immutable'`. `OptimizedImage` arma `srcset` desde las variantes estáticas.
+### 2. `index.html` — idioma, keywords, og:image y fuentes
+- `<html lang="en">` → `<html lang="es-CO">`
+- Eliminar `<meta name="keywords">` (Google la ignora).
+- Reducir Google Fonts de 5 familias / ~30 pesos a 3 familias / 6 pesos:
+  - **Antes**: Inter (6 pesos) + Bungee + Orbitron (5 pesos) + Rajdhani (5 pesos) + Press Start 2P
+  - **Después**: `Inter:wght@400;600;700` + `Orbitron:wght@400;700` + `Press Start 2P`
+  - Ahorro estimado: ~250-350 KB en primera carga.
+- Agregar `<meta property="og:image">` y `twitter:image` apuntando a la imagen generada (1216×640, ya guardada en `src/assets/og-image.jpg`). La pondré también accesible desde una ruta pública para que crawlers la lean (copia a `public/og-image.jpg`).
 
-Resultado: **0 transformaciones nuevas** en cada carga/render. La cuota dejará de crecer en este ciclo y se reseteará el próximo.
+### 3. `tailwind.config.ts` — limpiar fontFamily
+- Quitar `bungee` (0 usos en código).
+- `rajdhani` → alias de `Inter` (solo 2 usos en `Privacidad.tsx`; visualmente queda casi igual con Inter 400).
+- Mantener `gaming`, `orbitron`, `mario` (sí están en uso).
 
-> Nota: las imágenes **antiguas** seguirán mostrándose con su URL cruda (sin transformar, así que tampoco gastan cuota). Para optimizarlas hay que re-subirlas desde el panel.
+### 4. Imagen og ya generada
+- `src/assets/og-image.jpg` (1216×640, ~Aventura Gamer + tagline + ubicación). La copio a `public/og-image.jpg` para servirla en una URL estable.
 
----
+## Archivos a tocar
+- `public/robots.txt` (1 línea menos)
+- `index.html` (lang, meta keywords, og:image, twitter:image, link de fuentes)
+- `tailwind.config.ts` (4 líneas en fontFamily)
+- `public/og-image.jpg` (nuevo, copia del asset)
 
-## Bug al subir imagen manual en Gestión de Productos
+## Lo que NO se toca
+- Lógica de Helmet por ruta (canonical estático queda por ahora — eso era el punto 9, no pediste).
+- Mercado Pago SDK y `React.lazy()` (puntos 4 y 5, los dejamos para otra tanda).
+- Estilos visuales: la sustitución de `Rajdhani` por `Inter` afecta solo a 2 párrafos en `Privacidad`.
 
-Encontré **dos causas reales**, ambas se arreglan en este plan:
-
-### Causa 1 — Política de Storage rechaza al rol `admin` y `manager`
-La policy INSERT del bucket `product-images` solo permite `superadmin` y `employee`:
-
-```
-bucket_id = 'product-images' AND role IN ('superadmin','employee')
-```
-
-Si el usuario logueado es `admin` o `manager` (que sí pueden gestionar productos por las RLS de la tabla `products`), la subida al Storage falla con un error de RLS y aparece el toast "No se pudo procesar/subir la imagen". Además **no hay policies de UPDATE/DELETE** para `product-images`, por lo que tampoco se podrían sobrescribir/borrar.
-
-**Migración**: reemplazar las policies del bucket `product-images` para que incluyan `superadmin`, `admin`, `manager`, `employee` en INSERT/UPDATE/DELETE.
-
-### Causa 2 — `image_variants` no se guarda al editar
-En `ProductManagementPanel.handleUpdate` el `supabase.update({...})` **no incluye** `image_variants`. Resultado: el uploader genera y sube las variantes, las pinta en pantalla, pero al guardar el producto se pierden y la próxima vez se vuelve a servir la URL cruda.
-
-**Fix**: agregar `image_variants: editingProduct.image_variants || []` al objeto del `update`.
-
----
-
-## Cambios concretos
-
-### 1. Migración SQL (storage policies)
-```sql
-DROP POLICY IF EXISTS "Admins can upload product images" ON storage.objects;
-
-CREATE POLICY "Staff can upload product images"
-ON storage.objects FOR INSERT TO authenticated
-WITH CHECK (
-  bucket_id = 'product-images'
-  AND public.get_current_user_role() IN ('superadmin','admin','manager','employee')
-);
-
-CREATE POLICY "Staff can update product images"
-ON storage.objects FOR UPDATE TO authenticated
-USING (
-  bucket_id = 'product-images'
-  AND public.get_current_user_role() IN ('superadmin','admin','manager','employee')
-);
-
-CREATE POLICY "Staff can delete product images"
-ON storage.objects FOR DELETE TO authenticated
-USING (
-  bucket_id = 'product-images'
-  AND public.get_current_user_role() IN ('superadmin','admin','manager','employee')
-);
-```
-
-### 2. `src/components/ProductManagementPanel.tsx` (handleUpdate)
-Añadir `image_variants` al payload del update para que persistan las variantes generadas al editar.
-
-### 3. Validación
-- Probar subida manual con cuenta admin → debe terminar sin error y mostrar el badge "WebP ×3".
-- Recargar el producto → las variantes siguen ahí y `OptimizedImage` usa `srcset`.
-- Verificar en Dashboard de Supabase que el contador de Image Transformations ya no sube.
-
-## Detalles técnicos
-
-- No se toca `AddProductForm` (ya guarda `image_variants` al crear).
-- No se modifica `supabaseImage.ts` ni `OptimizedImage.tsx` (ya están correctos).
-- Las imágenes legacy sin variantes siguen funcionando vía fallback al `src` crudo.
+## Validación
+- Build sin warnings de Tailwind.
+- `view-source:` del preview muestra `lang="es-CO"`, og:image presente, sin `keywords`.
+- `robots.txt` accesible y sin `Disallow: /*.xml$`.
+- Previa social en herramientas tipo opengraph.xyz muestra la imagen.
