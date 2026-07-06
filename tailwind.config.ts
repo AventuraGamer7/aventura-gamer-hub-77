@@ -138,9 +138,8 @@ export default {
 			},
 			fontFamily: {
 				'gaming': ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
-				'bungee': ['Bungee', 'cursive'],
 				'orbitron': ['Orbitron', 'monospace'],
-				'rajdhani': ['Rajdhani', 'sans-serif'],
+				'rajdhani': ['Inter', 'sans-serif'],
 				'mario': ['"Press Start 2P"', 'cursive']
 			}
 		}

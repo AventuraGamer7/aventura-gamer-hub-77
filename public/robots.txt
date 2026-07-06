@@ -23,7 +23,6 @@ Disallow: /payment
 
 # Block temporary or development files
 Disallow: /*.json$
-Disallow: /*.xml$
 Disallow: /tmp/
 Disallow: /api/
 
