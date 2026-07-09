@@ -192,7 +192,9 @@ Deno.serve(async (req) => {
       const deleted: string[] = [];
       let migratedBytes = 0;
       let deletedBytes = 0;
+      let processed = 0;
       for (const f of files) {
+        if (processed >= limit) break;
         const oldUrl = publicUrl("imagenes", f.name);
         if (refs.has(oldUrl)) {
           if (!dryRun) {
@@ -211,10 +213,12 @@ Deno.serve(async (req) => {
           }
           migrated.push(f.name);
           migratedBytes += f.size;
+          processed++;
         } else {
           if (!dryRun) await admin.storage.from("imagenes").remove([f.name]);
           deleted.push(f.name);
           deletedBytes += f.size;
+          processed++;
         }
       }
       report.results["migrate-imagenes"] = {
