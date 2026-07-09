@@ -153,6 +153,22 @@ Deno.serve(async (req) => {
 
     const report: any = { dryRun, actions, results: {} };
 
+    // action: delete-buckets
+    if (actions.includes("delete-buckets")) {
+      const buckets: string[] = body.buckets ?? ["imagenes", "product images"];
+      const out: Record<string, any> = {};
+      for (const b of buckets) {
+        if (dryRun) { out[b] = "would delete"; continue; }
+        const emptyRes = await admin.storage.emptyBucket(b);
+        const delRes = await admin.storage.deleteBucket(b);
+        out[b] = { empty: emptyRes.error?.message ?? "ok", delete: delRes.error?.message ?? "ok" };
+      }
+      report.results["delete-buckets"] = out;
+      return new Response(JSON.stringify(report, null, 2), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const refs = await getReferencedUrls();
     report.referencedUrls = refs.size;
 
