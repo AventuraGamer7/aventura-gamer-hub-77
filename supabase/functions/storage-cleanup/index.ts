@@ -147,8 +147,9 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const dryRun: boolean = body.dryRun !== false; // default true unless explicitly false
+    const dryRun: boolean = body.dryRun !== false;
     const actions: string[] = body.actions ?? ["orphans", "migrate-imagenes", "migrate-duplicate"];
+    const limit: number = body.limit ?? 15;
 
     const report: any = { dryRun, actions, results: {} };
 
