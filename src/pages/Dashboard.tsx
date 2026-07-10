@@ -28,7 +28,7 @@ import { useCourses } from '@/hooks/useCourses';
 import { useServices } from '@/hooks/useServices';
 
 import AddProductForm from '@/components/AddProductForm';
-import AddCourseForm from '@/components/AddCourseForm';
+
 import AddServiceForm from '@/components/AddServiceForm';
 import ProductManagementPanel from '@/components/ProductManagementPanel';
 import ManagementPanel from '@/components/ManagementPanel';
@@ -445,12 +445,9 @@ const Dashboard = () => {
       case 'courses':
         return (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-glow">Gestión de Cursos</h2>
-                <p className="text-muted-foreground">Administra todos los cursos disponibles</p>
-              </div>
-              {canCreateContent() && <AddCourseForm />}
+            <div>
+              <h2 className="text-2xl font-bold text-glow">Gestión de Cursos</h2>
+              <p className="text-muted-foreground">Administra todos los cursos disponibles</p>
             </div>
             <CourseManagementPanel />
           </div>
