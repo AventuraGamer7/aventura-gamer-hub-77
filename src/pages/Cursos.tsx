@@ -1,122 +1,102 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import SEOHead from '@/components/SEO/SEOHead';
+import CourseCard from '@/components/CourseCard';
 import { useCourses } from '@/hooks/useCourses';
-import { useCart } from '@/hooks/useCart';
-import { useToast } from '@/hooks/use-toast';
 import { generateCourseSchema, getSEOKeywords } from '@/utils/seoUtils';
-import { GraduationCap, Star, Clock, Users, Award, PlayCircle, CheckCircle, Target, ShoppingCart } from 'lucide-react';
+import { Award, Target, CheckCircle, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const CATEGORIES = [
+  { id: 'todos', label: 'Todos' },
+  { id: 'reparacion', label: 'Reparación' },
+  { id: 'mantenimiento', label: 'Mantenimiento' },
+  { id: 'avanzado', label: 'Avanzado' },
+  { id: 'basico', label: 'Básico' },
+];
+
+const FILTERS: Record<string, string[]> = {
+  reparacion: ['reparación', 'reparar', 'arreglo', 'fix'],
+  mantenimiento: ['mantenimiento', 'limpieza', 'cuidado', 'maintenance'],
+  avanzado: ['avanzado', 'profesional', 'expert', 'master'],
+  basico: ['básico', 'inicio', 'principiante', 'beginner'],
+};
+
+const BENEFITS = [
+  { title: 'Instructores Expertos', description: 'Aprende de técnicos con más de 8 años de experiencia', icon: Award },
+  { title: 'Práctica Real', description: 'Trabajarás con equipos reales desde el primer día', icon: Target },
+  { title: 'Certificación', description: 'Recibe un certificado avalado al completar el curso', icon: CheckCircle },
+  { title: 'Soporte Continuo', description: 'Acceso a nuestra comunidad y soporte post-curso', icon: Users },
+];
+
 const Cursos = () => {
   const { categoria } = useParams();
   const navigate = useNavigate();
-  const {
-    courses,
-    loading,
-    error
-  } = useCourses();
-  const {
-    addItem
-  } = useCart();
-  const {
-    toast
-  } = useToast();
-  const benefits = [{
-    title: 'Instructores Expertos',
-    description: 'Aprende de técnicos con más de 8 años de experiencia',
-    icon: <Award className="h-6 w-6" />
-  }, {
-    title: 'Práctica Real',
-    description: 'Trabajarás con equipos reales desde el primer día',
-    icon: <Target className="h-6 w-6" />
-  }, {
-    title: 'Certificación',
-    description: 'Recibe un certificado avalado al completar el curso',
-    icon: <CheckCircle className="h-6 w-6" />
-  }, {
-    title: 'Soporte Continuo',
-    description: 'Acceso a nuestra comunidad y soporte post-curso',
-    icon: <Users className="h-6 w-6" />
-  }];
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
+  const { courses, loading, error } = useCourses();
 
-  const getFilteredCourses = (category: string) => {
-    if (category === 'todos') return courses;
-    
-    const filters = {
-      'reparacion': ['reparación', 'reparar', 'arreglo', 'fix'],
-      'mantenimiento': ['mantenimiento', 'limpieza', 'cuidado', 'maintenance'],
-      'avanzado': ['avanzado', 'profesional', 'expert', 'master'],
-      'basico': ['básico', 'inicio', 'principiante', 'beginner']
-    };
-    
-    const categoryFilters = filters[category as keyof typeof filters] || [];
-    return courses.filter(course => 
-      categoryFilters.some(filter => 
-        course.title.toLowerCase().includes(filter) || 
-        course.description?.toLowerCase().includes(filter)
+  const activeCategory = categoria || 'todos';
+
+  const filteredCourses = React.useMemo(() => {
+    if (activeCategory === 'todos') return courses;
+    const keys = FILTERS[activeCategory] || [];
+    return courses.filter((c) =>
+      keys.some(
+        (k) =>
+          c.title.toLowerCase().includes(k) ||
+          c.description?.toLowerCase().includes(k)
       )
     );
+  }, [courses, activeCategory]);
+
+  const seoMap: Record<string, { title: string; description: string; keywords: string }> = {
+    reparacion: {
+      title: 'Cursos de Reparación de Consolas Gaming | Academia Aventura Gamer',
+      description: 'Aprende reparación profesional de PlayStation, Xbox y Nintendo. Cursos presenciales con práctica real, certificación incluida en Envigado.',
+      keywords: getSEOKeywords('cursos'),
+    },
+    mantenimiento: {
+      title: 'Cursos de Mantenimiento Gaming - Consolas y Controles | Aventura Gamer',
+      description: 'Formación en mantenimiento preventivo gaming: limpieza, pasta térmica, ventiladores. Técnicas profesionales en Envigado.',
+      keywords: 'curso mantenimiento gaming, limpieza consolas, pasta térmica, ventiladores gaming Envigado',
+    },
+    avanzado: {
+      title: 'Cursos Avanzados Reparación Gaming - Nivel Profesional | Aventura Gamer',
+      description: 'Cursos avanzados para técnicos: microsoldadura, reballing, reparación de placas. Nivel profesional con certificación en Envigado.',
+      keywords: 'cursos avanzados gaming, microsoldadura consolas, reballing PlayStation Xbox, técnico profesional Envigado',
+    },
+    todos: {
+      title: 'Cursos de Reparación Gaming - Academia Técnica | Aventura Gamer',
+      description: 'Academia especializada en cursos de reparación de consolas gaming. PlayStation, Xbox, Nintendo. Certificación, práctica real y soporte continuo.',
+      keywords: getSEOKeywords('cursos'),
+    },
   };
-
-  // SEO data based on category
-  const getSEOData = () => {
-    const seoCategories = {
-      'reparacion': {
-        title: 'Cursos de Reparación de Consolas Gaming | Academia Aventura Gamer',
-        description: 'Aprende reparación profesional de PlayStation, Xbox y Nintendo. Cursos presenciales con práctica real, certificación incluida en Envigado.',
-        keywords: getSEOKeywords('cursos')
-      },
-      'mantenimiento': {
-        title: 'Cursos de Mantenimiento Gaming - Consolas y Controles | Aventura Gamer',
-        description: 'Formación en mantenimiento preventivo gaming: limpieza, pasta térmica, ventiladores. Técnicas profesionales en Envigado.',
-        keywords: 'curso mantenimiento gaming, limpieza consolas, pasta térmica, ventiladores gaming Envigado'
-      },
-      'avanzado': {
-        title: 'Cursos Avanzados Reparación Gaming - Nivel Profesional | Aventura Gamer',
-        description: 'Cursos avanzados para técnicos: microsoldadura, reballing, reparación de placas. Nivel profesional con certificación en Envigado.',
-        keywords: 'cursos avanzados gaming, microsoldadura consolas, reballing PlayStation Xbox, técnico profesional Envigado'
-      },
-      'todos': {
-        title: 'Cursos de Reparación Gaming - Academia Técnica | Aventura Gamer',
-        description: 'Academia especializada en cursos de reparación de consolas gaming. PlayStation, Xbox, Nintendo. Certificación, práctica real y soporte continuo.',
-        keywords: getSEOKeywords('cursos')
-      }
-    };
-
-    const currentCategory = categoria || 'todos';
-    return seoCategories[currentCategory as keyof typeof seoCategories] || seoCategories.todos;
-  };
-
-  const seoData = getSEOData();
+  const seoData = seoMap[activeCategory] || seoMap.todos;
   const canonicalUrl = `https://aventuragamer.com/cursos${categoria ? `/${categoria}` : ''}`;
 
-  // Generate structured data for courses
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Cursos de Reparación Gaming",
-    "description": seoData.description,
-    "itemListElement": courses.slice(0, 5).map((course, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": generateCourseSchema(course)
-    }))
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Cursos de Reparación Gaming',
+    description: seoData.description,
+    itemListElement: courses.slice(0, 5).map((course, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: generateCourseSchema(course),
+    })),
   };
-  return <div className="min-h-screen bg-background">
-      <SEOHead 
+
+  const handleCategoryChange = (id: string) => {
+    if (id === 'todos') navigate('/cursos');
+    else navigate(`/cursos/${id}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SEOHead
         title={seoData.title}
         description={seoData.description}
         keywords={seoData.keywords}
@@ -126,308 +106,90 @@ const Cursos = () => {
       />
       <Header />
       <WhatsAppFloat />
-      
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16 overflow-hidden">
+
+      {/* Hero */}
+      <section className="relative pt-24 pb-12 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
-        
         <div className="relative container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            
-            
-            <h1 className="text-4xl text-glow font-bold md:text-6xl">Academia Gamer
-Cursos Especializados</h1>
-            
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-glow">
+              Academia Gamer · Cursos Especializados
+            </h1>
+            <p className="text-lg text-muted-foreground">
               Conviértete en un maestro de la reparación gaming. Aprende con los mejores y domina las técnicas más avanzadas.
             </p>
           </div>
         </div>
       </section>
 
-
-      
-            {/* Courses Section */}
-            <section className="py-20">
-              <div className="container mx-auto px-4">
-                
-                {loading ? <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                  </div> : error ? <div className="text-center py-12">
-                    <p className="text-red-500">Error al cargar los cursos: {error}</p>
-                    <Button variant="gaming" onClick={() => window.location.reload()}>
-                      Reintentar
-                    </Button>
-                  </div> : courses.length === 0 ? <div className="text-center py-12">
-                    <p className="text-muted-foreground">No hay cursos disponibles en este momento.</p>
-                  </div> : <Tabs value={categoria || "todos"} className="w-full" onValueChange={(value) => {
-                    if (value === "todos") {
-                      navigate("/cursos");
-                    } else {
-                      navigate(`/cursos/${value}`);
-                    }
-                  }}>
-                    <TabsList className="grid w-full grid-cols-4 mb-8">
-                      <TabsTrigger value="todos">Todos</TabsTrigger>
-                      <TabsTrigger value="reparacion">Reparación</TabsTrigger>
-                      <TabsTrigger value="mantenimiento">Mantenimiento</TabsTrigger>
-                      <TabsTrigger value="avanzado">Avanzado</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="todos" className="space-y-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("todos").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
-                            {course.cover ? <div className="relative h-48 overflow-hidden">
-                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                                <GraduationCap className="h-12 w-12 text-primary/30" />
-                              </div>}
-                            
-                            <CardHeader className="space-y-4">
-                              <div className="space-y-2">
-                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
-                                <CardDescription className="text-muted-foreground">
-                                  {course.description || 'Descripción no disponible'}
-                                </CardDescription>
-                              </div>
-                            </CardHeader>
-                            
-                            <CardContent className="space-y-6">
-                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                                <div className="text-right">
-                                  <div className="text-sm text-muted-foreground">Precio</div>
-                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
-                                </div>
-                              </div>
-                              
-                              <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={(e) => {
-                                  e.stopPropagation();
-                                  addItem({
-                                    id: course.id,
-                                    name: course.title,
-                                    price: course.price,
-                                    image: course.cover || undefined,
-                                    type: 'course'
-                                  });
-                                  toast({
-                                    title: 'Curso agregado',
-                                    description: `${course.title} se agregó al carrito`
-                                  });
-                                }}>
-                                  <ShoppingCart className="mr-2 h-4 w-4" />
-                                  Inscribirse
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/curso/${course.id}`);
-                                }}>
-                                  <GraduationCap className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>)}
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="reparacion" className="space-y-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("reparacion").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
-                            {course.cover ? <div className="relative h-48 overflow-hidden">
-                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                                <GraduationCap className="h-12 w-12 text-primary/30" />
-                              </div>}
-                            
-                            <CardHeader className="space-y-4">
-                              <div className="space-y-2">
-                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
-                                <CardDescription className="text-muted-foreground">
-                                  {course.description || 'Descripción no disponible'}
-                                </CardDescription>
-                              </div>
-                            </CardHeader>
-                            
-                            <CardContent className="space-y-6">
-                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                                <div className="text-right">
-                                  <div className="text-sm text-muted-foreground">Precio</div>
-                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
-                                </div>
-                              </div>
-                              
-                              <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={(e) => {
-                                  e.stopPropagation();
-                                  addItem({
-                                    id: course.id,
-                                    name: course.title,
-                                    price: course.price,
-                                    image: course.cover || undefined,
-                                    type: 'course'
-                                  });
-                                  toast({
-                                    title: 'Curso agregado',
-                                    description: `${course.title} se agregó al carrito`
-                                  });
-                                }}>
-                                  <ShoppingCart className="mr-2 h-4 w-4" />
-                                  Inscribirse
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/curso/${course.id}`);
-                                }}>
-                                  <GraduationCap className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>)}
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="mantenimiento" className="space-y-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("mantenimiento").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
-                            {course.cover ? <div className="relative h-48 overflow-hidden">
-                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                                <GraduationCap className="h-12 w-12 text-primary/30" />
-                              </div>}
-                            
-                            <CardHeader className="space-y-4">
-                              <div className="space-y-2">
-                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
-                                <CardDescription className="text-muted-foreground">
-                                  {course.description || 'Descripción no disponible'}
-                                </CardDescription>
-                              </div>
-                            </CardHeader>
-                            
-                            <CardContent className="space-y-6">
-                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                                <div className="text-right">
-                                  <div className="text-sm text-muted-foreground">Precio</div>
-                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
-                                </div>
-                              </div>
-                              
-                              <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={(e) => {
-                                  e.stopPropagation();
-                                  addItem({
-                                    id: course.id,
-                                    name: course.title,
-                                    price: course.price,
-                                    image: course.cover || undefined,
-                                    type: 'course'
-                                  });
-                                  toast({
-                                    title: 'Curso agregado',
-                                    description: `${course.title} se agregó al carrito`
-                                  });
-                                }}>
-                                  <ShoppingCart className="mr-2 h-4 w-4" />
-                                  Inscribirse
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/curso/${course.id}`);
-                                }}>
-                                  <GraduationCap className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>)}
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="avanzado" className="space-y-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {getFilteredCourses("avanzado").map(course => <Card key={course.id} className="card-gaming border-primary/20 overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" onClick={() => navigate(`/curso/${course.id}`)}>
-                            {course.cover ? <div className="relative h-48 overflow-hidden">
-                                <img src={course.cover} alt={course.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
-                              </div> : <div className="relative h-48 bg-primary/10 flex items-center justify-center">
-                                <GraduationCap className="h-12 w-12 text-primary/30" />
-                              </div>}
-                            
-                            <CardHeader className="space-y-4">
-                              <div className="space-y-2">
-                                <CardTitle className="text-xl text-neon">{course.title}</CardTitle>
-                                <CardDescription className="text-muted-foreground">
-                                  {course.description || 'Descripción no disponible'}
-                                </CardDescription>
-                              </div>
-                            </CardHeader>
-                            
-                            <CardContent className="space-y-6">
-                              <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                                <div className="text-right">
-                                  <div className="text-sm text-muted-foreground">Precio</div>
-                                  <div className="text-2xl font-bold text-primary">{formatPrice(course.price)}</div>
-                                </div>
-                              </div>
-                              
-                              <div className="flex gap-3">
-                                <Button variant="gaming" className="flex-1" onClick={(e) => {
-                                  e.stopPropagation();
-                                  addItem({
-                                    id: course.id,
-                                    name: course.title,
-                                    price: course.price,
-                                    image: course.cover || undefined,
-                                    type: 'course'
-                                  });
-                                  toast({
-                                    title: 'Curso agregado',
-                                    description: `${course.title} se agregó al carrito`
-                                  });
-                                }}>
-                                  <ShoppingCart className="mr-2 h-4 w-4" />
-                                  Inscribirse
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/curso/${course.id}`);
-                                }}>
-                                  <GraduationCap className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>)}
-                      </div>
-                    </TabsContent>
-                  </Tabs>}
+      {/* Benefits */}
+      <section className="py-8 border-y border-border/40 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {BENEFITS.map((b) => (
+              <div key={b.title} className="flex items-start gap-3">
+                <div className="shrink-0 p-2 rounded-lg bg-primary/10 text-primary">
+                  <b.icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">{b.title}</div>
+                  <div className="text-xs text-muted-foreground">{b.description}</div>
+                </div>
               </div>
-            </section>
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-glow">
-              ¿Listo para Subir de Nivel?
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Únete a nuestra comunidad de aventureros y comienza tu viaje hacia la maestría en reparación gaming.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="lg">
-                <GraduationCap className="mr-2 h-5 w-5" />
-                Ver Todos los Cursos
-              </Button>
-              <Button variant="gaming-secondary" size="lg">
-                Hablar con un Asesor
-              </Button>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* Courses */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 space-y-6">
+          {/* Category chips */}
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-thin">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => handleCategoryChange(cat.id)}
+                className={cn(
+                  'shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors border',
+                  activeCategory === cat.id
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card border-border hover:border-primary/50 text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-destructive mb-4">Error al cargar los cursos: {error}</p>
+              <Button variant="gaming" onClick={() => window.location.reload()}>
+                Reintentar
+              </Button>
+            </div>
+          ) : filteredCourses.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              No hay cursos disponibles en esta categoría.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default Cursos;
