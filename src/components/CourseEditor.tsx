@@ -108,15 +108,15 @@ const CourseEditor = ({ open, onOpenChange, course, onSaved }: CourseEditorProps
         level: data.level,
         estimated_students: parseInt(data.estimated_students) || 0,
         has_certification: data.has_certification,
-        curriculum: curriculum.filter((m) => m.module?.trim()),
+        curriculum: curriculum.filter((m) => m.module?.trim()) as any,
         requirements: requirements.filter((r) => r.trim()),
         includes: includes.filter((i) => i.trim()),
         learning_outcomes: outcomes.filter((o) => o.trim()),
       };
 
       const { error } = isEdit
-        ? await supabase.from('courses').update(payload).eq('id', course.id)
-        : await supabase.from('courses').insert([payload]);
+        ? await supabase.from('courses').update(payload as any).eq('id', course.id)
+        : await supabase.from('courses').insert([payload as any]);
 
       if (error) throw error;
 
