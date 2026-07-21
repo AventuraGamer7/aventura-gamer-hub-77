@@ -29,3 +29,6 @@ verify_jwt = true
 
 [functions.payment-webhook]
 verify_jwt = false
+
+[functions.regenerate-legacy-images]
+verify_jwt = false
