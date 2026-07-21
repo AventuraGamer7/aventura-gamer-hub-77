@@ -36,6 +36,8 @@ async function processOne(url: string): Promise<{ url: string; newUrl?: string; 
     const { data: blob, error: dlErr } = await supabase.storage.from(BUCKET).download(path);
     if (dlErr || !blob) return { url, error: `download: ${dlErr?.message}` };
     const origBytes = blob.size;
+    // imagescript OOMs the edge worker on >3MB source images. Skip those; they need client-side handling.
+    if (origBytes > 3 * 1024 * 1024) return { url, skipped: `too-large (${origBytes})` };
     const buf = new Uint8Array(await blob.arrayBuffer());
 
     const img = await Image.decode(buf);
